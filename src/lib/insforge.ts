@@ -127,7 +127,7 @@ export const auth = {
       }
     }
 
-    if (!isConfigured && !isExplicitSignOut && !currentUser) {
+    if (!isConfigured && !isExplicitSignOut && !currentUser && !import.meta.env.PROD) {
       currentUser = defaultUser;
     }
     
@@ -185,6 +185,7 @@ export const auth = {
     }
     
     // Local fallback login
+    if (import.meta.env.PROD) throw new Error("InsForge no está configurado.");
     const mock: MockUser = {
       uid: "dev-user-id-01",
       displayName: "Tendero BarrioPro",
@@ -220,6 +221,7 @@ export const auth = {
     }
     
     // Local fallback login
+    if (import.meta.env.PROD) throw new Error("InsForge no está configurado.");
     const mock: MockUser = {
       uid: "dev-user-id-01",
       displayName: email.split("@")[0],
@@ -245,6 +247,7 @@ export const auth = {
     }
     
     // Local fallback login
+    if (import.meta.env.PROD) throw new Error("InsForge no está configurado.");
     const mock: MockUser = {
       uid: "dev-user-id-01",
       displayName: name || email.split("@")[0],
