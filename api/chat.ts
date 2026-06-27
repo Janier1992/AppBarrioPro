@@ -34,7 +34,7 @@ async function generateContentWithRetry(
   let delay = 1000;
   let lastErrorMsg = "";
   
-  const fallbackModels = ["gemini-3.1-flash-lite", "gemini-flash-latest"];
+  const fallbackModels = ["gemini-3.1-flash"];
   const modelsToTry = Array.from(new Set([options.model, ...fallbackModels]));
 
   for (const currentModel of modelsToTry) {
@@ -148,7 +148,7 @@ export default async function handler(req: any, res: any) {
       storeContext;
 
     const response = await generateContentWithRetry(ai, {
-      model: "gemini-3.5-flash",
+      model: "gemini-flash-latest",
       contents: contents,
       config: {
         systemInstruction: systemInstruction,
