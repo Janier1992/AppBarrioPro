@@ -171,7 +171,7 @@ export default function App() {
         if (!prof) {
           const pendingName = localStorage.getItem("pending_business_name");
           prof = {
-            businessName: pendingName || (user.displayName && !user.displayName.includes("@") ? user.displayName : "Abasto de Barrio"),
+            businessName: pendingName || (user.displayName && !user.displayName.includes("@") ? user.displayName : "Mi Negocio"),
             address: "Dirección de local",
             phone: "",
             email: user.email || "",
@@ -765,7 +765,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <div>
               <h1 className="font-extrabold text-base text-brand-text tracking-tight flex items-center gap-2">
-                {profile?.businessName || "Abasto de Barrio"}
+                {profile?.businessName || "Mi Negocio"}
               </h1>
               <div className="hidden sm:flex items-center gap-3 text-[10px] text-brand-muted">
                 {profile?.address && (
