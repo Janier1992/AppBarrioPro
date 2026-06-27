@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --color-brand-primary: #4A5A40;
+  --color-brand-primary-dark: #374330;
+  --color-brand-bg: #FDFCF8;
+  --color-brand-accent: #D97706;
+  --color-brand-text: #1C1C1C;
+  --color-brand-muted: #717171;
+  --color-brand-border: #E5E7EB;
+}
+
+body {
+  background-color: var(--color-brand-bg);
+  color: var(--color-brand-text);
+  font-family: var(--font-sans);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --color-brand-bg: #09090b !important;
+  --color-brand-text: #f4f4f5 !important;
+  --color-brand-muted: #a1a1aa !important;
+  --color-brand-border: #27272a !important;
+  --color-brand-primary: #86997B !important;
+  --color-brand-primary-dark: #63755A !important;
+
+  background-color: #09090b !important;
+  color: #f4f4f5 !important;
+}
+
+.dark body {
+  background-color: #09090b !important;
+  color: #f4f4f5 !important;
+}
+
+.dark .bg-white {
+  background-color: #18181b !important;
+}
+
+.dark .bg-slate-50, 
+.dark .bg-brand-bg {
+  background-color: #121214 !important;
+}
+
+.dark .bg-slate-100 {
+  background-color: #27272a !important;
+}
+
+.dark .bg-slate-50\/50 {
+  background-color: rgba(24, 24, 27, 0.5) !important;
+}
+
+.dark .border-brand-border,
+.dark .border-slate-100,
+.dark .border-slate-200 {
+  border-color: #27272a !important;
+}
+
+.dark .text-brand-text,
+.dark .text-slate-900,
+.dark .text-slate-800,
+.dark .text-zinc-900 {
+  color: #f4f4f5 !important;
+}
+
+.dark .text-brand-muted,
+.dark .text-slate-500,
+.dark .text-slate-600 {
+  color: #a1a1aa !important;
+}
+
+.dark input, 
+.dark select, 
+.dark textarea {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+  border-color: #27272a !important;
+}
+
+.dark input::placeholder, 
+.dark textarea::placeholder {
+  color: #71717a !important;
+}
+
+.dark .hover\:bg-brand-bg:hover,
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover {
+  background-color: #27272a !important;
+}
+
+.dark .bg-brand-primary {
+  background-color: #4A5A40 !important;
+  color: #ffffff !important;
+}
+
+.dark .text-brand-primary {
+  color: #86997B !important;
+}
+
+.dark .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+}
+
+.dark .text-amber-800,
+.dark .text-amber-700,
+.dark .text-amber-950 {
+  color: #f59e0b !important;
+}
+
+.dark .border-amber-100,
+.dark .border-amber-200 {
+  border-color: rgba(245, 158, 11, 0.2) !important;
+}
+
+

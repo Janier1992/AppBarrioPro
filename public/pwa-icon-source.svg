@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+    <linearGradient id="store-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="awning-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="33%" stop-color="#fb923c" />
+      <stop offset="66%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#fb923c" />
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded background -->
+  <rect width="512" height="512" rx="108" fill="url(#bg-grad)" />
+
+  <!-- Store building body -->
+  <rect x="130" y="270" width="252" height="160" rx="8" fill="url(#store-grad)" />
+
+  <!-- Store roof / facade top -->
+  <rect x="110" y="248" width="292" height="32" rx="6" fill="#0369a1" />
+
+  <!-- Awning stripes -->
+  <path d="M110 248 Q256 215 402 248 Z" fill="#0ea5e9" />
+  <ellipse cx="256" cy="248" rx="146" ry="22" fill="#fb923c" opacity="0.6"/>
+  <!-- White stripes on awning -->
+  <path d="M150 248 L170 228" stroke="white" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+  <path d="M200 248 L215 222" stroke="white" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+  <path d="M255 248 L256 220" stroke="white" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+  <path d="M310 248 L297 222" stroke="white" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+  <path d="M360 248 L342 228" stroke="white" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- Sign banner -->
+  <rect x="165" y="256" width="182" height="28" rx="5" fill="white" />
+  <text x="256" y="275" font-family="Arial, sans-serif" font-weight="bold" font-size="15" fill="#1e3a8a" text-anchor="middle">MI NEGOCIO</text>
+
+  <!-- Store door -->
+  <rect x="222" y="340" width="68" height="90" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+  <circle cx="278" cy="388" r="4" fill="#0284c7"/>
+
+  <!-- Store windows -->
+  <rect x="145" y="305" width="55" height="50" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+  <rect x="312" y="305" width="55" height="50" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+
+  <!-- Bar chart growing up (top left area) -->
+  <rect x="135" y="185" width="22" height="55" rx="3" fill="#34d399" opacity="0.9"/>
+  <rect x="163" y="165" width="22" height="75" rx="3" fill="#10b981" opacity="0.9"/>
+  <rect x="191" y="148" width="22" height="92" rx="3" fill="#059669" opacity="0.9"/>
+
+  <!-- Up arrow -->
+  <path d="M217 130 L237 108 L257 130" fill="none" stroke="#34d399" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="237" y1="108" x2="237" y2="155" stroke="#34d399" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Coins stack (right side) -->
+  <ellipse cx="355" cy="400" rx="30" ry="10" fill="#fbbf24"/>
+  <rect x="325" y="378" width="60" height="22" rx="0" fill="#f59e0b"/>
+  <ellipse cx="355" cy="378" rx="30" ry="10" fill="#fbbf24"/>
+  <rect x="325" y="357" width="60" height="22" rx="0" fill="#f59e0b"/>
+  <ellipse cx="355" cy="357" rx="30" ry="10" fill="#fde68a"/>
+
+  <!-- Shopping cart (bottom right corner) -->
+  <path d="M390 410 L378 370 L368 370" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="378" y1="370" x2="412" y2="370" stroke="white" stroke-width="7" stroke-linecap="round"/>
+  <line x1="380" y1="380" x2="410" y2="380" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="383" cy="395" r="7" fill="white"/>
+  <circle cx="407" cy="395" r="7" fill="white"/>
+</svg>

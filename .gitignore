@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# Test coverage
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment variables (NEVER commit secrets)
+.env
+.env.local
+.env.development
+.env.production
+.env*.local
+!.env.example
+
+# Vite / Tailwind cache
+.vite/
+node_modules/.vite
+node_modules/.cache
+
+# Temporary scripts
+generate-icons.cjs
+generate-icons.js
