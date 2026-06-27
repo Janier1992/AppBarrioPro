@@ -1,4 +1,3 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from "@google/genai";
 
 function getGeminiClient(customKey?: string): GoogleGenAI {
@@ -88,7 +87,7 @@ async function generateContentWithRetry(
   throw new Error(`El servicio de IA no está disponible: ${lastErrorMsg || "Alta demanda"}.`);
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
