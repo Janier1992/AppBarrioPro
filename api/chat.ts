@@ -27,7 +27,8 @@ async function generateContentWithRetry(
 ): Promise<any> {
   const key = customKey || process.env.GEMINI_API_KEY;
   if (!key || key === "DUMMY_KEY") {
-    throw new Error("La clave API de Gemini no está configurada. Por favor, asegúrese de que GEMINI_API_KEY esté en las variables de entorno de Vercel.");
+    const envKeys = Object.keys(process.env).filter(k => k.includes("GEMINI") || k.includes("VITE")).join(", ");
+    throw new Error(`La clave API de Gemini no está configurada. process.env tiene estas llaves relacionadas: [${envKeys}]. Por favor, verifique el entorno en Vercel.`);
   }
 
   const maxRetries = 3;
