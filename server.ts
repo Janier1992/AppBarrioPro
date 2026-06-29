@@ -49,7 +49,7 @@ async function generateContentWithRetry(
   let lastErrorMsg = "";
   
   // Define fallback models in case the main one is fully unavailable
-  const fallbackModels = ["gemini-3.1-flash"];
+  const fallbackModels = ["gemini-1.5-flash"];
   // Deduplicate models to try
   const modelsToTry = Array.from(new Set([options.model, ...fallbackModels]));
 
@@ -148,7 +148,7 @@ ${JSON.stringify(products, null, 2)}
 Por favor, proporciona recomendaciones estructuradas explicando por qué es urgente reponer cada producto crítico y sugiere una cantidad aproximada de reposición basada en su stock mínimo y actual.`;
 
     const response = await generateContentWithRetry(ai, {
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash",
       contents: prompt,
     }, geminiApiKey);
 
@@ -177,7 +177,7 @@ ${JSON.stringify(sales || [], null, 2)}
 Proporciona sugerencias prácticas de promociones aplicables para que el tendero las implemente hoy mismo. Escribe en español de forma motivadora y sencilla.`;
 
     const response = await generateContentWithRetry(ai, {
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash",
       contents: prompt,
     }, geminiApiKey);
 
@@ -215,7 +215,7 @@ app.post("/api/grounding/maps", async (req, res) => {
     }
 
     const response = await generateContentWithRetry(ai, {
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash",
       contents: `Busca en Google Maps e infórmame sobre la ubicación, detalles y recomendaciones para: "${query}". 
 Escribe una respuesta corta y profesional en español para el dueño de un negocio de barrio que necesita encontrar proveedores, tiendas de insumos o servicios cercanos.`,
       config,
@@ -298,7 +298,7 @@ app.post("/api/chat", async (req, res) => {
       storeContext;
 
     const response = await generateContentWithRetry(ai, {
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash",
       contents: contents,
       config: {
         systemInstruction: systemInstruction,
