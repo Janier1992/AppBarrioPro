@@ -24,7 +24,7 @@ export interface Sale {
   timestamp: string;
   clientId?: string;
   clientName?: string;
-  paymentMethod?: "Efectivo" | "Tarjeta" | "Transferencia";
+  paymentMethod?: "Efectivo" | "Tarjeta" | "Transferencia" | "Fiado";
 }
 
 export interface Client {
@@ -66,6 +66,7 @@ export interface BusinessProfile {
   theme?: "light" | "dark";
   hasCompletedOnboarding?: boolean;
   geminiApiKey?: string;
+  logoUrl?: string;
   updatedAt: string;
 }
 

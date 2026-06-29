@@ -45,22 +45,34 @@ El proyecto está organizado de manera predecible, limpia y balanceada, evitando
 ├── /src                           # Código fuente de la aplicación React
 │   ├── /components                # Componentes interactivos modulares y reutilizables
 │   │   ├── Checklist.tsx          # Gestor de tareas, aperturas, cierres y rutinas
-│   │   ├── Dashboard.tsx          # Panel principal con gráficos Recharts y KPIs
-│   │   ├── Inventory.tsx          # Inventario, alertas de stock mínimo y control de precios
-│   │   ├── Recommendations.tsx    # Asistente IA (reposiciones, combos y promociones)
-│   │   ├── Sales.tsx              # Terminal Punto de Venta (POS) y caja diaria
-│   │   └── Settings.tsx           # Configuración del perfil, PIN de seguridad e información
+│   │   ├── Dashboard.tsx          # Orquestador del panel y KPIs principales
+│   │   ├── DashboardCharts.tsx    # Gráficos Recharts e historial
+│   │   ├── Inventory.tsx          # Vista de inventario y alertas
+│   │   ├── InventoryTable.tsx     # Tabla de productos con ajuste rápido
+│   │   ├── InventoryBulkUpload.tsx# Carga masiva por Excel
+│   │   ├── Sales.tsx              # Terminal de Punto de Venta (POS)
+│   │   ├── POSCart.tsx            # Carrito y cobro
+│   │   ├── POSCatalog.tsx         # Catálogo de venta directa
+│   │   └── Settings.tsx           # Configuración del perfil de tienda
+│   ├── /hooks                     # Hooks personalizados de lógica de negocio (KISS)
+│   │   ├── use-app.ts             # Estado de Layout, PWA y PIN
+│   │   ├── use-dashboard.ts       # Cálculos de KPI y finanzas
+│   │   ├── use-inventory.ts       # Métricas de stock, carga XLSX y alertas
+│   │   ├── use-sales.ts           # Control de transacciones del POS
+│   │   └── use-settings.ts        # Ajustes de temas y Gemini API
 │   ├── /lib                       # Módulos de utilidades, helpers y configuraciones
-│   │   ├── demoData.ts            # Generador/sembrador de datos simulados y ficticios
-│   │   └── firebase.ts            # Inicialización de Firebase SDK y gestor defensivo de errores
-│   ├── App.tsx                    # Orquestador del Layout Global, autenticación y barra lateral
-│   ├── index.css                  # Estilos globales y variables de tipografía (Inter y JetBrains)
-│   ├── main.tsx                   # Punto de entrada de renderizado de React
-│   └── types.ts                   # Declaración e interfaz centralizada de Typescript
+│   │   ├── db.ts                  # Capa de datos offline/online de Firestore
+│   │   ├── demoData.ts            # Sembrador de datos ficticios
+│   │   ├── insforge.ts            # Inicialización del SDK de InsForge y autenticación
+│   │   ├── notifications.ts       # Gestor de notificaciones de fondo
+│   │   └── pdf.ts                 # Exportador a PDF de reportes y tickets
+│   ├── App.tsx                    # Orquestador del Layout Global y barra lateral
+│   ├── index.css                  # Estilos globales y variables de tipografía
+│   ├── main.tsx                   # Punto de entrada de React
+│   └── types.ts                   # Declaración centralizada de Typescript
 ├── .env.example                   # Plantilla de variables de entorno seguras
-├── firebase-applet-config.json    # Credenciales de comunicación del cliente Firebase
-├── firestore.rules                # Reglas de seguridad declarativas de Firestore
-├── package.json                   # Gestión de dependencias npm y scripts del ciclo de vida
+├── insforge-applet-config.json    # Credenciales de comunicación del cliente InsForge
+├── package.json                   # Gestión de dependencias npm y scripts
 ├── server.ts                      # Servidor backend de API Express + Proxy de Gemini AI
 └── tsconfig.json                  # Configuración estricta del compilador de TypeScript
 ```
@@ -73,17 +85,15 @@ A continuación se detallan las principales funciones operativas del sistema con
 
 | Nombre de la Función | Ubicación | Propósito Técnico |
 | :--- | :--- | :--- |
-| `handleRegisterSale` | `Dashboard.tsx` | Registra una venta rápida desde el panel de control, disminuyendo el stock en Firestore y agregando la transacción. |
-| `handleLoadDemo` | `Dashboard.tsx` | Carga un set completo de productos y ventas de los últimos 7 días en Firestore para poblar la visualización del negocio. |
+| `handleRegistrarVentaRapida` | `use-dashboard.ts` | Registra una venta rápida disminuyendo stock y subiendo la transacción a la base de datos. |
+| `handleCargarDatosDeDemostracion` | `use-dashboard.ts` | Carga stock inicial, checklist y transacciones ficticias para visualización realista. |
 | `handleAddTask` | `Checklist.tsx` | Valida, crea y registra una nueva tarea operativa diaria para el tendero. |
 | `handleToggleComplete` | `Checklist.tsx` | Invierte el estado de completado de una tarea diaria (`completed: true/false`). |
-| `handleDeleteTask` | `Checklist.tsx` | Elimina permanentemente una tarea específica de la base de datos de forma asíncrona. |
-| `handleSaveEdit` | `Checklist.tsx` | Guarda las modificaciones de texto hechas mediante edición inline sobre una tarea. |
-| `handleCreateProduct` | `Inventory.tsx` | Inserta un nuevo producto en el catálogo verificando duplicidad de código SKU. |
-| `handleUpdateProduct` | `Inventory.tsx` | Modifica las especificaciones de un producto existente (precio, costo, stock mínimo y actual). |
-| `handleDeleteProduct` | `Inventory.tsx` | Remueve un producto del catálogo de forma definitiva. |
-| `handleFirestoreError` | `firebase.ts` | Captura excepciones de base de datos, mapea el contexto de autenticación del usuario y arroja un informe legible de error. |
-| `getGeminiClient` | `server.ts` | Inicializa con "Lazy Loading" el cliente SDK de Google GenAI para evitar caídas de carga inicial del servidor. |
+| `handleDeleteTask` | `Checklist.tsx` | Elimina permanentemente una tarea específica de la base de datos. |
+| `handleRegistrarNuevoProducto` | `use-inventory.ts` | Inserta un nuevo producto en el catálogo verificando SKU. |
+| `handleAjustarStockRapido` | `use-inventory.ts` | Incrementa o decrementa en una unidad el stock actual del catálogo. |
+| `handleEliminarProductoDeInventario` | `use-inventory.ts` | Remueve un producto del catálogo definitivamente. |
+| `getGeminiClient` | `server.ts` | Inicializa con "Lazy Loading" el cliente SDK de Google GenAI para evitar caídas de carga inicial. |
 
 ---
 
