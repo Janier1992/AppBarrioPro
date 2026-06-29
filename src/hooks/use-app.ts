@@ -256,7 +256,7 @@ export function useApp() {
   };
 
   const umbralCritico = Number(profile?.umbralStockCritico ?? profile?.lowStockThreshold ?? 5);
-  const lowStockItems = products.filter(p => Number(p.stock) <= umbralCritico);
+  const lowStockItems = products.filter(p => Number(p.stock) <= (p.minStock * 0.15));
 
   return {
     user,

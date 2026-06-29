@@ -56,7 +56,8 @@ async function generateContentWithRetry(
   for (const currentModel of modelsToTry) {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        console.log(`[Gemini API] Requesting content using model ${currentModel} (Attempt ${attempt}/${maxRetries})...`);
+        const keySnippet = key ? `${key.substring(0, 10)}...${key.slice(-5)}` : "None";
+        console.log(`[Gemini API] Requesting content using model ${currentModel} with key ${keySnippet} (Attempt ${attempt}/${maxRetries})...`);
         const response = await ai.models.generateContent({
           model: currentModel,
           contents: options.contents,
@@ -75,6 +76,14 @@ async function generateContentWithRetry(
                             errorMsg.includes("PERMISSION_DENIED") ||
                             errorMsg.includes("API key");
         if (isAuthError) {
+          if (customKey && process.env.GEMINI_API_KEY && customKey !== process.env.GEMINI_API_KEY) {
+            console.warn("[Gemini API] Custom API Key failed with auth error. Falling back to process.env.GEMINI_API_KEY...");
+            const fallbackAi = new GoogleGenAI({
+              apiKey: process.env.GEMINI_API_KEY,
+              httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
+            });
+            return await generateContentWithRetry(fallbackAi, options, process.env.GEMINI_API_KEY);
+          }
           throw new Error("La clave API de Gemini configurada no es válida o tiene permisos insuficientes. Por favor, verifíquela en el panel Ajustes > Secretos de AI Studio.");
         }
 

@@ -274,7 +274,7 @@ export default function Inventory({
             }`}
           >
             <AlertTriangle size={14} className={filterCriticalOnly ? "animate-pulse" : ""} />
-            <span>Stock Crítico ({products.filter(p => p.stock <= umbralCritico).length})</span>
+            <span>Stock Crítico ({products.filter(p => p.stock <= (p.minStock * 0.15)).length})</span>
           </button>
         </div>
 

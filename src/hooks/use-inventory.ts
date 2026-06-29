@@ -401,10 +401,10 @@ export function useInventory({
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             (p.sku && p.sku.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesCategory = selectedCategory === "Todas" || p.category === selectedCategory;
-      const matchesCritical = !filterCriticalOnly || Number(p.stock) <= umbralCritico;
+      const matchesCritical = !filterCriticalOnly || Number(p.stock) <= (p.minStock * 0.15);
       return matchesSearch && matchesCategory && matchesCritical;
     });
-  }, [products, searchQuery, selectedCategory, filterCriticalOnly, umbralCritico]);
+  }, [products, searchQuery, selectedCategory, filterCriticalOnly]);
 
   const sortedProducts = useMemo(() => {
     return [...filteredProducts].sort((a, b) => {
@@ -430,7 +430,7 @@ export function useInventory({
   };
 
   const totalProductsCount = products.length;
-  const criticalStockCount = products.filter(p => p.stock <= umbralCritico).length;
+  const criticalStockCount = products.filter(p => p.stock <= (p.minStock * 0.15)).length;
   const totalValuation = products.reduce((sum, p) => sum + (p.stock * p.price), 0);
   const totalInvestment = products.reduce((sum, p) => sum + (p.stock * (p.cost || 0)), 0);
 
