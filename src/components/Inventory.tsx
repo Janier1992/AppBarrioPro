@@ -1,6 +1,7 @@
 import React from "react";
 import { Product, BusinessProfile } from "../types";
 import { useInventory } from "../hooks/use-inventory";
+import { isCriticalStock } from "../lib/stock";
 import { 
   Plus, 
   Search, 
@@ -274,7 +275,7 @@ export default function Inventory({
             }`}
           >
             <AlertTriangle size={14} className={filterCriticalOnly ? "animate-pulse" : ""} />
-            <span>Stock Crítico ({products.filter(p => p.stock <= (p.minStock * 0.15)).length})</span>
+            <span>Stock Crítico ({products.filter(isCriticalStock).length})</span>
           </button>
         </div>
 

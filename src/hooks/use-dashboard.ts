@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Product, Sale } from "../types";
 import { db } from "../lib/insforge";
 import { loadDemoDataToFirestore } from "../lib/demoData";
+import { isCriticalStock } from "../lib/stock";
 import { jsPDF } from "jspdf";
 
 interface UseDashboardProps {
@@ -103,7 +104,7 @@ export function useDashboard({ products, sales, userId }: UseDashboardProps) {
     return 0;
   }, [todayTotalEarnings, yesterdayTotalEarnings]);
 
-  const criticalProducts = useMemo(() => products.filter(p => p.stock <= (p.minStock * 0.15)), [products]);
+  const criticalProducts = useMemo(() => products.filter(isCriticalStock), [products]);
 
   const popularItems = useMemo(() => {
     const productSalesCount: { [key: string]: { count: number; name: string } } = {};
@@ -373,7 +374,7 @@ export function useDashboard({ products, sales, userId }: UseDashboardProps) {
       doc.line(15, currentY + 2, 195, currentY + 2);
       currentY += 6;
 
-      const lowStockProducts = products.filter(p => p.stock <= (p.minStock * 0.15));
+      const lowStockProducts = products.filter(isCriticalStock);
 
       if (lowStockProducts.length === 0) {
         doc.setTextColor(74, 90, 64);

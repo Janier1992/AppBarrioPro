@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Product, BusinessProfile } from "../types";
 import { db } from "../lib/insforge";
 import { loadDemoDataToFirestore } from "../lib/demoData";
+import { hashPin } from "../lib/pin";
 import { 
   retrieveStoredPreferences, 
   persistPreferences, 
@@ -49,7 +50,10 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
   const [loadingProduct, setLoadingProduct] = useState(false);
 
   // Security Form States
-  const [securityPin, setSecurityPin] = useState(profile?.securityPin || "");
+  // Nunca se precarga con el valor guardado (ni siquiera hasheado): el campo
+  // solo sirve para capturar un PIN NUEVO. Si se deja vacío al guardar, se
+  // conserva el PIN actual sin cambios.
+  const [securityPin, setSecurityPin] = useState("");
   const [loadingSecurity, setLoadingSecurity] = useState(false);
 
   // Demo loading state
@@ -64,7 +68,6 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       setEmail(profile.email || "");
       setHours(profile.hours || "08:00 - 20:00");
       setLowStockThreshold(profile.lowStockThreshold || 5);
-      setSecurityPin(profile.securityPin || "");
       setTheme(profile.theme || "light");
       setLogoUrl(profile.logoUrl || "");
       setGeminiApiKey(profile.geminiApiKey || "");
@@ -150,15 +153,20 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
 
   const handleGuardarPinDeSeguridad = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!securityPin || securityPin.length !== 4) {
+      alert("Ingresa un PIN de 4 dígitos para guardarlo.");
+      return;
+    }
     setLoadingSecurity(true);
     try {
       if (profile) {
         await db.saveProfile(userId, {
           ...profile,
-          securityPin,
+          securityPin: hashPin(securityPin),
           updatedAt: new Date().toISOString()
         });
       }
+      setSecurityPin("");
       alert("PIN de seguridad guardado.");
     } catch (error) {
       console.error("Error saving security PIN:", error);

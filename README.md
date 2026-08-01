@@ -2,36 +2,58 @@
 
 ¡Bienvenido a **BarrioPro**! Una plataforma de nivel profesional, robusta y escalable diseñada específicamente para optimizar, organizar y potenciar la operación diaria de comercios locales e independientes (abastos, tiendas, minimarkets y verdulerías) en toda Latinoamérica.
 
-Este proyecto integra un diseño visual moderno y limpio, persistencia en la nube en tiempo real mediante **Google Firebase (Firestore y Auth)**, un backend de analítica predictiva inteligente con **Google Gemini AI (3.5 Flash)** y visualización interactiva de rendimiento financiero mediante **Recharts**.
+Este proyecto integra un diseño visual moderno y limpio, persistencia en la nube mediante **InsForge (Postgres + Auth + REST, tipo BaaS)**, un backend de analítica predictiva inteligente con **Google Gemini AI** y visualización interactiva de rendimiento financiero mediante **Recharts**.
+
+> Nota: versiones previas de este README describían un backend en Firebase.
+> Eso nunca se implementó — la persistencia real desde el primer commit es
+> InsForge. `firebase` fue eliminado de `package.json` por no tener uso.
 
 ---
 
 ## 🏗️ 1. Arquitectura General de Software
 
-La aplicación sigue una división física y conceptual absoluta de responsabilidades (Capa de Presentación, Capa de Lógica de Negocio y Capa de Datos) para asegurar un código mantenible, desacoplado y fácil de auditar.
-
 ```
                   ┌──────────────────────────────────────────────┐
                   │          CAPA DE PRESENTACIÓN (UI)           │
-                  │   React 18.2 + Vite + TailwindCSS + Lucide   │
+                  │   React 19 + Vite + TailwindCSS + Lucide     │
                   └──────┬────────────────────────────────┬──────┘
                          │                                │
-                         ▼ (Lecturas en Tiempo Real)      ▼ (Peticiones API)
+                         ▼ (CRUD directo, sujeto a RLS)   ▼ (fetch autenticado)
  ┌──────────────────────────────────────────┐    ┌──────────────────────────────────────────┐
- │       CAPA DE DATOS (PERSISTENCIA)       │    │       CAPA DE LÓGICA DE NEGOCIO          │
- │   Google Firebase Firestore / Auth SDK   │    │  Backend Express (Node.js/TS proxy)      │
+ │       CAPA DE DATOS (PERSISTENCIA)       │    │   CAPA DE LÓGICA DE NEGOCIO (IA)         │
+ │   InsForge (Postgres + Auth + REST)      │    │  api/chat.ts (función Vercel, prod)      │
+ │   con fallback offline en localStorage   │◄───┤  server.ts (Express, solo dev local)     │
  └──────────────────────────────────────────┘    └──────────────┬───────────────────────────┘
                                                                 │
-                                                                ▼ (Inferencia / IA)
+                                                                ▼
                                                  ┌──────────────────────────────────────────┐
-                                                 │        Google Gemini 3.5 Flash API       │
+                                                 │            Google Gemini API             │
                                                  └──────────────────────────────────────────┘
 ```
 
 ### Detalle de Capas
-1. **Capa de Presentación (Frontend):** React v18 utilizando componentes funcionales altamente modulares e independientes, estilos utilitarios atómicos con Tailwind CSS y animaciones fluidas con `motion` (Framer Motion).
-2. **Capa de Datos (Persistencia y Autenticación):** Integración directa del SDK cliente de Firebase para sincronización instantánea y offline-first de colecciones relativas al negocio (`products`, `sales`, `tasks`, `profile`).
-3. **Capa de Lógica de Negocio (Backend Personalizado):** Un servidor de producción Express en TypeScript (`server.ts`) que centraliza y protege las credenciales de la API de Gemini, sirviendo como proxy seguro de endpoints críticos de IA y geolocalización.
+1. **Capa de Presentación (Frontend):** React 19 con componentes funcionales modulares, Tailwind CSS y animaciones con `motion` (Framer Motion).
+2. **Capa de Datos (Persistencia y Autenticación):** el cliente de InsForge (`@insforge/sdk`) llama directo desde el navegador a la API REST de InsForge, con `localStorage` como caché/fallback offline por usuario. El aislamiento entre tiendas depende de las políticas RLS descritas en [`insforge-rls-policies.sql`](insforge-rls-policies.sql) — **deben estar aplicadas en el proyecto de InsForge antes de manejar datos reales de más de una tienda.**
+3. **Capa de Lógica de Negocio (IA):** en producción (Vercel) el único endpoint desplegado es la función serverless [`api/chat.ts`](api/chat.ts). `server.ts` replica la misma lógica (importada de `api/_lib/`) únicamente para desarrollo local con `npm run dev`. Ambos exigen una sesión válida de InsForge (Bearer token) antes de invocar a Gemini — ya no es un proxy abierto.
+
+---
+
+## 🚦 Estado de producción y seguridad
+
+Hecho en código (ver historial de commits para el detalle):
+- Autenticación obligatoria (Bearer token de InsForge) en el endpoint de IA, tanto en `server.ts` como en `api/chat.ts`.
+- Límite de tasa por usuario y validación de esquema (`zod`) en las peticiones de IA.
+- PIN de seguridad local hasheado con bcrypt (con migración automática de PINs antiguos en texto plano).
+- Mitigaciones sobre la vulnerabilidad conocida de `xlsx` (límite de tamaño/filas en la carga masiva).
+- Endpoints de IA sin ningún llamador real (`/api/recommendations/*`, `/api/grounding/maps`) retirados para reducir superficie de ataque.
+- Suite de pruebas (`npm test`), pipeline de CI (`.github/workflows/ci.yml`), `Dockerfile`, y borradores de `PRIVACY.md` / `TERMS.md`.
+
+**Pendiente — requiere acción humana con credenciales que un agente no tiene:**
+- **Aplicar `insforge-rls-policies.sql`** en el proyecto de InsForge (dashboard o CLI autenticado). Sin esto, el aislamiento de datos entre tiendas no está garantizado a nivel de base de datos.
+- **Rotar `GEMINI_API_KEY` y la anonKey de InsForge** si alguna vez se compartieron fuera de este equipo (hoy viven en texto plano en `.env.local`, que no está en git, pero rotarlas es buena práctica tras este endurecimiento).
+- **Configurar las variables de entorno en Vercel** (Project Settings → Environment Variables) para que coincidan con `.env.example`.
+- **Crear una cuenta de Sentry** y definir `VITE_SENTRY_DSN` si se quiere monitoreo de errores en producción (el código ya está preparado, inactivo sin DSN).
+- **Revisión legal** de `PRIVACY.md` y `TERMS.md` antes de publicarlos a usuarios reales.
 
 ---
 
@@ -61,19 +83,33 @@ El proyecto está organizado de manera predecible, limpia y balanceada, evitando
 │   │   ├── use-sales.ts           # Control de transacciones del POS
 │   │   └── use-settings.ts        # Ajustes de temas y Gemini API
 │   ├── /lib                       # Módulos de utilidades, helpers y configuraciones
-│   │   ├── db.ts                  # Capa de datos offline/online de Firestore
+│   │   ├── db.ts                  # Capa de datos offline/online de InsForge
 │   │   ├── demoData.ts            # Sembrador de datos ficticios
 │   │   ├── insforge.ts            # Inicialización del SDK de InsForge y autenticación
+│   │   ├── monitoring.ts          # Sentry opcional, inactivo sin VITE_SENTRY_DSN
 │   │   ├── notifications.ts       # Gestor de notificaciones de fondo
-│   │   └── pdf.ts                 # Exportador a PDF de reportes y tickets
+│   │   ├── pdf.ts                 # Exportador a PDF de reportes y tickets
+│   │   ├── pin.ts                 # Hasheo/verificación del PIN de seguridad
+│   │   └── stock.ts               # Regla única de "stock crítico" (15%)
 │   ├── App.tsx                    # Orquestador del Layout Global y barra lateral
 │   ├── index.css                  # Estilos globales y variables de tipografía
 │   ├── main.tsx                   # Punto de entrada de React
 │   └── types.ts                   # Declaración centralizada de Typescript
+├── /api                           # Funciones serverless de Vercel (backend real de producción)
+│   ├── chat.ts                    # Único endpoint desplegado hoy: chat de BarrioPro AI
+│   └── /_lib                      # Lógica compartida entre api/chat.ts y server.ts
+│       ├── auth.ts                # Verificación del Bearer token de InsForge
+│       ├── gemini.ts               # Cliente y llamadas a Gemini endurecidas
+│       ├── rateLimit.ts           # Límite de tasa por usuario (best-effort)
+│       └── validation.ts          # Esquemas zod de entrada
 ├── .env.example                   # Plantilla de variables de entorno seguras
-├── insforge-applet-config.json    # Credenciales de comunicación del cliente InsForge
+├── .github/workflows/ci.yml       # Pipeline de CI: lint, tests, build, audit
+├── Dockerfile                     # Build multi-stage para despliegue en contenedor
+├── insforge-applet-config.json    # Credenciales públicas del cliente InsForge (anonKey)
+├── insforge-rls-policies.sql      # Políticas RLS pendientes de aplicar (ver arriba)
+├── PRIVACY.md / TERMS.md          # Borradores legales, pendientes de revisión por abogado
 ├── package.json                   # Gestión de dependencias npm y scripts
-├── server.ts                      # Servidor backend de API Express + Proxy de Gemini AI
+├── server.ts                      # Servidor Express — SOLO desarrollo local (npm run dev)
 └── tsconfig.json                  # Configuración estricta del compilador de TypeScript
 ```
 

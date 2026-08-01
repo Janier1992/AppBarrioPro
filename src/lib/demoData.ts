@@ -1,5 +1,6 @@
 import { db } from "./insforge";
 import { Product, Sale, Task, BusinessProfile } from "../types";
+import { hashPin } from "./pin";
 
 export const DEMO_PRODUCTS: Product[] = [
   {
@@ -263,7 +264,7 @@ export const DEFAULT_PROFILE: BusinessProfile = {
   address: "Calle de las Flores 123, Barrio El Prado",
   hours: "08:00 - 20:00",
   lowStockThreshold: 5,
-  securityPin: "1234",
+  securityPin: hashPin("1234"),
   updatedAt: new Date().toISOString()
 };
 

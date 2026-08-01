@@ -1,6 +1,7 @@
 import React from "react";
 import { Layers, Package, ArrowUpDown, Tag, AlertCircle, MinusCircle, PlusCircle, Edit2, Trash2 } from "lucide-react";
 import { Product } from "../types";
+import { isCriticalStock, criticalStockThreshold } from "../lib/stock";
 
 interface InventoryTableProps {
   sortedProducts: Product[];
@@ -71,7 +72,7 @@ export default function InventoryTable({
             </thead>
             <tbody className="divide-y divide-brand-bg">
               {sortedProducts.map((p) => {
-                const isStockBajo = p.stock <= (p.minStock * 0.15);
+                const isStockBajo = isCriticalStock(p);
                 return (
                   <tr 
                     key={p.id} 
@@ -103,7 +104,7 @@ export default function InventoryTable({
                       <span className={`font-bold text-sm ${isStockBajo ? "text-amber-700 font-extrabold" : "text-brand-text"}`}>
                         {p.stock}
                       </span>{" "}
-                      / <span className="text-brand-muted" title="Umbral de stock crítico">{Math.round(p.minStock * 0.15)}</span>
+                      / <span className="text-brand-muted" title="Umbral de stock crítico">{Math.round(criticalStockThreshold(p.minStock))}</span>
                     </td>
                     <td className="py-3.5 px-3 text-right font-medium text-brand-muted">
                       ${p.cost !== undefined ? p.cost.toFixed(2) : "0.00"}

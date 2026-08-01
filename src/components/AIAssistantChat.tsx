@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Sparkles, X, Send, Trash2, HelpCircle, Loader2 } from "lucide-react";
 import { Product, Sale } from "../types";
+import { insforge } from "../lib/insforge";
 
 interface Message {
   id: string;
@@ -71,10 +72,17 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
         content: m.content
       }));
 
+      // El backend es la única fuente de verdad sobre la sesión: valida este
+      // header contra InsForge y responde 401 si no corresponde a un usuario
+      // autenticado (getHeaders() siempre incluye un Bearer, con la anonKey
+      // pública como respaldo cuando no hay sesión iniciada).
+      const authHeader = insforge?.getHttpClient().getHeaders().Authorization;
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          ...(authHeader ? { Authorization: authHeader } : {})
         },
         body: JSON.stringify({
           messages: apiMessages,

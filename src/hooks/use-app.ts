@@ -5,10 +5,12 @@ import {
   subscribeToData,
   MockUser
 } from "../lib/insforge";
-import { 
-  auditAndAlertLowStock, 
-  auditAndAlertUnfinishedTasks 
+import {
+  auditAndAlertLowStock,
+  auditAndAlertUnfinishedTasks
 } from "../lib/notifications";
+import { verifyPin, isHashedPin, hashPin } from "../lib/pin";
+import { isCriticalStock } from "../lib/stock";
 import { 
   Product, 
   Sale, 
@@ -219,10 +221,20 @@ export function useApp() {
 
   const handleDesbloquearConPin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (profile && pinInput === profile.securityPin) {
+    if (profile && verifyPin(pinInput, profile.securityPin)) {
       setIsLocked(false);
       setPinInput("");
       setPinError("");
+
+      // Migración transparente: si el PIN todavía estaba en texto plano
+      // (guardado antes de introducir el hasheo), lo re-guardamos hasheado.
+      if (user && !isHashedPin(profile.securityPin)) {
+        db.saveProfile(user.uid, {
+          ...profile,
+          securityPin: hashPin(pinInput),
+          updatedAt: new Date().toISOString()
+        }).catch(err => console.warn("No se pudo migrar el PIN a formato hasheado:", err));
+      }
     } else {
       setPinError("PIN incorrecto. Inténtalo de nuevo.");
       setPinInput("");
@@ -256,7 +268,7 @@ export function useApp() {
   };
 
   const umbralCritico = Number(profile?.umbralStockCritico ?? profile?.lowStockThreshold ?? 5);
-  const lowStockItems = products.filter(p => Number(p.stock) <= (p.minStock * 0.15));
+  const lowStockItems = products.filter(isCriticalStock);
 
   return {
     user,

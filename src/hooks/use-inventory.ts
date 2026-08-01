@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import * as XLSX from "xlsx";
 import { Product, BusinessProfile } from "../types";
 import { db } from "../lib/insforge";
+import { isCriticalStock } from "../lib/stock";
 
 interface UseInventoryProps {
   products: Product[];
@@ -189,11 +190,23 @@ export function useInventory({
     }
   };
 
+  const MAX_BULK_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+  const MAX_BULK_ROWS = 5000;
+
   const processFile = async (file: File) => {
     const isExcel = file.name.endsWith(".xlsx") || file.name.endsWith(".xls");
     const isCsv = file.name.endsWith(".csv");
     if (!isExcel && !isCsv) {
       alert("Por favor selecciona un archivo de Excel (.xlsx, .xls) o un CSV (.csv).");
+      return;
+    }
+
+    // La librería xlsx tiene vulnerabilidades conocidas de ReDoS/prototype
+    // pollution sin parche disponible al analizar archivos maliciosos; se
+    // limita el tamaño y las filas procesadas como mitigación mientras no
+    // se reemplace por otra librería.
+    if (file.size > MAX_BULK_FILE_SIZE_BYTES) {
+      alert("El archivo supera el tamaño máximo permitido (5 MB). Divide tu inventario en archivos más pequeños.");
       return;
     }
 
@@ -209,10 +222,16 @@ export function useInventory({
         const data = event.target?.result;
         if (!data) return;
 
-        const workbook = XLSX.read(data, { type: "array" });
+        const workbook = XLSX.read(data, {
+          type: "array",
+          bookVBA: false,
+          cellFormula: false,
+          cellHTML: false,
+          sheetRows: MAX_BULK_ROWS + 1, // límite duro de filas leídas por la propia librería
+        });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
-        const rows = XLSX.utils.sheet_to_json<any>(sheet);
+        let rows = XLSX.utils.sheet_to_json<any>(sheet);
 
         if (rows.length === 0) {
           setBulkErrors(["El archivo está vacío o no contiene filas con datos."]);
@@ -221,6 +240,11 @@ export function useInventory({
 
         const mappedRows: any[] = [];
         const errors: string[] = [];
+
+        if (rows.length > MAX_BULK_ROWS) {
+          errors.push(`El archivo tiene ${rows.length} filas; solo se procesarán las primeras ${MAX_BULK_ROWS}. Divide el archivo en partes más pequeñas.`);
+          rows = rows.slice(0, MAX_BULK_ROWS);
+        }
 
         rows.forEach((row, index) => {
           const rowNum = index + 2;
@@ -401,7 +425,7 @@ export function useInventory({
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             (p.sku && p.sku.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesCategory = selectedCategory === "Todas" || p.category === selectedCategory;
-      const matchesCritical = !filterCriticalOnly || Number(p.stock) <= (p.minStock * 0.15);
+      const matchesCritical = !filterCriticalOnly || isCriticalStock(p);
       return matchesSearch && matchesCategory && matchesCritical;
     });
   }, [products, searchQuery, selectedCategory, filterCriticalOnly]);
@@ -430,7 +454,7 @@ export function useInventory({
   };
 
   const totalProductsCount = products.length;
-  const criticalStockCount = products.filter(p => p.stock <= (p.minStock * 0.15)).length;
+  const criticalStockCount = products.filter(isCriticalStock).length;
   const totalValuation = products.reduce((sum, p) => sum + (p.stock * p.price), 0);
   const totalInvestment = products.reduce((sum, p) => sum + (p.stock * (p.cost || 0)), 0);
 
