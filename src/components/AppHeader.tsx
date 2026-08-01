@@ -1,12 +1,11 @@
 import React from "react";
 import { MapPin, Clock, Lock, ChevronDown, User, Moon, Sun, LogOut } from "lucide-react";
 import { BusinessProfile, Product, Task, Debt } from "../types";
-import { db, MockUser } from "../lib/insforge";
+import { MockUser } from "../lib/insforge";
 import GlobalSearch from "./GlobalSearch";
 
 interface AppHeaderProps {
   profile: BusinessProfile | null;
-  setProfile: (p: BusinessProfile | null) => void;
   user: MockUser;
   products: Product[];
   tasks: Task[];
@@ -20,11 +19,11 @@ interface AppHeaderProps {
   setInventoryFilterCritical: (val: boolean) => void;
   setGlobalSearchTerm: (val: string) => void;
   handleCerrarSesionGoogle: () => void;
+  handleToggleTheme: () => void;
 }
 
 export default function AppHeader({
   profile,
-  setProfile,
   user,
   products,
   tasks,
@@ -37,7 +36,8 @@ export default function AppHeader({
   setActiveTab,
   setInventoryFilterCritical,
   setGlobalSearchTerm,
-  handleCerrarSesionGoogle
+  handleCerrarSesionGoogle,
+  handleToggleTheme
 }: AppHeaderProps) {
   return (
     <header className="bg-white border-b border-brand-border px-6 py-4 flex items-center justify-between shadow-xs shrink-0">
@@ -154,14 +154,10 @@ export default function AppHeader({
 
                   {/* Option 2: Toggle Theme */}
                   <button
-                    onClick={async (e) => {
+                    onClick={(e) => {
                       e.stopPropagation();
-                      if (!profile) return;
-                      const nextTheme: "light" | "dark" = profile.theme === "light" ? "dark" : "light";
-                      const updated = { ...profile, theme: nextTheme };
-                      setProfile(updated);
                       setIsProfileDropdownOpen(false);
-                      await db.saveProfile(user.uid, updated);
+                      handleToggleTheme();
                     }}
                     className="w-full flex items-center justify-between px-3 py-2 text-xs text-brand-text rounded-xl hover:bg-brand-bg transition-colors cursor-pointer"
                   >

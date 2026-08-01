@@ -49,7 +49,9 @@ export default function GlobalSearch({ products, tasks, debts, onSelectResult }:
     const cleanQuery = query.toLowerCase().trim();
 
     const filteredProducts = products.filter(
-      p => p.name.toLowerCase().includes(cleanQuery) || p.category.toLowerCase().includes(cleanQuery)
+      p => p.name.toLowerCase().includes(cleanQuery) ||
+           p.category.toLowerCase().includes(cleanQuery) ||
+           (p.sku && p.sku.toLowerCase().includes(cleanQuery))
     ).slice(0, 5); // Limit results for clean UI
 
     const filteredTasks = tasks.filter(

@@ -19,56 +19,44 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
 
   const steps = [
     {
-      title: "¿Cansado de los libros y el papel?",
-      description: "Llevar el control de tu negocio en papel es cosa del pasado. Con BarrioPro, todo está en tu celular al instante de forma segura y sin enredos.",
-      badge: "MIGRACIÓN SIMPLE",
+      title: "Empieza por tu inventario",
+      description: "Ve a la sección \"Inventario\" y agrega tus productos: nombre, precio, costo y cuántas unidades tienes. Con eso ya puedes registrar ventas y BarrioPro te avisará cuando algo se esté agotando.",
+      badge: "PASO 1",
       icon: Smartphone,
       color: "bg-emerald-500",
       accent: "text-emerald-600 bg-emerald-50",
       image: "https://images.unsplash.com/photo-1607344645866-009c320c5ab8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      testimonial: {
-        quote: "Escribir todo en el cuaderno me quitaba horas y a veces se me perdía. Con BarrioPro registro ventas en 2 segundos.",
-        author: "Doña María, Tienda 'El Abasto'"
-      }
+      tip: "Si quieres cargar muchos productos de una vez, usa \"Carga Masiva (Excel)\" en Inventario."
     },
     {
-      title: "Todo en un solo lugar",
-      description: "Registra tus ventas diarias, controla el inventario de tus productos para saber cuándo reponer y recuerda tus pendientes sin complicaciones.",
-      badge: "CONTROL TOTAL",
+      title: "Registra tus ventas del día",
+      description: "En \"Caja y Ventas\" eliges los productos, defines el método de pago (efectivo, tarjeta, transferencia o fiado) y confirmas. El stock y tus reportes se actualizan solos.",
+      badge: "PASO 2",
       icon: TrendingUp,
       color: "bg-amber-500",
       accent: "text-amber-600 bg-amber-50",
       image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      testimonial: {
-        quote: "Ahora sé exactamente cuánto gané al final del día. Mis cuentas están claras y sin errores.",
-        author: "Don José, Minimercado 'La Esquina'"
-      }
+      tip: "El Panel de Control tiene un botón de \"Venta Rápida\" para cobros de mostrador en efectivo."
     },
     {
-      title: "Diseñado especialmente para ti",
-      description: "Hecho a la medida para abarrotes, ferreterías, droguerías, carnicerías, legumbrerías, tiendas digitales (ventas de accesorios), papelerías y demás comercios de barrio.",
-      badge: "100% INTUITIVO",
+      title: "Lleva tus tareas y tus fiados al día",
+      description: "El \"Checklist\" te ayuda a no olvidar tus rutinas diarias, y \"Deudas\" lleva la cuenta de a quién le fiaste y cuándo debe pagarte, para que no se te pierda ningún cobro.",
+      badge: "PASO 3",
       icon: Sparkles,
       color: "bg-blue-500",
       accent: "text-blue-600 bg-blue-50",
       image: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      testimonial: {
-        quote: "No soy muy bueno con la tecnología, pero esta app la maneja hasta mi nieto de 8 años. ¡Es facilísima!",
-        author: "Don Ramiro, Ferretería 'El Tornillo'"
-      }
+      tip: "En Ajustes puedes activar un PIN de 4 dígitos si compartes el celular o la tablet con alguien más."
     },
     {
-      title: "Únete a la revolución digital",
-      description: "Más de 5,000 negocios locales de barrio ya confían en BarrioPro para crecer y competir mejor. Da el gran salto hoy mismo.",
-      badge: "COMUNIDAD LOCAL",
+      title: "Todo esto ya está listo para ti",
+      description: "No necesitas ser experto en tecnología: si tienes dudas sobre alguna función, el asistente de IA (el botón flotante con la estrella) puede ayudarte con preguntas sobre tu inventario y tus ventas.",
+      badge: "LISTO PARA EMPEZAR",
       icon: Users,
       color: "bg-[#3A4A3A]",
       accent: "text-[#3A4A3A] bg-emerald-50",
       image: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      testimonial: {
-        quote: "Desde que digitalicé mi negocio, tengo más tiempo libre y sé exactamente qué mercancía rota más rápido.",
-        author: "Doña Elena, Legumbrería 'El Huerto'"
-      }
+      tip: "Puedes cargar datos de ejemplo desde el Panel de Control para explorar la app antes de meter tu inventario real."
     }
   ];
 
@@ -114,13 +102,11 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
             </h2>
           </div>
 
-          {/* Testimonial / Story Card (Persuasion element) */}
-          <div className="relative z-10 bg-white/10 backdrop-blur-xs rounded-2xl p-4 mt-8 border border-white/10 space-y-2">
-            <p className="text-xs italic leading-relaxed text-white/90">
-              "{current.testimonial.quote}"
-            </p>
-            <p className="text-[10px] font-bold text-emerald-300">
-              — {current.testimonial.author}
+          {/* Consejo práctico del paso actual */}
+          <div className="relative z-10 bg-white/10 backdrop-blur-xs rounded-2xl p-4 mt-8 border border-white/10 space-y-1">
+            <p className="text-[10px] font-bold text-emerald-300 uppercase tracking-wide">💡 Consejo</p>
+            <p className="text-xs leading-relaxed text-white/90">
+              {current.tip}
             </p>
           </div>
         </div>
@@ -142,10 +128,10 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
 
             <div className="space-y-4">
               <h3 className="text-lg font-bold text-[#212121] tracking-tight">
-                {currentStep === 0 && "🚀 Da el paso hacia la era moderna"}
-                {currentStep === 1 && "📊 Centraliza la administración de tu negocio"}
-                {currentStep === 2 && "⚡ Sin cursos técnicos ni manuales"}
-                {currentStep === 3 && "👥 Únete a miles de tenderos prósperos"}
+                {currentStep === 0 && "📦 Arma tu catálogo de productos"}
+                {currentStep === 1 && "🧾 Cobra y controla tu caja"}
+                {currentStep === 2 && "✅ Organiza tu día a día"}
+                {currentStep === 3 && "🚀 Ya puedes empezar a usar BarrioPro"}
               </h3>
               
               <p className="text-sm text-brand-muted leading-relaxed">

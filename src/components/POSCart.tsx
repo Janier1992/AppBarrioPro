@@ -77,15 +77,15 @@ export default function POSCart({
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   {/* Quantity Controls */}
                   <div className="flex items-center border border-brand-border rounded-lg bg-brand-bg overflow-hidden">
                     <button
                       type="button"
                       onClick={() => handleUpdateQuantity(item.product.id!, item.quantity - 1)}
-                      className="p-1 px-1.5 hover:bg-slate-100 text-brand-muted transition-colors cursor-pointer"
+                      className="p-2.5 hover:bg-slate-100 text-brand-muted transition-colors cursor-pointer"
                     >
-                      <Minus size={10} />
+                      <Minus size={13} />
                     </button>
                     <span className="px-1.5 text-[11px] font-mono font-black text-brand-text bg-white border-x border-brand-border min-w-[20px] text-center">
                       {item.quantity}
@@ -93,10 +93,10 @@ export default function POSCart({
                     <button
                       type="button"
                       onClick={() => handleUpdateQuantity(item.product.id!, item.quantity + 1)}
-                      className="p-1 px-1.5 hover:bg-slate-100 text-brand-muted transition-colors cursor-pointer"
+                      className="p-2.5 hover:bg-slate-100 text-brand-muted transition-colors cursor-pointer"
                       disabled={item.quantity >= item.product.stock}
                     >
-                      <Plus size={10} />
+                      <Plus size={13} />
                     </button>
                   </div>
 
@@ -104,9 +104,9 @@ export default function POSCart({
                   <button
                     type="button"
                     onClick={() => handleRemoveFromCart(item.product.id!)}
-                    className="text-brand-muted hover:text-rose-600 p-1 rounded-md transition-colors"
+                    className="text-brand-muted hover:text-rose-600 p-2.5 rounded-lg transition-colors"
                   >
-                    <Trash2 size={11} />
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>

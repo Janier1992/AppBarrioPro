@@ -3,6 +3,8 @@ import * as XLSX from "xlsx";
 import { Product, BusinessProfile } from "../types";
 import { db } from "../lib/insforge";
 import { isCriticalStock } from "../lib/stock";
+import { useDialogs } from "./use-dialogs";
+import { showErrorToast } from "../lib/toast";
 
 interface UseInventoryProps {
   products: Product[];
@@ -75,20 +77,8 @@ export function useInventory({
   const [editCost, setEditCost] = useState(0.6);
   const [savingEdit, setSavingEdit] = useState(false);
 
-  // --- Estados de Diálogos y Alertas Personalizados ---
-  const [confirmDialog, setConfirmDialog] = useState<{
-    isOpen: boolean;
-    title: string;
-    message: string;
-    onConfirm: () => void;
-  } | null>(null);
-
-  const [alertDialog, setAlertDialog] = useState<{
-    isOpen: boolean;
-    title: string;
-    message: string;
-    type?: "info" | "success" | "warning";
-  } | null>(null);
+  // --- Diálogos y Alertas Personalizados (compartidos, ver use-dialogs.ts) ---
+  const { confirmDialog, setConfirmDialog, alertDialog, setAlertDialog, alert: showAlertDialog } = useDialogs();
 
   const categories = [
     "Todas", 
@@ -131,6 +121,7 @@ export function useInventory({
       setShowAddForm(false);
     } catch (error) {
       console.error("Error adding product:", error);
+      showErrorToast("No se pudo guardar el producto. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoadingProduct(false);
     }
@@ -145,14 +136,10 @@ export function useInventory({
         setConfirmDialog(null);
         try {
           await db.deleteProduct(userId, id);
-          setAlertDialog({
-            isOpen: true,
-            title: "Producto Eliminado",
-            message: "El artículo ha sido eliminado del inventario con éxito.",
-            type: "success"
-          });
+          showAlertDialog("Producto Eliminado", "El artículo ha sido eliminado del inventario con éxito.", "success");
         } catch (error) {
           console.error("Error deleting product:", error);
+          showErrorToast("No se pudo eliminar el producto. Verifica tu conexión e inténtalo de nuevo.");
         }
       }
     });
@@ -168,6 +155,7 @@ export function useInventory({
       });
     } catch (error) {
       console.error("Error adjusting stock:", error);
+      showErrorToast("No se pudo ajustar el stock. Verifica tu conexión e inténtalo de nuevo.");
     }
   };
 
@@ -346,7 +334,7 @@ export function useInventory({
       XLSX.utils.book_append_sheet(workbook, worksheet, "Plantilla_Productos");
       XLSX.writeFile(workbook, "Plantilla_Carga_Masiva_BarrioPro.xlsx");
     } catch (error) {
-      alert("Error al descargar la plantilla.");
+      showErrorToast("Error al descargar la plantilla.");
     }
   };
 
@@ -356,26 +344,30 @@ export function useInventory({
     setIsProcessingBulk(true);
     setBulkProgress(0);
     let successCount = 0;
+    let failedCount = 0;
 
     for (let i = 0; i < bulkProducts.length; i++) {
       try {
         await db.addProduct(userId, bulkProducts[i]);
         successCount++;
         setBulkSuccessCount(successCount);
-        setBulkProgress(Math.round(((i + 1) / bulkProducts.length) * 100));
       } catch (error) {
         console.error("Error al cargar producto masivo individual: ", error);
+        failedCount++;
+      } finally {
+        setBulkProgress(Math.round(((i + 1) / bulkProducts.length) * 100));
       }
     }
 
     setIsProcessingBulk(false);
 
-    setAlertDialog({
-      isOpen: true,
-      title: "Carga Masiva Completada",
-      message: `¡Fantástico! Se han cargado con éxito ${successCount} de ${bulkProducts.length} productos nuevos a tu inventario de BarrioPro.`,
-      type: "success"
-    });
+    showAlertDialog(
+      failedCount > 0 ? "Carga Masiva Completada con Errores" : "Carga Masiva Completada",
+      failedCount > 0
+        ? `Se cargaron ${successCount} de ${bulkProducts.length} productos. ${failedCount} no se pudieron guardar por un problema de conexión — revisa tu inventario y vuelve a intentar con esos productos si hace falta.`
+        : `¡Fantástico! Se han cargado con éxito ${successCount} de ${bulkProducts.length} productos nuevos a tu inventario de BarrioPro.`,
+      failedCount > 0 ? "warning" : "success"
+    );
 
     setBulkFile(null);
     setBulkProducts([]);
@@ -413,6 +405,7 @@ export function useInventory({
       setEditingProduct(null);
     } catch (error) {
       console.error("Error updating product:", error);
+      showErrorToast("No se pudieron guardar los cambios del producto. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setSavingEdit(false);
     }

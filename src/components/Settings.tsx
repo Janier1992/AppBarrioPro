@@ -1,20 +1,39 @@
 import React from "react";
 import { Product, BusinessProfile } from "../types";
 import { useSettings } from "../hooks/use-settings";
-import { Settings as SettingsIcon } from "lucide-react";
+import { Settings as SettingsIcon, Download } from "lucide-react";
 import SettingsProfile from "./SettingsProfile";
 import SettingsCatalog from "./SettingsCatalog";
 import SettingsSecurity from "./SettingsSecurity";
 import SettingsNotifications from "./SettingsNotifications";
+import Dialogs from "./Dialogs";
 
 interface SettingsProps {
   products: Product[];
   profile: BusinessProfile | null;
   userId: string;
+  handleToggleTheme: () => void;
+  isPwaInstalled: boolean;
+  deferredInstallPrompt: any;
+  setDeferredInstallPrompt: (val: any) => void;
+  setIsPwaInstalled: (val: boolean) => void;
 }
 
-export default function Settings({ products, profile, userId }: SettingsProps) {
+export default function Settings({
+  products,
+  profile,
+  userId,
+  handleToggleTheme,
+  isPwaInstalled,
+  deferredInstallPrompt,
+  setDeferredInstallPrompt,
+  setIsPwaInstalled
+}: SettingsProps) {
   const {
+    confirmDialog,
+    setConfirmDialog,
+    alertDialog,
+    setAlertDialog,
     activeSection,
     setActiveSection,
     permissionState,
@@ -31,8 +50,6 @@ export default function Settings({ products, profile, userId }: SettingsProps) {
     setHours,
     lowStockThreshold,
     setLowStockThreshold,
-    theme,
-    setTheme,
     logoUrl,
     setLogoUrl,
     geminiApiKey,
@@ -57,7 +74,6 @@ export default function Settings({ products, profile, userId }: SettingsProps) {
     setSecurityPin,
     loadingSecurity,
     loadingDemo,
-    handleToggleTheme,
     handleGuardarConfiguracionPerfil,
     handleRegistrarNuevoProducto,
     handleGuardarPinDeSeguridad,
@@ -78,6 +94,28 @@ export default function Settings({ products, profile, userId }: SettingsProps) {
         </h2>
         <p className="text-xs text-brand-muted">Configura tu perfil, maneja tu catálogo de productos y gestiona la seguridad de tus datos.</p>
       </div>
+
+      {!isPwaInstalled && deferredInstallPrompt && (
+        <div className="rounded-2xl border border-brand-primary/30 bg-brand-primary/5 p-4 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-2 text-brand-primary">
+            <Download size={18} />
+            <p className="text-xs font-semibold">Instala BarrioPro en este dispositivo para abrirlo como una app, aún sin internet.</p>
+          </div>
+          <button
+            onClick={async () => {
+              deferredInstallPrompt.prompt();
+              const { outcome } = await deferredInstallPrompt.userChoice;
+              if (outcome === "accepted") {
+                setDeferredInstallPrompt(null);
+                setIsPwaInstalled(true);
+              }
+            }}
+            className="rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white px-4 py-2 text-xs font-bold transition-colors cursor-pointer shrink-0"
+          >
+            Instalar App
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6" id="settings-layout-grid">
         {/* Sidebar tabs */}
@@ -124,7 +162,7 @@ export default function Settings({ products, profile, userId }: SettingsProps) {
               setHours={setHours}
               lowStockThreshold={lowStockThreshold}
               setLowStockThreshold={setLowStockThreshold}
-              theme={theme}
+              theme={profile?.theme || "light"}
               logoUrl={logoUrl}
               setLogoUrl={setLogoUrl}
               geminiApiKey={geminiApiKey}
@@ -181,6 +219,14 @@ export default function Settings({ products, profile, userId }: SettingsProps) {
           )}
         </div>
       </div>
+
+      <Dialogs
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+        alertDialog={alertDialog}
+        setAlertDialog={setAlertDialog}
+        confirmLabel="Confirmar"
+      />
     </div>
   );
 }

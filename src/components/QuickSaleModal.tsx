@@ -1,6 +1,7 @@
 import React from "react";
 import { PlusCircle, Search, Trash2, Minus, Plus, RefreshCw } from "lucide-react";
 import { Product } from "../types";
+import { showErrorToast } from "../lib/toast";
 
 interface QuickSaleModalProps {
   showAddSaleModal: boolean;
@@ -108,7 +109,7 @@ export default function QuickSaleModal({
                               setQuickSearch("");
                               setActiveQuickIndex(0);
                             } else {
-                              alert(`No hay más stock disponible para ${selectedProd.name}.`);
+                              showErrorToast(`No hay más stock disponible para ${selectedProd.name}.`);
                             }
                           }
                         }
@@ -217,9 +218,9 @@ export default function QuickSaleModal({
                             <button
                               type="button"
                               onClick={() => handleUpdateQuickQuantity(item.product.id!, item.quantity - 1)}
-                              className="p-1 hover:bg-slate-100 text-brand-muted transition-colors cursor-pointer"
+                              className="p-2 hover:bg-slate-100 text-brand-muted transition-colors cursor-pointer"
                             >
-                              <Minus size={9} />
+                              <Minus size={12} />
                             </button>
                             <span className="px-1.5 text-xs font-mono font-bold text-brand-text bg-white border-x border-brand-border min-w-[18px] text-center">
                               {item.quantity}
@@ -227,18 +228,18 @@ export default function QuickSaleModal({
                             <button
                               type="button"
                               onClick={() => handleUpdateQuickQuantity(item.product.id!, item.quantity + 1)}
-                              className="p-1 hover:bg-slate-100 text-brand-muted transition-colors cursor-pointer"
+                              className="p-2 hover:bg-slate-100 text-brand-muted transition-colors cursor-pointer"
                               disabled={item.quantity >= item.product.stock}
                             >
-                              <Plus size={9} />
+                              <Plus size={12} />
                             </button>
                           </div>
                           <button
                             type="button"
                             onClick={() => handleRemoveFromQuickCart(item.product.id!)}
-                            className="text-brand-muted hover:text-rose-600 p-0.5 transition-colors cursor-pointer"
+                            className="text-brand-muted hover:text-rose-600 p-2 rounded-lg transition-colors cursor-pointer"
                           >
-                            <Trash2 size={10} />
+                            <Trash2 size={13} />
                           </button>
                         </div>
                       </div>

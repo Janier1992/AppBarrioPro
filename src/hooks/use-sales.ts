@@ -2,6 +2,9 @@ import React, { useState, useMemo } from "react";
 import { Product, Sale } from "../types";
 import { db } from "../lib/insforge";
 import { generateReceiptPDF, exportSalesPDF } from "../lib/pdf";
+import { registerSale, findLikelyLinkedDebt } from "../lib/checkout";
+import { useDialogs } from "./use-dialogs";
+import { showErrorToast, showSuccessToast } from "../lib/toast";
 
 interface UseSalesProps {
   products: Product[];
@@ -28,6 +31,8 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
   const [editPaymentMethod, setEditPaymentMethod] = useState<"Efectivo" | "Tarjeta" | "Transferencia" | "Fiado">("Efectivo");
   const [editTotal, setEditTotal] = useState(0);
 
+  const { confirmDialog, setConfirmDialog, alertDialog, setAlertDialog, confirm } = useDialogs();
+
   const handleCatalogSearchChange = (val: string) => {
     setCatalogSearch(val);
     setActiveCatalogIndex(0);
@@ -45,7 +50,7 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
       const existing = prev.find(item => item.product.id === product.id);
       if (existing) {
         if (existing.quantity >= product.stock) {
-          alert(`No puedes agregar más unidades de ${product.name}. Stock máximo alcanzado (${product.stock}).`);
+          showErrorToast(`No puedes agregar más unidades de ${product.name}. Stock máximo alcanzado (${product.stock}).`);
           return prev;
         }
         return prev.map(item => 
@@ -62,7 +67,7 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
     const item = cart.find(i => i.product.id === productId);
     if (!item) return;
     if (qty > item.product.stock) {
-      alert(`No puedes agregar más unidades de ${item.product.name}. Stock disponible: ${item.product.stock}`);
+      showErrorToast(`No puedes agregar más unidades de ${item.product.name}. Stock disponible: ${item.product.stock}`);
       return;
     }
     if (qty <= 0) {
@@ -77,7 +82,12 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
   };
 
   const handleClearCart = () => {
-    setCart([]);
+    if (cart.length === 0) return;
+    confirm(
+      "Vaciar Carrito",
+      `¿Seguro que deseas quitar los ${cart.length} producto(s) del carrito actual?`,
+      () => setCart([])
+    );
   };
 
   const currentMonthSales = useMemo(() => {
@@ -253,8 +263,7 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
 
       if (oldPaymentMethod === "Fiado" && editPaymentMethod !== "Fiado") {
         try {
-          const userDebts = await db.getDebts(userId);
-          const matchingDebt = userDebts.find(d => d.clientName === oldClientName && Math.abs(d.amount - oldTotal) < 0.01 && !d.paid);
+          const matchingDebt = findLikelyLinkedDebt(await db.getDebts(userId), oldClientName, oldTotal);
           if (matchingDebt && matchingDebt.id) {
             await db.deleteDebt(userId, matchingDebt.id);
           }
@@ -282,8 +291,7 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
       }
       else if (oldPaymentMethod === "Fiado" && editPaymentMethod === "Fiado") {
         try {
-          const userDebts = await db.getDebts(userId);
-          const matchingDebt = userDebts.find(d => d.clientName === oldClientName && Math.abs(d.amount - oldTotal) < 0.01 && !d.paid);
+          const matchingDebt = findLikelyLinkedDebt(await db.getDebts(userId), oldClientName, oldTotal);
           if (matchingDebt && matchingDebt.id) {
             await db.updateDebt(userId, matchingDebt.id, {
               clientName: editClientName.trim(),
@@ -296,50 +304,53 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
       }
 
       setEditingSale(null);
-      alert("Venta actualizada correctamente.");
+      showSuccessToast("Venta actualizada correctamente.");
     } catch (err) {
       console.error("Error editing sale:", err);
-      alert("Error al intentar guardar los cambios.");
+      showErrorToast("Error al intentar guardar los cambios de la venta.");
     }
   };
 
-  const handleDeleteSale = async (saleId: string) => {
-    if (!window.confirm("¿Estás seguro de que deseas eliminar esta venta registrada? Esta acción restaurará el stock de los productos vendidos y eliminará la cuenta fiada asociada si corresponde.")) return;
-    try {
-      const saleToDelete = sales.find(s => s.id === saleId);
-      if (!saleToDelete) return;
+  const handleDeleteSale = (saleId: string) => {
+    const saleToDelete = sales.find(s => s.id === saleId);
+    if (!saleToDelete) return;
 
-      await db.deleteSale(userId, saleId);
-
-      if (saleToDelete.paymentMethod === "Fiado") {
+    confirm(
+      "Eliminar Venta",
+      "¿Estás seguro de que deseas eliminar esta venta registrada? Esta acción restaurará el stock de los productos vendidos y eliminará la cuenta fiada asociada si corresponde.",
+      async () => {
         try {
-          const userDebts = await db.getDebts(userId);
-          const matchingDebt = userDebts.find(d => d.clientName === saleToDelete.clientName && Math.abs(d.amount - saleToDelete.total) < 0.01 && !d.paid);
-          if (matchingDebt && matchingDebt.id) {
-            await db.deleteDebt(userId, matchingDebt.id);
+          await db.deleteSale(userId, saleId);
+
+          if (saleToDelete.paymentMethod === "Fiado") {
+            try {
+              const matchingDebt = findLikelyLinkedDebt(await db.getDebts(userId), saleToDelete.clientName, saleToDelete.total);
+              if (matchingDebt && matchingDebt.id) {
+                await db.deleteDebt(userId, matchingDebt.id);
+              }
+            } catch (error) {
+              console.error("Error al intentar auto-eliminar deuda asociada:", error);
+            }
           }
+
+          if (saleToDelete.items) {
+            await Promise.all(saleToDelete.items.map(item => {
+              const prod = products.find(p => p.id === item.productId || p.name === item.name);
+              if (!prod || !prod.id) return Promise.resolve();
+              return db.updateProduct(userId, prod.id, {
+                stock: prod.stock + item.quantity,
+                updatedAt: new Date().toISOString()
+              });
+            }));
+          }
+
+          showSuccessToast("Venta eliminada correctamente.");
         } catch (error) {
-          console.error("Error al intentar auto-eliminar deuda asociada:", error);
+          console.error("Error al eliminar venta:", error);
+          showErrorToast("No se pudo eliminar la venta. Verifica tu conexión e inténtalo de nuevo.");
         }
       }
-
-      if (saleToDelete.items) {
-        for (const item of saleToDelete.items) {
-          const prod = products.find(p => p.id === item.productId || p.name === item.name);
-          if (prod && prod.id) {
-            await db.updateProduct(userId, prod.id, {
-              stock: prod.stock + item.quantity,
-              updatedAt: new Date().toISOString()
-            });
-          }
-        }
-      }
-
-      alert("Venta eliminada correctamente.");
-    } catch (error) {
-      console.error("Error al eliminar venta:", error);
-      alert("No se pudo eliminar la venta.");
-    }
+    );
   };
 
   const handleRegistrarVenta = async (e?: React.FormEvent) => {
@@ -348,7 +359,7 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
 
     for (const item of cart) {
       if (item.quantity > item.product.stock) {
-        alert(`No hay suficiente stock para el producto "${item.product.name}". Disponible: ${item.product.stock}`);
+        showErrorToast(`No hay suficiente stock para el producto "${item.product.name}". Disponible: ${item.product.stock}`);
         return;
       }
     }
@@ -358,79 +369,46 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
 
     if (paymentMethod === "Fiado") {
       if (!clientName.trim()) {
-        alert("Por favor ingresa el nombre del cliente para registrar la venta a crédito (Fiado).");
+        showErrorToast("Por favor ingresa el nombre del cliente para registrar la venta a crédito (Fiado).");
         setLoading(false);
         return;
       }
       if (!dueDate) {
-        alert("Por favor ingresa la fecha de vencimiento para la cuenta fiada.");
+        showErrorToast("Por favor ingresa la fecha de vencimiento para la cuenta fiada.");
         setLoading(false);
         return;
       }
     }
 
     try {
-      const saleTotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const saleItems = cart.map(item => ({
-        productId: item.product.id || "",
-        name: item.product.name,
-        quantity: item.quantity,
-        price: item.product.price
-      }));
+      const registeredSale = await registerSale({
+        userId,
+        cart,
+        clientName,
+        paymentMethod,
+        dueDate: paymentMethod === "Fiado" ? dueDate : undefined
+      });
 
-      const newSale: Omit<Sale, "id"> = {
-        items: saleItems,
-        total: saleTotal,
-        timestamp: new Date().toISOString(),
-        clientName: clientName.trim() || "Consumidor Final",
-        paymentMethod: paymentMethod
-      };
-
-      const saleId = await db.addSale(userId, newSale);
-
-      if (paymentMethod === "Fiado") {
-        try {
-          const newDebt = {
-            clientName: clientName.trim(),
-            amount: saleTotal,
-            dueDate: dueDate,
-            paid: false,
-            createdAt: new Date().toISOString()
-          };
-          await db.addDebt(userId, newDebt);
-        } catch (debtError) {
-          console.error("Error al registrar la deuda automáticamente en InsForge:", debtError);
-        }
-      }
-
-      for (const item of cart) {
-        const finalStock = Math.max(0, item.product.stock - item.quantity);
-        await db.updateProduct(userId, item.product.id!, {
-          stock: finalStock,
-          updatedAt: new Date().toISOString()
-        });
-      }
-
-      setSuccessMessage(`¡Venta de ${cart.length} productos registrada con éxito! Total: $${saleTotal.toLocaleString("es-CO")}`);
-      
-      const registeredSale: Sale = {
-        ...newSale,
-        id: saleId
-      };
+      setSuccessMessage(`¡Venta de ${cart.length} productos registrada con éxito! Total: $${registeredSale.total.toLocaleString("es-CO")}`);
       setLastRegisteredSale(registeredSale);
-      
+
       setCart([]);
       setClientName("");
       setDueDate("");
       setPaymentMethod("Efectivo");
     } catch (error) {
       console.error("Error completing sale checkout:", error);
+      showErrorToast("No se pudo registrar la venta. Verifica tu conexión e inténtalo de nuevo — el stock y la caja no se modificaron.");
     } finally {
       setLoading(false);
     }
   };
 
   return {
+    confirmDialog,
+    setConfirmDialog,
+    alertDialog,
+    setAlertDialog,
     cart,
     setCart,
     catalogSearch,

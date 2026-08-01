@@ -2,6 +2,7 @@ import React from "react";
 import { Product, Sale } from "../types";
 import { useDashboard } from "../hooks/use-dashboard";
 import { Download, PlusCircle, RefreshCw } from "lucide-react";
+import { formatCurrency } from "../lib/format";
 import DashboardCharts from "./DashboardCharts";
 import QuickSaleModal from "./QuickSaleModal";
 
@@ -102,14 +103,14 @@ export default function Dashboard({
           <div className="space-y-1">
             <p className="text-white/75 text-xs font-medium">Ventas de Hoy</p>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold">${todayTotalEarnings.toFixed(2)}</span>
+              <span className="text-3xl font-extrabold">{formatCurrency(todayTotalEarnings)}</span>
               {growthPercent !== 0 && (
                 <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${growthPercent > 0 ? 'bg-white/20 text-white' : 'bg-rose-500/30 text-rose-100'}`}>
                   {growthPercent > 0 ? `+${growthPercent}%` : `${growthPercent}%`}
                 </span>
               )}
             </div>
-            <p className="text-white/60 text-[11px]">Ayer: ${yesterdayTotalEarnings.toFixed(2)}</p>
+            <p className="text-white/60 text-[11px]">Ayer: {formatCurrency(yesterdayTotalEarnings)}</p>
           </div>
 
           <div className="space-y-1">

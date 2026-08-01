@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
-import { Sale } from "../types";
+import { Sale, Product } from "../types";
+import { isCriticalStock } from "./stock";
 
 export const generateReceiptPDF = (sale: Sale) => {
   try {
@@ -293,4 +294,267 @@ export const exportSalesPDF = (
     console.error("Error generating sales PDF report:", error);
     alert("Ocurrió un error inesperado al intentar generar el PDF. Por favor, intente de nuevo.");
   }
+};
+
+/**
+ * Reporte general del Panel de Control (ventas del mes + estado del
+ * inventario + alertas de stock crítico). Vivía antes embebido dentro de
+ * useDashboard(); se movió aquí junto al resto de generadores de PDF.
+ */
+export const generateDashboardReportPDF = (
+  products: Product[],
+  mensualData: { day: number; monto: number; ventas: number }[],
+  totalVentasMes: number,
+  totalTransaccionesMes: number,
+  currentMonthName: string
+) => {
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4"
+  });
+
+  const todayStrFormatted = new Date().toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  const primaryColor = [74, 90, 64];
+  const textColor = [31, 41, 55];
+  const lightGray = [107, 114, 128];
+
+  doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.rect(0, 0, 210, 38, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(22);
+  doc.text("BARRIOPRO — REPORTE DE GESTIÓN", 15, 18);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.text(`Informe Financiero e Inventario  |  Generado: ${todayStrFormatted}`, 15, 28);
+
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
+  doc.text(`1. RESUMEN DE VENTAS DE ${currentMonthName.toUpperCase()}`, 15, 48);
+
+  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setLineWidth(0.5);
+  doc.line(15, 50, 195, 50);
+
+  doc.setFillColor(249, 250, 251);
+  doc.rect(15, 54, 180, 26, "F");
+  doc.setDrawColor(229, 231, 235);
+  doc.setLineWidth(0.2);
+  doc.rect(15, 54, 180, 26, "S");
+
+  doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.text("Total Vendido en el Mes:", 20, 61);
+  doc.setFont("helvetica", "normal");
+  doc.text(`$${totalVentasMes.toFixed(2)}`, 85, 61);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Transacciones Realizadas:", 20, 67);
+  doc.setFont("helvetica", "normal");
+  doc.text(`${totalTransaccionesMes} ventas`, 85, 67);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Monto de Ticket Promedio:", 20, 73);
+  doc.setFont("helvetica", "normal");
+  const ticketPromedio = totalTransaccionesMes > 0 ? (totalVentasMes / totalTransaccionesMes) : 0;
+  doc.text(`$${ticketPromedio.toFixed(2)} por venta`, 85, 73);
+
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
+  doc.text("2. DESGLOSE DE VENTAS DIARIAS", 15, 90);
+
+  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setLineWidth(0.5);
+  doc.line(15, 92, 195, 92);
+
+  doc.setFillColor(74, 90, 64);
+  doc.rect(15, 96, 180, 8, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.text("Fecha / Día", 20, 101.5);
+  doc.text("Monto Recaudado", 85, 101.5);
+  doc.text("Ventas Concretadas", 150, 101.5);
+
+  let currentY = 104;
+  const filteredDays = mensualData.filter(d => d.ventas > 0);
+
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+
+  if (filteredDays.length === 0) {
+    doc.setFillColor(249, 250, 251);
+    doc.rect(15, currentY, 180, 8, "F");
+    doc.text("No se registran transacciones de venta en el mes actual.", 20, currentY + 5.5);
+    currentY += 8;
+  } else {
+    filteredDays.forEach((d, idx) => {
+      if (currentY > 265) {
+        doc.addPage();
+        currentY = 20;
+      }
+      if (idx % 2 === 1) {
+        doc.setFillColor(249, 250, 251);
+        doc.rect(15, currentY, 180, 6, "F");
+      }
+      doc.text(`Día ${d.day} de ${currentMonthName}`, 20, currentY + 4);
+      doc.text(`$${d.monto.toFixed(2)}`, 85, currentY + 4);
+      doc.text(`${d.ventas} transacción(es)`, 150, currentY + 4);
+      currentY += 6;
+    });
+  }
+
+  currentY += 8;
+  if (currentY > 240) {
+    doc.addPage();
+    currentY = 20;
+  }
+
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
+  doc.text("3. ESTADO Y VALORIZACIÓN DEL INVENTARIO", 15, currentY);
+
+  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setLineWidth(0.5);
+  doc.line(15, currentY + 2, 195, currentY + 2);
+  currentY += 6;
+
+  const totalUniqueProducts = products.length;
+  const totalUnits = products.reduce((acc, p) => acc + p.stock, 0);
+  const inventoryTotalValue = products.reduce((acc, p) => acc + (p.stock * p.price), 0);
+  const inventoryTotalCost = products.reduce((acc, p) => acc + (p.stock * (p.cost || 0)), 0);
+  const expectedProfit = inventoryTotalValue - inventoryTotalCost;
+
+  doc.setFillColor(249, 250, 251);
+  doc.rect(15, currentY, 180, 32, "F");
+  doc.setDrawColor(229, 231, 235);
+  doc.rect(15, currentY, 180, 32, "S");
+
+  doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
+
+  doc.text("Productos Únicos Registrados:", 20, currentY + 6);
+  doc.setFont("helvetica", "normal");
+  doc.text(`${totalUniqueProducts} productos`, 90, currentY + 6);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Total Unidades Disponibles:", 20, currentY + 12);
+  doc.setFont("helvetica", "normal");
+  doc.text(`${totalUnits} unidades en stock`, 90, currentY + 12);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Inversión en Bodega (Costo total):", 20, currentY + 18);
+  doc.setFont("helvetica", "normal");
+  doc.text(`$${inventoryTotalCost.toFixed(2)}`, 90, currentY + 18);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Valor de Venta del Stock:", 20, currentY + 24);
+  doc.setFont("helvetica", "normal");
+  doc.text(`$${inventoryTotalValue.toFixed(2)}`, 90, currentY + 24);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Margen Estimado de Ganancia:", 20, currentY + 30);
+  doc.setFont("helvetica", "normal");
+  doc.text(`$${expectedProfit.toFixed(2)}`, 90, currentY + 30);
+
+  currentY += 38;
+
+  if (currentY > 220) {
+    doc.addPage();
+    currentY = 20;
+  }
+
+  doc.setTextColor(185, 28, 28);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
+  doc.text("4. ALERTAS DE REPOSICIÓN (STOCK CRÍTICO)", 15, currentY);
+
+  doc.setDrawColor(185, 28, 28);
+  doc.setLineWidth(0.5);
+  doc.line(15, currentY + 2, 195, currentY + 2);
+  currentY += 6;
+
+  const lowStockProducts = products.filter(isCriticalStock);
+
+  if (lowStockProducts.length === 0) {
+    doc.setTextColor(74, 90, 64);
+    doc.setFont("helvetica", "bold");
+    doc.text("¡Todo en orden! No tienes productos con stock crítico en este momento.", 20, currentY + 6);
+    currentY += 12;
+  } else {
+    doc.setFillColor(185, 28, 28);
+    doc.rect(15, currentY, 180, 8, "F");
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.text("Producto", 20, currentY + 5.5);
+    doc.text("Categoría", 85, currentY + 5.5);
+    doc.text("Stock Act.", 140, currentY + 5.5);
+    doc.text("Mínimo", 165, currentY + 5.5);
+    doc.text("Pedir", 183, currentY + 5.5);
+
+    currentY += 8;
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+
+    lowStockProducts.forEach((p, idx) => {
+      if (currentY > 265) {
+        doc.addPage();
+        currentY = 20;
+      }
+      if (idx % 2 === 1) {
+        doc.setFillColor(254, 242, 242);
+        doc.rect(15, currentY, 180, 6, "F");
+      }
+      doc.setFont("helvetica", "bold");
+      doc.text(p.name.substring(0, 32), 20, currentY + 4);
+      doc.setFont("helvetica", "normal");
+      doc.text(p.category || "Otros", 85, currentY + 4);
+
+      doc.setTextColor(185, 28, 28);
+      doc.setFont("helvetica", "bold");
+      doc.text(`${p.stock}`, 142, currentY + 4);
+      doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+      doc.setFont("helvetica", "normal");
+
+      doc.text(`${p.minStock}`, 167, currentY + 4);
+
+      const suggestedToOrder = Math.max(10, p.minStock * 2 - p.stock);
+      doc.setFont("helvetica", "bold");
+      doc.text(`+${suggestedToOrder}`, 184, currentY + 4);
+      doc.setFont("helvetica", "normal");
+
+      currentY += 6;
+    });
+  }
+
+  const totalPages = (doc as any).internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
+    doc.text(`Página ${i} de ${totalPages}`, 105, 287, { align: "center" });
+    doc.text("Reporte Generado Automáticamente por BarrioPro — Tu Asistente Digital.", 15, 287);
+  }
+
+  // Antes tenía el año "2026" escrito fijo en el nombre del archivo.
+  doc.save(`Reporte_BarrioPro_${currentMonthName}_${new Date().getFullYear()}.pdf`);
 };

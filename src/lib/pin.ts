@@ -12,6 +12,37 @@ import bcrypt from "bcryptjs";
 
 const BCRYPT_PREFIX = /^\$2[aby]?\$/;
 
+// sessionStorage (no localStorage): se olvida al cerrar la pestaña/navegador,
+// así que cada apertura nueva de la app vuelve a pedir el PIN si hay uno
+// configurado. Antes el desbloqueo solo vivía en memoria de React, así que
+// recargar la página (o volver a abrir la PWA) entraba directo al panel sin
+// pedir el PIN — no era una protección real.
+const SESSION_UNLOCKED_KEY = "barriopro_pin_unlocked_session";
+
+export function markSessionUnlocked(): void {
+  try {
+    sessionStorage.setItem(SESSION_UNLOCKED_KEY, "true");
+  } catch {
+    // sessionStorage no disponible (modo privado estricto, etc.): sin efecto.
+  }
+}
+
+export function clearSessionUnlocked(): void {
+  try {
+    sessionStorage.removeItem(SESSION_UNLOCKED_KEY);
+  } catch {
+    // no-op
+  }
+}
+
+export function isSessionUnlocked(): boolean {
+  try {
+    return sessionStorage.getItem(SESSION_UNLOCKED_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
 export function isHashedPin(value: string): boolean {
   return BCRYPT_PREFIX.test(value);
 }

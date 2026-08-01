@@ -9,6 +9,10 @@ import React, { useState, useMemo } from "react";
 import { Debt } from "../types";
 import { Plus, Check, Trash2, Calendar, User, DollarSign, RefreshCw, AlertCircle, Sparkles } from "lucide-react";
 import { db } from "../lib/insforge";
+import { useDialogs } from "../hooks/use-dialogs";
+import Dialogs from "./Dialogs";
+import { showErrorToast } from "../lib/toast";
+import { formatCurrency } from "../lib/format";
 
 interface DeudasProps {
   debts: Debt[];
@@ -29,6 +33,7 @@ export default function Deudas({
   const [loading, setLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [localSearchQuery, setLocalSearchQuery] = useState("");
+  const { confirmDialog, setConfirmDialog, alertDialog, setAlertDialog, confirm } = useDialogs();
 
   React.useEffect(() => {
     if (searchQueryParam) {
@@ -44,11 +49,16 @@ export default function Deudas({
   const paidDebts = useMemo(() => debts.filter(d => d.paid), [debts]);
 
   const filteredPendingDebts = useMemo(() => {
-    return pendingDebts.filter(d => d.clientName.toLowerCase().includes(localSearchQuery.toLowerCase()));
+    return pendingDebts
+      .filter(d => d.clientName.toLowerCase().includes(localSearchQuery.toLowerCase()))
+      // Vencidas y próximas a vencer primero: es lo más útil para saber a quién cobrarle.
+      .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
   }, [pendingDebts, localSearchQuery]);
 
   const filteredPaidDebts = useMemo(() => {
-    return paidDebts.filter(d => d.clientName.toLowerCase().includes(localSearchQuery.toLowerCase()));
+    return paidDebts
+      .filter(d => d.clientName.toLowerCase().includes(localSearchQuery.toLowerCase()))
+      .sort((a, b) => new Date(b.paidAt || b.createdAt).getTime() - new Date(a.paidAt || a.createdAt).getTime());
   }, [paidDebts, localSearchQuery]);
 
   const totalPendingAmount = useMemo(() => {
@@ -71,7 +81,7 @@ export default function Deudas({
     try {
       const parsedAmount = parseFloat(amount);
       if (isNaN(parsedAmount) || parsedAmount <= 0) {
-        alert("Por favor ingresa un monto válido mayor a 0.");
+        showErrorToast("Por favor ingresa un monto válido mayor a 0.");
         setLoading(false);
         return;
       }
@@ -85,7 +95,7 @@ export default function Deudas({
       };
 
       await db.addDebt(userId, newDebt);
-      
+
       // Reset fields
       setClientName("");
       setAmount("");
@@ -93,6 +103,7 @@ export default function Deudas({
       setShowAddForm(false);
     } catch (error) {
       console.error("Error registering debt:", error);
+      showErrorToast("No se pudo registrar la cuenta fiada. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -100,31 +111,51 @@ export default function Deudas({
 
   /**
    * @function handleAlternarPagoDeuda
-   * @description Marca una cuenta de deuda como Pagada o reactiva el estado de cobro.
+   * @description Marca una cuenta de deuda como Pagada (con confirmación) o la reactiva (acción corregible, sin confirmación).
    */
-  const handleAlternarPagoDeuda = async (debt: Debt) => {
+  const handleAlternarPagoDeuda = (debt: Debt) => {
     if (!debt.id) return;
-    try {
-      await db.updateDebt(userId, debt.id, {
-        paid: !debt.paid,
-        paidAt: !debt.paid ? new Date().toISOString() : undefined
-      });
-    } catch (error) {
-      console.error("Error updating debt payment status:", error);
+    const applyToggle = async () => {
+      try {
+        await db.updateDebt(userId, debt.id!, {
+          paid: !debt.paid,
+          paidAt: !debt.paid ? new Date().toISOString() : undefined
+        });
+      } catch (error) {
+        console.error("Error updating debt payment status:", error);
+        showErrorToast("No se pudo actualizar el estado de la deuda. Verifica tu conexión e inténtalo de nuevo.");
+      }
+    };
+
+    if (!debt.paid) {
+      confirm(
+        "Marcar Cuenta como Pagada",
+        `¿Confirmas que ${debt.clientName} ya pagó ${formatCurrency(debt.amount)}? Podrás reabrir la cuenta después si te equivocas.`,
+        applyToggle
+      );
+    } else {
+      applyToggle();
     }
   };
 
   /**
    * @function handleEliminarDeuda
-   * @description Borra el registro de la deuda definitivamente.
+   * @description Pide confirmación (mostrando a quién y cuánto) y borra el registro de la deuda definitivamente.
    */
-  const handleEliminarDeuda = async (id: string) => {
-    if (!confirm("¿Estás seguro de eliminar este registro de deuda?")) return;
-    try {
-      await db.deleteDebt(userId, id);
-    } catch (error) {
-      console.error("Error deleting debt:", error);
-    }
+  const handleEliminarDeuda = (debt: Debt) => {
+    if (!debt.id) return;
+    confirm(
+      "Eliminar Registro de Deuda",
+      `¿Seguro que deseas eliminar la cuenta fiada de ${debt.clientName} por ${formatCurrency(debt.amount)}? Esta acción no se puede deshacer.`,
+      async () => {
+        try {
+          await db.deleteDebt(userId, debt.id!);
+        } catch (error) {
+          console.error("Error deleting debt:", error);
+          showErrorToast("No se pudo eliminar la deuda. Verifica tu conexión e inténtalo de nuevo.");
+        }
+      }
+    );
   };
 
   return (
@@ -153,7 +184,7 @@ export default function Deudas({
           <div>
             <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Total Pendiente</p>
             <p className="text-xl font-black text-rose-600">
-              ${totalPendingAmount.toLocaleString("es-CO", { minimumFractionDigits: 2 })}
+              {formatCurrency(totalPendingAmount)}
             </p>
             <p className="text-[10px] text-brand-muted">{pendingDebts.length} cuentas por cobrar</p>
           </div>
@@ -166,7 +197,7 @@ export default function Deudas({
           <div>
             <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Total Cobrado</p>
             <p className="text-xl font-black text-emerald-600">
-              ${totalPaidAmount.toLocaleString("es-CO", { minimumFractionDigits: 2 })}
+              {formatCurrency(totalPaidAmount)}
             </p>
             <p className="text-[10px] text-brand-muted">{paidDebts.length} cuentas pagadas</p>
           </div>
@@ -319,7 +350,7 @@ export default function Deudas({
                           <Check size={13} />
                         </button>
                         <button
-                          onClick={() => handleEliminarDeuda(debt.id!)}
+                          onClick={() => handleEliminarDeuda(debt)}
                           className="text-rose-600 hover:bg-rose-50 border border-rose-100 p-1.5 rounded-lg transition-colors cursor-pointer"
                           title="Eliminar registro"
                         >
@@ -373,7 +404,7 @@ export default function Deudas({
                         <RefreshCw size={12} />
                       </button>
                       <button
-                        onClick={() => handleEliminarDeuda(debt.id!)}
+                        onClick={() => handleEliminarDeuda(debt)}
                         className="text-rose-600 hover:bg-rose-50 border border-rose-100 p-1.5 rounded-lg transition-colors cursor-pointer"
                         title="Eliminar registro"
                       >
@@ -387,6 +418,14 @@ export default function Deudas({
           )}
         </div>
       </div>
+
+      <Dialogs
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+        alertDialog={alertDialog}
+        setAlertDialog={setAlertDialog}
+        confirmLabel="Confirmar"
+      />
     </div>
   );
 }

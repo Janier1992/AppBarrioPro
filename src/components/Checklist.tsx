@@ -9,6 +9,9 @@ import React, { useState } from "react";
 import { Task } from "../types";
 import { Plus, Check, Trash2, Edit2, CheckCircle2, Circle, RefreshCw } from "lucide-react";
 import { db } from "../lib/insforge";
+import { useDialogs } from "../hooks/use-dialogs";
+import Dialogs from "./Dialogs";
+import { showErrorToast } from "../lib/toast";
 
 interface ChecklistProps {
   tasks: Task[];
@@ -28,6 +31,7 @@ export default function Checklist({
   const [editingText, setEditingText] = useState("");
   const [loading, setLoading] = useState(false);
   const [localSearchQuery, setLocalSearchQuery] = useState("");
+  const { confirmDialog, setConfirmDialog, alertDialog, setAlertDialog, confirm } = useDialogs();
 
   const activeTasks = tasks.filter(t => !t.completed);
   const completedTasks = tasks.filter(t => t.completed);
@@ -72,6 +76,7 @@ export default function Checklist({
       setTaskText("");
     } catch (error) {
       console.error("Error adding task:", error);
+      showErrorToast("No se pudo agregar la tarea. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -92,21 +97,27 @@ export default function Checklist({
       });
     } catch (error) {
       console.error("Error updating task status:", error);
+      showErrorToast("No se pudo actualizar la tarea. Verifica tu conexión e inténtalo de nuevo.");
     }
   };
 
   /**
    * @function handleEliminarTarea
-   * @description Elimina físicamente una tarea del checklist de la base de datos.
-   * Paso 1: Configurar referencia de documento.
-   * Paso 2: Invocar deleteDoc y capturar excepciones de red.
+   * @description Pide confirmación y elimina físicamente una tarea del checklist.
    */
-  const handleEliminarTarea = async (id: string) => {
-    try {
-      await db.deleteTask(userId, id);
-    } catch (error) {
-      console.error("Error deleting task:", error);
-    }
+  const handleEliminarTarea = (id: string) => {
+    confirm(
+      "Eliminar Tarea",
+      "¿Seguro que deseas eliminar esta tarea del checklist? Esta acción no se puede deshacer.",
+      async () => {
+        try {
+          await db.deleteTask(userId, id);
+        } catch (error) {
+          console.error("Error deleting task:", error);
+          showErrorToast("No se pudo eliminar la tarea. Verifica tu conexión e inténtalo de nuevo.");
+        }
+      }
+    );
   };
 
   /**
@@ -125,6 +136,10 @@ export default function Checklist({
    * Paso 2: Actualizar la cadena y salir del modo de edición.
    */
   const handleGuardarEdicionTarea = async (id: string) => {
+    // Evita el doble guardado: al pulsar Enter, este mismo handler ya se
+    // ejecutó y puso editingTaskId en null; el onBlur que se dispara al
+    // desmontar el input volvería a llamar esta función innecesariamente.
+    if (editingTaskId !== id) return;
     if (!editingText.trim()) return;
     try {
       await db.updateTask(userId, id, {
@@ -133,6 +148,7 @@ export default function Checklist({
       setEditingTaskId(null);
     } catch (error) {
       console.error("Error saving task edit:", error);
+      showErrorToast("No se pudo guardar la edición de la tarea. Verifica tu conexión e inténtalo de nuevo.");
     }
   };
 
@@ -281,6 +297,14 @@ export default function Checklist({
           )}
         </div>
       </div>
+
+      <Dialogs
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+        alertDialog={alertDialog}
+        setAlertDialog={setAlertDialog}
+        confirmLabel="Eliminar Tarea"
+      />
     </div>
   );
 }

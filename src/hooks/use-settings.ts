@@ -2,15 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Product, BusinessProfile } from "../types";
 import { db } from "../lib/insforge";
 import { loadDemoDataToFirestore } from "../lib/demoData";
-import { hashPin } from "../lib/pin";
-import { 
-  retrieveStoredPreferences, 
-  persistPreferences, 
-  requestNotificationPermission, 
-  triggerSystemNotification, 
-  verifyNotificationSupport, 
-  NotificationPreference 
+import { hashPin, markSessionUnlocked } from "../lib/pin";
+import {
+  retrieveStoredPreferences,
+  persistPreferences,
+  requestNotificationPermission,
+  triggerSystemNotification,
+  verifyNotificationSupport,
+  NotificationPreference
 } from "../lib/notifications";
+import { useDialogs } from "./use-dialogs";
+import { showSuccessToast, showErrorToast } from "../lib/toast";
 
 interface UseSettingsProps {
   products: Product[];
@@ -20,6 +22,7 @@ interface UseSettingsProps {
 
 export function useSettings({ products, profile, userId }: UseSettingsProps) {
   const [activeSection, setActiveSection] = useState<"profile" | "inventory" | "security" | "notifications">("profile");
+  const { confirmDialog, setConfirmDialog, alertDialog, setAlertDialog, confirm } = useDialogs();
 
   // Notification states
   const [permissionState, setPermissionState] = useState<NotificationPermission>(() => 
@@ -34,7 +37,6 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
   const [email, setEmail] = useState(profile?.email || "");
   const [hours, setHours] = useState(profile?.hours || "08:00 - 20:00");
   const [lowStockThreshold, setLowStockThreshold] = useState(profile?.lowStockThreshold || 5);
-  const [theme, setTheme] = useState<"light" | "dark">(profile?.theme || "light");
   const [logoUrl, setLogoUrl] = useState(profile?.logoUrl || "");
   const [geminiApiKey, setGeminiApiKey] = useState(profile?.geminiApiKey || "");
   const [loadingProfile, setLoadingProfile] = useState(false);
@@ -68,27 +70,10 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       setEmail(profile.email || "");
       setHours(profile.hours || "08:00 - 20:00");
       setLowStockThreshold(profile.lowStockThreshold || 5);
-      setTheme(profile.theme || "light");
       setLogoUrl(profile.logoUrl || "");
       setGeminiApiKey(profile.geminiApiKey || "");
     }
   }, [profile]);
-
-  const handleToggleTheme = async () => {
-    const nextTheme = theme === "light" ? "dark" : "light";
-    setTheme(nextTheme);
-    try {
-      if (profile) {
-        await db.saveProfile(userId, {
-          ...profile,
-          theme: nextTheme,
-          updatedAt: new Date().toISOString()
-        });
-      }
-    } catch (error) {
-      console.error("Error updating theme:", error);
-    }
-  };
 
   const handleGuardarConfiguracionPerfil = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,15 +89,16 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
         lowStockThreshold,
         umbralStockCritico: lowStockThreshold,
         securityPin: profile?.securityPin || "",
-        theme,
+        theme: profile?.theme || "light",
         logoUrl,
         geminiApiKey,
         updatedAt: new Date().toISOString()
       };
       await db.saveProfile(userId, updatedProfile);
-      alert("Configuración de perfil guardada con éxito.");
+      showSuccessToast("Configuración de perfil guardada con éxito.");
     } catch (error) {
       console.error("Error saving profile:", error);
+      showErrorToast("No se pudo guardar la configuración del perfil. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoadingProfile(false);
     }
@@ -143,9 +129,10 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       setMinStock(5);
       setPrice(1.0);
       setCost(0.6);
-      alert("Producto agregado al inventario.");
+      showSuccessToast("Producto agregado al inventario.");
     } catch (error) {
       console.error("Error adding product:", error);
+      showErrorToast("No se pudo agregar el producto. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoadingProduct(false);
     }
@@ -154,7 +141,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
   const handleGuardarPinDeSeguridad = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!securityPin || securityPin.length !== 4) {
-      alert("Ingresa un PIN de 4 dígitos para guardarlo.");
+      showErrorToast("Ingresa un PIN de 4 dígitos para guardarlo.");
       return;
     }
     setLoadingSecurity(true);
@@ -165,11 +152,15 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
           securityPin: hashPin(securityPin),
           updatedAt: new Date().toISOString()
         });
+        // El usuario ya está autenticado y acaba de escribir este PIN a
+        // propósito: no tiene sentido pedírselo de nuevo en esta misma sesión.
+        markSessionUnlocked();
       }
       setSecurityPin("");
-      alert("PIN de seguridad guardado.");
+      showSuccessToast("PIN de seguridad guardado.");
     } catch (error) {
       console.error("Error saving security PIN:", error);
+      showErrorToast("No se pudo guardar el PIN. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoadingSecurity(false);
     }
@@ -177,7 +168,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
 
   const handleExportarExcel = () => {
     if (products.length === 0) {
-      alert("No hay productos en el inventario para exportar.");
+      showErrorToast("No hay productos en el inventario para exportar.");
       return;
     }
 
@@ -214,27 +205,40 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
     document.body.removeChild(link);
   };
 
-  const handleCargarDatosDeDemostracion = async () => {
-    if (!window.confirm("¿Estás seguro de que deseas cargar datos de demostración? Esto agregará productos, ventas históricas y checklists predefinidos a tu cuenta para que explores BarrioPro al instante.")) return;
-    setLoadingDemo(true);
-    try {
-      await loadDemoDataToFirestore(userId);
-      alert("¡Datos de demostración cargados exitosamente! Disfruta explorando la aplicación.");
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingDemo(false);
-    }
+  const handleCargarDatosDeDemostracion = () => {
+    confirm(
+      "Cargar Datos de Demostración",
+      "¿Estás seguro de que deseas cargar datos de demostración? Esto agregará productos, ventas históricas y checklists predefinidos a tu cuenta para que explores BarrioPro al instante.",
+      async () => {
+        setLoadingDemo(true);
+        try {
+          await loadDemoDataToFirestore(userId);
+          // Ya no se recarga la página: el guardado ya notifica a la app
+          // para refrescar los datos automáticamente.
+          showSuccessToast("¡Datos de demostración cargados exitosamente! Disfruta explorando la aplicación.");
+        } catch (error) {
+          console.error(error);
+          showErrorToast("No se pudieron cargar los datos de demostración. Verifica tu conexión e inténtalo de nuevo.");
+        } finally {
+          setLoadingDemo(false);
+        }
+      }
+    );
   };
 
-  const handleEliminarProductoDeInventario = async (id: string) => {
-    if (!window.confirm("¿Seguro de eliminar este producto del inventario?")) return;
-    try {
-      await db.deleteProduct(userId, id);
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    }
+  const handleEliminarProductoDeInventario = (id: string) => {
+    confirm(
+      "Eliminar Producto",
+      "¿Seguro de eliminar este producto del inventario? Esta acción no se puede deshacer.",
+      async () => {
+        try {
+          await db.deleteProduct(userId, id);
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          showErrorToast("No se pudo eliminar el producto. Verifica tu conexión e inténtalo de nuevo.");
+        }
+      }
+    );
   };
 
   const handleSolicitarPermisoNotificaciones = async () => {
@@ -246,7 +250,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
         "¡Excelente! BarrioPro te alertará cuando el stock esté bajo o tengas tareas del checklist pendientes."
       );
     } else if (perm === "denied") {
-      alert("Permiso denegado. Para recibir notificaciones, por favor habilítalas manualmente en la configuración de tu navegador para este sitio.");
+      showErrorToast("Permiso denegado. Para recibir notificaciones, por favor habilítalas manualmente en la configuración de tu navegador para este sitio.");
     }
   };
 
@@ -261,7 +265,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
 
   const handleEnviarNotificacionDePrueba = () => {
     if (permissionState !== "granted") {
-      alert("Por favor, solicita y concede permisos de notificación antes de enviar una prueba.");
+      showErrorToast("Por favor, solicita y concede permisos de notificación antes de enviar una prueba.");
       return;
     }
     triggerSystemNotification(
@@ -271,6 +275,10 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
   };
 
   return {
+    confirmDialog,
+    setConfirmDialog,
+    alertDialog,
+    setAlertDialog,
     activeSection,
     setActiveSection,
     permissionState,
@@ -287,8 +295,6 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
     setHours,
     lowStockThreshold,
     setLowStockThreshold,
-    theme,
-    setTheme,
     logoUrl,
     setLogoUrl,
     geminiApiKey,
@@ -313,7 +319,6 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
     setSecurityPin,
     loadingSecurity,
     loadingDemo,
-    handleToggleTheme,
     handleGuardarConfiguracionPerfil,
     handleRegistrarNuevoProducto,
     handleGuardarPinDeSeguridad,

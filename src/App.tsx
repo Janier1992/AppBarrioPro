@@ -37,6 +37,8 @@ import AppLoginScreen from "./components/AppLoginScreen";
 import AppLockScreen from "./components/AppLockScreen";
 import AppSidebar from "./components/AppSidebar";
 import AppHeader from "./components/AppHeader";
+import ToastContainer from "./components/ToastContainer";
+import NotificationPrompt from "./components/NotificationPrompt";
 
 export default function App() {
   const {
@@ -44,8 +46,6 @@ export default function App() {
     authLoading,
     activeTab,
     setActiveTab,
-    isMobileMenuOpen,
-    setIsMobileMenuOpen,
     isSidebarCollapsed,
     setIsSidebarCollapsed,
     isMobileMoreOpen,
@@ -90,6 +90,7 @@ export default function App() {
     setHasCompletedOnboarding,
     handleIniciarSesionGoogle,
     handleCerrarSesionGoogle,
+    handleToggleTheme,
     handleDesbloquearConPin,
     handleAuthSubmit,
     umbralCritico,
@@ -201,7 +202,6 @@ export default function App() {
         {/* Top Header */}
         <AppHeader
           profile={profile}
-          setProfile={setProfile}
           user={user}
           products={products}
           tasks={tasks}
@@ -215,7 +215,10 @@ export default function App() {
           setInventoryFilterCritical={setInventoryFilterCritical}
           setGlobalSearchTerm={setGlobalSearchTerm}
           handleCerrarSesionGoogle={handleCerrarSesionGoogle}
+          handleToggleTheme={handleToggleTheme}
         />
+
+        <NotificationPrompt />
 
         {/* Critical low stock alert banner */}
         {lowStockItems.length > 0 && (
@@ -299,7 +302,16 @@ export default function App() {
                   />
                 )}
                 {activeTab === "settings" && (
-                  <Settings products={products} profile={profile} userId={user.uid} />
+                  <Settings
+                    products={products}
+                    profile={profile}
+                    userId={user.uid}
+                    handleToggleTheme={handleToggleTheme}
+                    isPwaInstalled={isPwaInstalled}
+                    deferredInstallPrompt={deferredInstallPrompt}
+                    setDeferredInstallPrompt={setDeferredInstallPrompt}
+                    setIsPwaInstalled={setIsPwaInstalled}
+                  />
                 )}
               </React.Suspense>
             </motion.div>
@@ -430,6 +442,8 @@ export default function App() {
       
       {/* Floating AI Assistant Chat Bot */}
       <AIAssistantChat products={products} sales={sales} userId={user.uid} geminiApiKey={profile?.geminiApiKey} />
+
+      <ToastContainer />
     </div>
   );
 }

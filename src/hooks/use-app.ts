@@ -9,7 +9,8 @@ import {
   auditAndAlertLowStock,
   auditAndAlertUnfinishedTasks
 } from "../lib/notifications";
-import { verifyPin, isHashedPin, hashPin } from "../lib/pin";
+import { verifyPin, isHashedPin, hashPin, markSessionUnlocked, clearSessionUnlocked, isSessionUnlocked } from "../lib/pin";
+import { translateAuthError } from "../lib/authErrors";
 import { isCriticalStock } from "../lib/stock";
 import { 
   Product, 
@@ -23,7 +24,6 @@ export function useApp() {
   const [user, setUser] = useState<MockUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"dashboard" | "inventory" | "sales" | "checklist" | "debts" | "settings">("dashboard");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -99,6 +99,7 @@ export function useApp() {
         setDebts([]);
         setProfile(null);
         setIsLocked(false);
+        clearSessionUnlocked();
       }
     });
     return unsubscribe;
@@ -192,6 +193,17 @@ export function useApp() {
     }
   }, [activeTab]);
 
+  // Bloqueo real por PIN: antes "isLocked" solo se ponía en true con el
+  // botón de candado manual, así que recargar la página o volver a abrir la
+  // PWA entraba directo al panel sin pedir el PIN (protección falsa). Ahora,
+  // si la tienda tiene un PIN configurado y esta pestaña/sesión del
+  // navegador todavía no se desbloqueó, se bloquea automáticamente.
+  useEffect(() => {
+    if (profile?.securityPin && !isSessionUnlocked()) {
+      setIsLocked(true);
+    }
+  }, [profile?.securityPin]);
+
   // Synchronize dark/light theme preference
   useEffect(() => {
     if (profile?.theme === "dark") {
@@ -211,7 +223,21 @@ export function useApp() {
     }
   };
 
+  const handleToggleTheme = async () => {
+    if (!profile || !user) return;
+    const nextTheme: "light" | "dark" = profile.theme === "light" ? "dark" : "light";
+    const updated = { ...profile, theme: nextTheme };
+    // Optimista: actualiza el estado compartido (y por tanto la clase "dark"
+    // del documento) de inmediato, sin esperar el viaje de ida y vuelta a la
+    // base de datos. Antes existían dos implementaciones de este mismo
+    // interruptor (aquí y en AppHeader.tsx) y una de ellas no lo hacía,
+    // causando que el cambio de tema pareciera necesitar dos clics.
+    setProfile(updated);
+    await db.saveProfile(user.uid, updated);
+  };
+
   const handleCerrarSesionGoogle = async () => {
+    clearSessionUnlocked();
     try {
       await auth.signOut();
     } catch (error) {
@@ -222,6 +248,7 @@ export function useApp() {
   const handleDesbloquearConPin = (e: React.FormEvent) => {
     e.preventDefault();
     if (profile && verifyPin(pinInput, profile.securityPin)) {
+      markSessionUnlocked();
       setIsLocked(false);
       setPinInput("");
       setPinError("");
@@ -261,7 +288,7 @@ export function useApp() {
       }
     } catch (err: any) {
       console.error("Authentication error:", err);
-      setAuthError(err.message || "Ocurrió un error inesperado al procesar la solicitud.");
+      setAuthError(translateAuthError(err?.message));
     } finally {
       setLoadingAuthSubmit(false);
     }
@@ -275,8 +302,6 @@ export function useApp() {
     authLoading,
     activeTab,
     setActiveTab,
-    isMobileMenuOpen,
-    setIsMobileMenuOpen,
     isSidebarCollapsed,
     setIsSidebarCollapsed,
     isMobileMoreOpen,
@@ -321,6 +346,7 @@ export function useApp() {
     setHasCompletedOnboarding,
     handleIniciarSesionGoogle,
     handleCerrarSesionGoogle,
+    handleToggleTheme,
     handleDesbloquearConPin,
     handleAuthSubmit,
     umbralCritico,

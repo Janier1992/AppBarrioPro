@@ -1,6 +1,7 @@
 import React from "react";
 import { Search, Plus } from "lucide-react";
 import { Product } from "../types";
+import { showErrorToast } from "../lib/toast";
 
 interface POSCatalogProps {
   filteredCatalogProducts: Product[];
@@ -62,7 +63,7 @@ export default function POSCatalog({
                   handleCatalogSearchChange("");
                   setActiveCatalogIndex(0);
                 } else {
-                  alert(`No hay más stock disponible para ${selectedProd.name}.`);
+                  showErrorToast(`No hay más stock disponible para ${selectedProd.name}.`);
                 }
               }
             }

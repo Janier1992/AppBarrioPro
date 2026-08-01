@@ -12,6 +12,7 @@ import POSCatalog from "./POSCatalog";
 import POSCart from "./POSCart";
 import SalesHistory from "./SalesHistory";
 import EditSaleModal from "./EditSaleModal";
+import Dialogs from "./Dialogs";
 
 interface SalesProps {
   products: Product[];
@@ -21,6 +22,10 @@ interface SalesProps {
 
 export default function Sales({ products, sales, userId }: SalesProps) {
   const {
+    confirmDialog,
+    setConfirmDialog,
+    alertDialog,
+    setAlertDialog,
     cart,
     catalogSearch,
     activeCatalogIndex,
@@ -187,6 +192,14 @@ export default function Sales({ products, sales, userId }: SalesProps) {
         editTotal={editTotal}
         setEditTotal={setEditTotal}
         handleSaveEditSale={handleSaveEditSale}
+      />
+
+      <Dialogs
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+        alertDialog={alertDialog}
+        setAlertDialog={setAlertDialog}
+        confirmLabel="Confirmar"
       />
     </div>
   );
