@@ -20,7 +20,15 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env.local"), override: true 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
-app.use(helmet());
+// La CSP estricta por defecto de Helmet bloquea scripts inline sin nonce.
+// En dev, Vite (modo middleware) inyecta su propio bootstrap de Fast Refresh
+// como <script> inline, así que ahí se desactiva (igual que el propio
+// dev server de Vite, que tampoco envía CSP). En producción queda activa.
+app.use(
+  helmet({
+    contentSecurityPolicy: process.env.NODE_ENV === "production" ? undefined : false,
+  })
+);
 app.use(express.json({ limit: "2mb" }));
 
 // Requiere una sesión válida de InsForge (Bearer token) para cualquier ruta de IA.
