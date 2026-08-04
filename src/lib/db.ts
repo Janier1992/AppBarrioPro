@@ -59,11 +59,6 @@ export const db = {
     return local ? JSON.parse(local) : [];
   },
 
-  saveProductsList: (userId: string, products: Product[]) => {
-    localStorage.setItem(`barriopro_products_${userId}`, JSON.stringify(products));
-    notifySubscribers();
-  },
-
   addProduct: async (userId: string, product: Omit<Product, "id">): Promise<string> => {
     const id = `prod_${Math.random().toString(36).substring(2, 9)}`;
     const newProduct: Product = { ...product, id };
@@ -144,11 +139,6 @@ export const db = {
     }
     const local = localStorage.getItem(`barriopro_sales_${userId}`);
     return local ? JSON.parse(local) : [];
-  },
-
-  saveSalesList: (userId: string, sales: Sale[]) => {
-    localStorage.setItem(`barriopro_sales_${userId}`, JSON.stringify(sales));
-    notifySubscribers();
   },
 
   addSale: async (userId: string, sale: Omit<Sale, "id">): Promise<string> => {
@@ -233,11 +223,6 @@ export const db = {
     return local ? JSON.parse(local) : [];
   },
 
-  saveTasksList: (userId: string, tasks: Task[]) => {
-    localStorage.setItem(`barriopro_tasks_${userId}`, JSON.stringify(tasks));
-    notifySubscribers();
-  },
-
   addTask: async (userId: string, task: Omit<Task, "id">): Promise<string> => {
     const id = `task_${Math.random().toString(36).substring(2, 9)}`;
     const newTask: Task = { ...task, id };
@@ -318,11 +303,6 @@ export const db = {
     }
     const local = localStorage.getItem(`barriopro_debts_${userId}`);
     return local ? JSON.parse(local) : [];
-  },
-
-  saveDebtsList: (userId: string, debts: Debt[]) => {
-    localStorage.setItem(`barriopro_debts_${userId}`, JSON.stringify(debts));
-    notifySubscribers();
   },
 
   addDebt: async (userId: string, debt: Omit<Debt, "id">): Promise<string> => {

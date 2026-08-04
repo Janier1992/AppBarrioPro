@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { 
   auth, 
   db, 
@@ -106,10 +106,19 @@ export function useApp() {
   }, []);
 
   // Listen to updates when authenticated
+  const loadDataInFlightRef = useRef(false);
   useEffect(() => {
     if (!user) return;
 
     const loadData = async () => {
+      // loadData() se dispara al montar Y en cada notifySubscribers() de
+      // toda la app (cualquier guardado en cualquier módulo). Para una
+      // tienda recién registrada, dos invocaciones que se solapan pueden
+      // ver ambas "sin perfil todavía" y disparar dos altas de perfil a la
+      // vez — la segunda choca con la restricción UNIQUE de "userId" en
+      // InsForge y falla. Este candado evita que se solapen.
+      if (loadDataInFlightRef.current) return;
+      loadDataInFlightRef.current = true;
       try {
         let prof = await db.getProfile(user.uid);
         if (!prof) {
@@ -154,6 +163,8 @@ export function useApp() {
         setDebts(dbts);
       } catch (err) {
         console.error("Error loading data from InsForge:", err);
+      } finally {
+        loadDataInFlightRef.current = false;
       }
     };
 

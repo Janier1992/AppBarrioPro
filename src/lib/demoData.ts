@@ -1,6 +1,5 @@
 import { db } from "./insforge";
 import { Product, Sale, Task, BusinessProfile } from "../types";
-import { hashPin } from "./pin";
 
 export const DEMO_PRODUCTS: Product[] = [
   {
@@ -264,7 +263,11 @@ export const DEFAULT_PROFILE: BusinessProfile = {
   address: "Calle de las Flores 123, Barrio El Prado",
   hours: "08:00 - 20:00",
   lowStockThreshold: 5,
-  securityPin: hashPin("1234"),
+  // Los datos de demostración no necesitan un PIN real. Guardar aquí un hash
+  // bcrypt (~60 caracteres) choca con la columna "securityPin" VARCHAR(10)
+  // de la base de datos (pensada para el PIN de 4 dígitos en texto plano
+  // anterior al hasheo) — ver insforge-migration-securitypin-length.sql.
+  securityPin: "",
   updatedAt: new Date().toISOString()
 };
 
@@ -273,31 +276,29 @@ export async function loadDemoDataToFirestore(userId: string) {
     // 1. Save Profile
     await db.saveProfile(userId, DEFAULT_PROFILE);
 
-    // 2. Save Products & track their IDs
+    // 2. Create Products one by one (via addProduct, which actually persists
+    // to InsForge) and track the real ids InsForge assigns, so the demo
+    // sales below can reference genuine product ids.
+    // Antes esto usaba saveProductsList/saveSalesList/saveTasksList, que
+    // SOLO escriben en localStorage — nunca llegaban a InsForge. Como
+    // db.getProducts()/getSales()/etc. prefieren la respuesta de InsForge
+    // (vacía) sobre el caché local, los datos de muestra nunca se veían en
+    // ninguna cuenta conectada a InsForge.
     const tempIds: string[] = [];
-    const productsToSave = DEMO_PRODUCTS.map(product => {
-      const id = `prod_${Math.random().toString(36).substring(2, 9)}`;
+    for (const product of DEMO_PRODUCTS) {
+      const id = await db.addProduct(userId, product);
       tempIds.push(id);
-      return { ...product, id };
-    });
-    await db.saveProductsList(userId, productsToSave);
+    }
 
-    // 3. Save Sales
-    const salesToSave = DEMO_SALES(tempIds).map(sale => {
-      const id = `sale_${Math.random().toString(36).substring(2, 9)}`;
-      return { ...sale, id };
-    });
-    await db.saveSalesList(userId, salesToSave);
+    // 3. Create Sales
+    for (const sale of DEMO_SALES(tempIds)) {
+      await db.addSale(userId, sale);
+    }
 
-    // 4. Save Tasks
-    const tasksToSave = DEMO_TASKS.map(task => {
-      const id = `task_${Math.random().toString(36).substring(2, 9)}`;
-      return { ...task, id };
-    });
-    await db.saveTasksList(userId, tasksToSave);
-
-    // Initial Empty Debts
-    await db.saveDebtsList(userId, []);
+    // 4. Create Tasks
+    for (const task of DEMO_TASKS) {
+      await db.addTask(userId, task);
+    }
 
     console.log("Demo data loaded successfully to InsForge Database!");
   } catch (error) {
