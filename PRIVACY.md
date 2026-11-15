@@ -1,4 +1,4 @@
-# Política de Privacidad de BarrioPro
+# Política de Privacidad de Tiendly
 
 > **Estado: BORRADOR.** Este documento fue redactado como punto de partida
 > técnico y NO ha sido revisado por un abogado. No lo publiques ni lo
@@ -9,7 +9,7 @@
 
 **Última actualización:** (completar al aprobar)
 
-## 1. Qué datos recopila BarrioPro
+## 1. Qué datos recopila Tiendly
 - Datos de cuenta: correo electrónico, nombre del negocio.
 - Datos operativos de la tienda: inventario, ventas, tareas de checklist,
   deudas/fiados de clientes (incluye nombres de terceros ingresados por el
@@ -19,7 +19,7 @@
 
 ## 2. Para qué se usan
 - Operar las funciones propias de la aplicación (inventario, ventas, checklist).
-- Generar recomendaciones y respuestas del asistente de IA (BarrioPro AI),
+- Generar recomendaciones y respuestas del asistente de IA (Tiendly AI),
   para lo cual se envían a Google Gemini datos del inventario y ventas
   recientes de la tienda como contexto de la conversación.
 

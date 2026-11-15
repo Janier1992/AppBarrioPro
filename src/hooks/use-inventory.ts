@@ -332,7 +332,7 @@ export function useInventory({
       const worksheet = XLSX.utils.json_to_sheet(templateData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Plantilla_Productos");
-      XLSX.writeFile(workbook, "Plantilla_Carga_Masiva_BarrioPro.xlsx");
+      XLSX.writeFile(workbook, "Plantilla_Carga_Masiva_Tiendly.xlsx");
     } catch (error) {
       showErrorToast("Error al descargar la plantilla.");
     }
@@ -365,7 +365,7 @@ export function useInventory({
       failedCount > 0 ? "Carga Masiva Completada con Errores" : "Carga Masiva Completada",
       failedCount > 0
         ? `Se cargaron ${successCount} de ${bulkProducts.length} productos. ${failedCount} no se pudieron guardar por un problema de conexión — revisa tu inventario y vuelve a intentar con esos productos si hace falta.`
-        : `¡Fantástico! Se han cargado con éxito ${successCount} de ${bulkProducts.length} productos nuevos a tu inventario de BarrioPro.`,
+        : `¡Fantástico! Se han cargado con éxito ${successCount} de ${bulkProducts.length} productos nuevos a tu inventario de Tiendly.`,
       failedCount > 0 ? "warning" : "success"
     );
 

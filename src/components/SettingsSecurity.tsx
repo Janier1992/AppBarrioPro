@@ -56,7 +56,7 @@ export default function SettingsSecurity({
       <div className="rounded-2xl border border-brand-border bg-brand-bg p-6 shadow-xs space-y-3">
         <h3 className="font-bold text-brand-text text-sm">Cargar Datos de Demostración</h3>
         <p className="text-xs text-brand-muted leading-relaxed">
-          ¿Es tu primera vez usando BarrioPro? Carga al instante un catálogo completo de abarrotes de barrio, checklists preconfigurados, preparaciones del Modo Maleta, historial financiero del mes y un perfil comercial ficticio para ver cómo cobra vida el panel de control.
+          ¿Es tu primera vez usando Tiendly? Carga al instante un catálogo completo de abarrotes de barrio, checklists preconfigurados, preparaciones del Modo Maleta, historial financiero del mes y un perfil comercial ficticio para ver cómo cobra vida el panel de control.
         </p>
 
         <button

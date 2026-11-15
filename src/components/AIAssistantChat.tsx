@@ -34,7 +34,7 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
         {
           id: "welcome",
           role: "assistant",
-          content: "¡Hola! Soy **BarrioPro AI**, tu asesor comercial e inteligente de confianza.\n\nTengo acceso en tiempo real a tu inventario y a tus ventas registradas. Puedo ayudarte con:\n\n* **Sugerencias de reposición**: Qué productos tienen stock crítico y cuánto pedir.\n* **Estrategias de ventas**: Qué ofertas, combos o promociones puedes crear para aumentar tus ingresos.\n* **Análisis de negocio**: Consejos personalizados para mejorar y hacer crecer tu tienda.\n\n¿De qué te gustaría hablar hoy sobre tu negocio?",
+          content: "¡Hola! Soy **Tiendly AI**, tu asesor comercial e inteligente de confianza.\n\nTengo acceso en tiempo real a tu inventario y a tus ventas registradas. Puedo ayudarte con:\n\n* **Sugerencias de reposición**: Qué productos tienen stock crítico y cuánto pedir.\n* **Estrategias de ventas**: Qué ofertas, combos o promociones puedes crear para aumentar tus ingresos.\n* **Análisis de negocio**: Consejos personalizados para mejorar y hacer crecer tu tienda.\n\n¿De qué te gustaría hablar hoy sobre tu negocio?",
           timestamp: new Date()
         }
       ]);
@@ -202,7 +202,7 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
               ? "bg-slate-700 dark:bg-zinc-800" 
               : "bg-brand-primary dark:bg-brand-primary-dark"
           }`}
-          title="Asistente BarrioPro AI"
+          title="Asistente Tiendly AI"
           id="ai-floating-button"
         >
           {isOpen ? (
@@ -243,7 +243,7 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
                   <Sparkles size={18} className="text-white animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="text-xs font-bold font-mono tracking-wide">BarrioPro AI</h3>
+                  <h3 className="text-xs font-bold font-mono tracking-wide">Tiendly AI</h3>
                   <p className="text-[10px] text-white/70">Tu asesor y mentor comercial</p>
                 </div>
               </div>
@@ -313,7 +313,7 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
               {isLoading && (
                 <div className="flex items-center gap-2 text-brand-muted text-[11px] py-1 bg-white dark:bg-zinc-800/40 rounded-xl px-3 border border-brand-border/40 w-fit">
                   <Loader2 size={12} className="animate-spin text-brand-primary" />
-                  <span>BarrioPro AI está analizando tus datos...</span>
+                  <span>Tiendly AI está analizando tus datos...</span>
                 </div>
               )}
 

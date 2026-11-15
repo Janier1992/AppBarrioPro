@@ -4,7 +4,7 @@
 // Estrategia: Network-first para navegación, Cache-first para assets estáticos
 // ======================================================
 
-const CACHE_NAME = "barriopro-v2";
+const CACHE_NAME = "tiendly-v3";
 const STATIC_ASSETS = [
   "/",
   "/index.html",

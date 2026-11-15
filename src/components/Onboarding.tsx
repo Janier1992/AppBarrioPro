@@ -20,7 +20,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   const steps = [
     {
       title: "Empieza por tu inventario",
-      description: "Ve a la sección \"Inventario\" y agrega tus productos: nombre, precio, costo y cuántas unidades tienes. Con eso ya puedes registrar ventas y BarrioPro te avisará cuando algo se esté agotando.",
+      description: "Ve a la sección \"Inventario\" y agrega tus productos: nombre, precio, costo y cuántas unidades tienes. Con eso ya puedes registrar ventas y Tiendly te avisará cuando algo se esté agotando.",
       badge: "PASO 1",
       icon: Smartphone,
       color: "bg-emerald-500",
@@ -131,7 +131,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                 {currentStep === 0 && "📦 Arma tu catálogo de productos"}
                 {currentStep === 1 && "🧾 Cobra y controla tu caja"}
                 {currentStep === 2 && "✅ Organiza tu día a día"}
-                {currentStep === 3 && "🚀 Ya puedes empezar a usar BarrioPro"}
+                {currentStep === 3 && "🚀 Ya puedes empezar a usar Tiendly"}
               </h3>
               
               <p className="text-sm text-brand-muted leading-relaxed">
@@ -149,7 +149,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent flex items-end p-4">
                 <span className="text-xs font-semibold text-white tracking-wide">
-                  BarrioPro Digital — Fácil, rápido y confiable
+                  Tiendly Digital — Fácil, rápido y confiable
                 </span>
               </div>
             </div>

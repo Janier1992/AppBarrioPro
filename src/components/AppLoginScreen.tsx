@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { LayoutDashboard, Download } from "lucide-react";
+import { APP_NAME } from "../lib/brand";
 
 interface AppLoginScreenProps {
   loginMode: "signin" | "signup";
@@ -56,7 +57,7 @@ export default function AppLoginScreen({
         </div>
 
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-extrabold text-brand-text tracking-tight">BarrioPro</h1>
+          <h1 className="text-3xl font-extrabold text-brand-text tracking-tight">{APP_NAME}</h1>
           <p className="text-brand-muted text-sm max-w-xs leading-relaxed mx-auto">
             Gestión inteligente de inventario, finanzas y recomendaciones para comercios tradicionales de barrio.
           </p>

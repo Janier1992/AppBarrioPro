@@ -104,7 +104,7 @@ export function triggerSystemNotification(title: string, body: string): void {
       new window.Notification(title, {
         body,
         icon: "/assets/logo.png", // Fallback to root asset path
-        tag: "barriopro-alert",
+        tag: "tiendly-alert",
       });
     } else {
       console.log(`[Notification Fallback] Title: "${title}" - Body: "${body}"`);

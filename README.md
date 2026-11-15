@@ -1,6 +1,6 @@
-# 🏪 BarrioPro - Sistema de Gestión Comercial de Barrio
+# 🏪 Tiendly - Sistema de Gestión Comercial de Barrio
 
-¡Bienvenido a **BarrioPro**! Una plataforma de nivel profesional, robusta y escalable diseñada específicamente para optimizar, organizar y potenciar la operación diaria de comercios locales e independientes (abastos, tiendas, minimarkets y verdulerías) en toda Latinoamérica.
+¡Bienvenido a **Tiendly**! Una plataforma de nivel profesional, robusta y escalable diseñada específicamente para optimizar, organizar y potenciar la operación diaria de comercios locales e independientes (abastos, tiendas, minimarkets y verdulerías) en toda Latinoamérica.
 
 Este proyecto integra un diseño visual moderno y limpio, persistencia en la nube mediante **InsForge (Postgres + Auth + REST, tipo BaaS)**, un backend de analítica predictiva inteligente con **Google Gemini AI** y visualización interactiva de rendimiento financiero mediante **Recharts**.
 
@@ -62,8 +62,9 @@ Hecho en código (ver historial de commits para el detalle):
 El proyecto está organizado de manera predecible, limpia y balanceada, evitando redundancias u hojas duplicadas:
 
 ```
-├── /assets                        # Recursos multimedia, logotipos e íconos vectoriales
-├── /skills                        # Habilidades del agente y guías del sistema
+├── /public                        # PWA: manifest, íconos y service worker (sw.js)
+├── /docs                          # Manual de usuario (PDF) y capturas
+├── /scripts                       # generate-user-manual.ts (genera el PDF del manual)
 ├── /src                           # Código fuente de la aplicación React
 │   ├── /components                # Componentes interactivos modulares y reutilizables
 │   │   ├── Checklist.tsx          # Gestor de tareas, aperturas, cierres y rutinas
@@ -90,13 +91,13 @@ El proyecto está organizado de manera predecible, limpia y balanceada, evitando
 │   │   ├── notifications.ts       # Gestor de notificaciones de fondo
 │   │   ├── pdf.ts                 # Exportador a PDF de reportes y tickets
 │   │   ├── pin.ts                 # Hasheo/verificación del PIN de seguridad
-│   │   └── stock.ts               # Regla única de "stock crítico" (15%)
+│   │   └── stock.ts               # Regla única de "stock crítico" (30% del stock mínimo)
 │   ├── App.tsx                    # Orquestador del Layout Global y barra lateral
 │   ├── index.css                  # Estilos globales y variables de tipografía
 │   ├── main.tsx                   # Punto de entrada de React
 │   └── types.ts                   # Declaración centralizada de Typescript
 ├── /api                           # Funciones serverless de Vercel (backend real de producción)
-│   ├── chat.ts                    # Único endpoint desplegado hoy: chat de BarrioPro AI
+│   ├── chat.ts                    # Único endpoint desplegado hoy: chat de Tiendly AI
 │   └── /_lib                      # Lógica compartida entre api/chat.ts y server.ts
 │       ├── auth.ts                # Verificación del Bearer token de InsForge
 │       ├── gemini.ts               # Cliente y llamadas a Gemini endurecidas
@@ -129,7 +130,8 @@ A continuación se detallan las principales funciones operativas del sistema con
 | `handleRegistrarNuevoProducto` | `use-inventory.ts` | Inserta un nuevo producto en el catálogo verificando SKU. |
 | `handleAjustarStockRapido` | `use-inventory.ts` | Incrementa o decrementa en una unidad el stock actual del catálogo. |
 | `handleEliminarProductoDeInventario` | `use-inventory.ts` | Remueve un producto del catálogo definitivamente. |
-| `getGeminiClient` | `server.ts` | Inicializa con "Lazy Loading" el cliente SDK de Google GenAI para evitar caídas de carga inicial. |
+| `processChatRequest` | `api/_lib/chatHandler.ts` | Lógica única del chat de IA (rate limit, validación, Gemini), compartida por `api/chat.ts` y `server.ts`. |
+| `buildCspDirectives` | `api/_lib/csp.ts` | Content-Security-Policy de producción del servidor Express (permite InsForge/Sentry). |
 
 ---
 
@@ -146,7 +148,7 @@ Para transformar esta aplicación web SPA en una aplicación móvil nativa insta
 
 2. **Inicializar la configuración de Capacitor en el directorio raíz:**
    ```bash
-   npx cap init BarrioPro com.barriopro.app --web-dir=dist
+   npx cap init Tiendly com.tiendly.app --web-dir=dist
    ```
    *Nota: Se debe definir `dist` como el directorio web ya que es allí donde Vite compila los archivos estáticos de producción.*
 
@@ -184,7 +186,7 @@ El servidor `server.ts` actual está diseñado para funcionar de manera unificad
 Para ejecutar este backend de forma aislada e independiente de los procesos de desarrollo del cliente:
 1. **Configurar un archivo Dockerfile corporativo:**
    ```dockerfile
-   FROM node:18-alpine
+   FROM node:20-alpine
    WORKDIR /app
    COPY package*.json ./
    RUN npm install
@@ -196,11 +198,11 @@ Para ejecutar este backend de forma aislada e independiente de los procesos de d
 2. **Desplegar en producción:**
    Puedes utilizar servicios contenerizados de despliegue como **AWS ECS**, **Google Cloud Run**, o configurar un servidor VPS propio (por ejemplo, Hostinger VPS) instalando Docker o Node.js y un gestor de procesos como **PM2**:
    ```bash
-   pm2 start dist/server.cjs --name "barriopro-backend"
+   pm2 start dist/server.mjs --name "tiendly-backend"
    ```
 
 ### B. Migrar la Base de Datos a PostgreSQL Propia
-Si deseas desvincularte de Firebase Firestore para pasar a una infraestructura relacional SQL propia (como **Supabase PostgreSQL** o **AWS RDS**):
+Si deseas migrar desde InsForge para pasar a una infraestructura relacional SQL propia (como **Supabase PostgreSQL** o **AWS RDS**):
 1. **Instalar un ORM profesional (Prisma o Drizzle):**
    ```bash
    npm install drizzle-orm pg
@@ -223,7 +225,7 @@ Si deseas desvincularte de Firebase Firestore para pasar a una infraestructura r
    });
    ```
 3. **Migrar la lógica de los componentes:**
-   Reemplazar las llamadas de Firebase (`addDoc`, `collection`) con peticiones `fetch` hacia tus nuevos endpoints de API REST expuestos en el backend personalizado de Express, los cuales realizarán las consultas SQL correspondientes.
+   Reemplazar las llamadas del cliente de InsForge en `src/lib/db.ts` con peticiones `fetch` hacia tus nuevos endpoints de API REST expuestos en el backend personalizado de Express, los cuales realizarán las consultas SQL correspondientes.
 
 ---
 
@@ -232,8 +234,8 @@ Si deseas desvincularte de Firebase Firestore para pasar a una infraestructura r
 Si deseas correr este proyecto en tu propia máquina de manera local, sigue los siguientes pasos:
 
 ### Prerrequisitos
-- Node.js (versión 18 o superior)
-- npm (versión 9 o superior)
+- Node.js 20 o superior (la versión que usan CI y Docker)
+- npm 9 o superior
 
 ### Instalación de Dependencias
 ```bash
@@ -254,7 +256,9 @@ npm install
 ```bash
 npm run dev
 ```
+Antes de desplegar, valida localmente lo mismo que CI: `npm run lint && npm test && npm run build`. Para probar el build de producción: `npm start` (fija `NODE_ENV=production`; expone `/healthz` para health checks).
+
 El servidor de desarrollo de Vite se iniciará automáticamente y expondrá la aplicación en `http://localhost:3000` con recarga caliente y proxy asíncrono hacia los endpoints del backend en NodeJS.
 
 ---
-*BarrioPro - Herramientas de software con calidad artesanal y diseño técnico sostenible para el comercio local.*
+*Tiendly - Herramientas de software con calidad artesanal y diseño técnico sostenible para el comercio local.*

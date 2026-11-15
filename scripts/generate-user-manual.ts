@@ -1,6 +1,6 @@
 // ======================================================
 // Archivo: scripts/generate-user-manual.ts
-// Responsabilidad: Genera docs/Manual-de-Usuario-BarrioPro.pdf a partir de
+// Responsabilidad: Genera docs/Manual-de-Usuario-Tiendly.pdf a partir de
 //                   las capturas reales en docs/manual-assets/, usando el
 //                   propio motor de impresión de Chrome (vía Puppeteer)
 //                   en vez de una librería de PDF corriendo en Node — más
@@ -24,7 +24,7 @@ import puppeteer from "puppeteer-core";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ASSETS_DIR = path.resolve(__dirname, "../docs/manual-assets");
-const OUTPUT_PATH = path.resolve(__dirname, "../docs/Manual-de-Usuario-BarrioPro.pdf");
+const OUTPUT_PATH = path.resolve(__dirname, "../docs/Manual-de-Usuario-Tiendly.pdf");
 
 const CHROME_CANDIDATES = [
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -35,6 +35,8 @@ const CHROME_CANDIDATES = [
 ];
 
 function findChrome(): string {
+  // Permite indicar el binario explícitamente (CI, contenedores): CHROME_PATH=/ruta/a/chrome
+  if (process.env.CHROME_PATH && fs.existsSync(process.env.CHROME_PATH)) return process.env.CHROME_PATH;
   const found = CHROME_CANDIDATES.find((p) => fs.existsSync(p));
   if (!found) {
     throw new Error(
@@ -63,13 +65,13 @@ const sections: Section[] = [
     badge: "PRIMEROS PASOS",
     title: "Iniciar sesión y crear tu cuenta",
     intro:
-      "BarrioPro funciona desde el navegador de tu celular, tablet o computador — no necesitas instalar nada para empezar. Cada tienda tiene su propia cuenta y sus datos están completamente separados de los de otras tiendas.",
+      "Tiendly funciona desde el navegador de tu celular, tablet o computador — no necesitas instalar nada para empezar. Cada tienda tiene su propia cuenta y sus datos están completamente separados de los de otras tiendas.",
     steps: [
-      "Abre la dirección de BarrioPro que te compartió tu proveedor del servicio.",
+      "Abre la dirección de Tiendly que te compartió tu proveedor del servicio.",
       "La primera vez, toca \u201cCrear Cuenta\u201d, escribe el nombre de tu negocio, tu correo y una contraseña de al menos 6 caracteres.",
       "Revisa tu correo: te llegará un enlace de confirmación. Debes confirmarlo antes de poder ingresar.",
       "Ya confirmado, vuelve a la pantalla de \u201cIniciar Sesión\u201d con tu correo y contraseña.",
-      "Si tu navegador lo permite, puedes instalar BarrioPro como una aplicación en tu dispositivo tocando \u201cInstalar App en este Dispositivo\u201d, para abrirla como cualquier otra app.",
+      "Si tu navegador lo permite, puedes instalar Tiendly como una aplicación en tu dispositivo tocando \u201cInstalar App en este Dispositivo\u201d, para abrirla como cualquier otra app.",
     ],
     tip: "Guarda bien tu contraseña. Si compartes el dispositivo con empleados o familiares, configura además un PIN de 4 dígitos desde Ajustes de Negocio para proteger la información de tu caja.",
     image: "00-login.png",
@@ -83,7 +85,7 @@ const sections: Section[] = [
       "\u201cRegistrar Venta\u201d abre un cobro rápido en efectivo, ideal para ventas de mostrador simples.",
       "\u201cExportar Reporte PDF\u201d genera un informe completo con tus ventas del mes, el estado del inventario y las alertas de reposición.",
       "La tarjeta \u201cInventario Crítico\u201d te muestra de un vistazo qué productos necesitan reabastecerse pronto.",
-      "Si es tu primera vez usando la app, puedes usar el botón \u201cSembrar Datos Demo\u201d para explorar BarrioPro con información de ejemplo antes de cargar tu inventario real.",
+      "Si es tu primera vez usando la app, puedes usar el botón \u201cSembrar Datos Demo\u201d para explorar Tiendly con información de ejemplo antes de cargar tu inventario real.",
     ],
     image: "01-dashboard.png",
   },
@@ -99,14 +101,14 @@ const sections: Section[] = [
       "En cada fila puedes ajustar el stock rápidamente con los botones +/-, o editar/eliminar el producto con los íconos de la columna \u201cAcciones\u201d.",
       "Usa la barra de búsqueda o los filtros por categoría para encontrar productos específicos rápidamente.",
     ],
-    tip: "El SKU (código) es opcional al crear un producto — si lo dejas vacío, BarrioPro genera uno automáticamente.",
+    tip: "El SKU (código) es opcional al crear un producto — si lo dejas vacío, Tiendly genera uno automáticamente.",
     image: "02-inventory.png",
   },
   {
     badge: "MÓDULO 3",
     title: "Caja y Ventas",
     intro:
-      "El punto de venta (POS) de BarrioPro: aquí registras cada venta del día. A la izquierda buscas y agregas productos al carrito; a la derecha completas los datos del cobro.",
+      "El punto de venta (POS) de Tiendly: aquí registras cada venta del día. A la izquierda buscas y agregas productos al carrito; a la derecha completas los datos del cobro.",
     steps: [
       "Busca el producto por nombre o SKU, o navega por categoría, y tócalo (o presiona Enter) para agregarlo al carrito.",
       "Ajusta la cantidad de cada producto con los botones +/- del carrito.",
@@ -158,7 +160,7 @@ const sections: Section[] = [
   },
   {
     badge: "ASISTENTE",
-    title: "BarrioPro AI",
+    title: "Tiendly AI",
     intro:
       "El botón flotante con el ícono de estrella, visible en cualquier pantalla, abre tu asesor comercial con inteligencia artificial. Tiene acceso a tu inventario y ventas reales para darte recomendaciones concretas.",
     steps: [
@@ -201,7 +203,7 @@ function buildHtml(): string {
           <img src="${imageDataUrl(s.image)}" alt="${s.title}" />
         </div>
       </div>
-      <div class="footer">BarrioPro — Manual de Usuario</div>
+      <div class="footer">Tiendly — Manual de Usuario</div>
     </section>`
     )
     .join("\n");
@@ -256,7 +258,7 @@ function buildHtml(): string {
 </head>
 <body>
   <div class="cover">
-    <h1>BarrioPro</h1>
+    <h1>Tiendly</h1>
     <h2>Manual de Usuario</h2>
     <hr />
     <p>Gestión de inventario, ventas, fiados y rutinas diarias</p>
@@ -279,7 +281,12 @@ async function main() {
   const html = buildHtml();
   const chromePath = findChrome();
 
-  const browser = await puppeteer.launch({ executablePath: chromePath, headless: true });
+  const browser = await puppeteer.launch({
+    executablePath: chromePath,
+    headless: true,
+    // Como root (contenedores/CI) Chrome exige --no-sandbox.
+    args: process.getuid?.() === 0 ? ["--no-sandbox"] : [],
+  });
   try {
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "load" });

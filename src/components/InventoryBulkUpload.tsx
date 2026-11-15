@@ -112,7 +112,7 @@ export default function InventoryBulkUpload({
             <p className="font-bold text-brand-text text-xs mb-1">💡 Consejos para la carga:</p>
             <p>• La columna <strong className="text-emerald-700">Nombre</strong> es la única obligatoria.</p>
             <p>• Las categorías se mapearán automáticamente (ej: Abarrotes, Ferretería, Droguería, Carnicería, Legumbrería, Papelería, Tienda Digital). Si no coinciden, se guardarán en <strong className="text-brand-text">"Otros Comercios"</strong>.</p>
-            <p>• Si el <strong className="text-emerald-700">SKU / Código</strong> está vacío, BarrioPro generará uno único al azar.</p>
+            <p>• Si el <strong className="text-emerald-700">SKU / Código</strong> está vacío, Tiendly generará uno único al azar.</p>
           </div>
         </div>
 
