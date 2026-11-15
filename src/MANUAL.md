@@ -1,6 +1,6 @@
-# Manual de Usuario - BarrioPro
+# Manual de Usuario - Tiendly
 
-Bienvenido a **BarrioPro**, el sistema de gestión inteligente diseñado específicamente para tiendas de barrio, abastos y comercios locales. 
+Bienvenido a **Tiendly**, el sistema de gestión inteligente diseñado específicamente para tiendas de barrio, abastos y comercios locales. 
 
 Este manual te guiará paso a paso para que puedas configurar tu negocio, registrar productos, realizar ventas y llevar el control de tus finanzas (deudas y créditos) de forma sencilla.
 
@@ -77,7 +77,7 @@ En la pestaña **Ajustes de Negocio** puedes personalizar la aplicación:
 
 ## 7. Instalación en tu Celular (PWA)
 
-BarrioPro está diseñado para funcionar como una aplicación en tu teléfono sin necesidad de descargarla de una tienda de apps.
+Tiendly está diseñado para funcionar como una aplicación en tu teléfono sin necesidad de descargarla de una tienda de apps.
 
 **En Android (Chrome):**
 1. Abre la página de la aplicación.

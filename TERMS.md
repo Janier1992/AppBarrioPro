@@ -1,4 +1,4 @@
-# Términos de Uso de BarrioPro
+# Términos de Uso de Tiendly
 
 > **Estado: BORRADOR.** Redactado como punto de partida técnico. Requiere
 > revisión de un abogado antes de publicarse o presentarse a usuarios reales,
@@ -8,11 +8,11 @@
 **Última actualización:** (completar al aprobar)
 
 ## 1. Aceptación
-Al crear una cuenta en BarrioPro, el usuario ("el tendero") acepta estos
+Al crear una cuenta en Tiendly, el usuario ("el tendero") acepta estos
 términos.
 
 ## 2. Descripción del servicio
-BarrioPro es una herramienta de gestión comercial (inventario, ventas,
+Tiendly es una herramienta de gestión comercial (inventario, ventas,
 checklist operativo, fiados) con un asistente de inteligencia artificial
 opcional que utiliza la API de Google Gemini.
 

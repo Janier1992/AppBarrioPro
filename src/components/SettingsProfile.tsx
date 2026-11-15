@@ -192,7 +192,7 @@ export default function SettingsProfile({
               />
             </div>
             <p className="text-[10px] text-brand-muted leading-relaxed">
-              BarrioPro utiliza la Inteligencia Artificial de Gemini en modalidad multitenant. Cada comerciante puede ingresar su propia clave API obtenida gratuitamente desde Google AI Studio para que el asesor reciba las sugerencias e interactúe con el inventario de su negocio en tiempo real.
+              Tiendly utiliza la Inteligencia Artificial de Gemini en modalidad multitenant. Cada comerciante puede ingresar su propia clave API obtenida gratuitamente desde Google AI Studio para que el asesor reciba las sugerencias e interactúe con el inventario de su negocio en tiempo real.
             </p>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function SettingsProfile({
                 <span>Tema de la Aplicación</span>
               </p>
               <p className="text-[11px] text-brand-muted leading-relaxed">
-                Elige entre el modo claro y el modo oscuro para BarrioPro. La preferencia se guardará en tu perfil.
+                Elige entre el modo claro y el modo oscuro para Tiendly. La preferencia se guardará en tu perfil.
               </p>
             </div>
             <div className="flex items-center gap-3">

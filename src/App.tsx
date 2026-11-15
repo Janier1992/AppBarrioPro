@@ -39,6 +39,7 @@ import AppSidebar from "./components/AppSidebar";
 import AppHeader from "./components/AppHeader";
 import ToastContainer from "./components/ToastContainer";
 import NotificationPrompt from "./components/NotificationPrompt";
+import { APP_NAME, APP_TAGLINE } from "./lib/brand";
 
 export default function App() {
   const {
@@ -102,7 +103,7 @@ export default function App() {
       <div className="flex min-h-screen items-center justify-center bg-brand-bg text-brand-text" id="auth-loading-screen">
         <div className="flex flex-col items-center gap-4">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-primary border-t-transparent" />
-          <p className="text-sm font-semibold tracking-wide uppercase text-brand-muted animate-pulse">Abriendo BarrioPro...</p>
+          <p className="text-sm font-semibold tracking-wide uppercase text-brand-muted animate-pulse">Abriendo {APP_NAME}...</p>
         </div>
       </div>
     );
@@ -181,7 +182,7 @@ export default function App() {
           </div>
           {!isSidebarCollapsed && (
             <div>
-              <h1 className="font-extrabold text-base text-white tracking-tight">BarrioPro</h1>
+              <h1 className="font-extrabold text-base text-white tracking-tight">{APP_NAME}</h1>
               <span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">Gestión Local</span>
             </div>
           )}
@@ -320,7 +321,7 @@ export default function App() {
 
         {/* Footer */}
         <footer className="border-t border-brand-border py-4 px-6 pb-24 lg:pb-4 text-center text-[10px] text-brand-muted bg-white shrink-0">
-          &copy; {new Date().getFullYear()} BarrioPro. Herramientas sencillas para el comercio local.
+          &copy; {new Date().getFullYear()} {APP_NAME}. {APP_TAGLINE}
         </footer>
       </div>
 

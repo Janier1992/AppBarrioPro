@@ -80,11 +80,11 @@ async function startServer() {
   });
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[BarrioPro Server] running on http://localhost:${PORT}`);
+    console.log(`[Tiendly Server] running on http://localhost:${PORT}`);
   });
 }
 
 startServer().catch((error) => {
-  console.error("[BarrioPro Server] no se pudo iniciar:", error);
+  console.error("[Tiendly Server] no se pudo iniciar:", error);
   process.exit(1);
 });

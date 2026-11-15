@@ -107,8 +107,8 @@ export const auth = {
     
     const defaultUser: MockUser = {
       uid: "dev-user-id-01",
-      displayName: "Tendero BarrioPro",
-      email: "tendero@barriopro.com"
+      displayName: "Tendero Tiendly",
+      email: "tendero@tiendly.app"
     };
 
     const isConfigured = isInsForgeConfigured();
@@ -182,8 +182,8 @@ export const auth = {
     if (import.meta.env.PROD) throw new Error("InsForge no está configurado.");
     const mock: MockUser = {
       uid: "dev-user-id-01",
-      displayName: "Tendero BarrioPro",
-      email: "tendero@barriopro.com"
+      displayName: "Tendero Tiendly",
+      email: "tendero@tiendly.app"
     };
     auth.currentUser = mock;
     localStorage.setItem("barriopro_user", JSON.stringify(mock));

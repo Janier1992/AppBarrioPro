@@ -1,6 +1,6 @@
-# 🏪 BarrioPro - Sistema de Gestión Comercial de Barrio
+# 🏪 Tiendly - Sistema de Gestión Comercial de Barrio
 
-¡Bienvenido a **BarrioPro**! Una plataforma de nivel profesional, robusta y escalable diseñada específicamente para optimizar, organizar y potenciar la operación diaria de comercios locales e independientes (abastos, tiendas, minimarkets y verdulerías) en toda Latinoamérica.
+¡Bienvenido a **Tiendly**! Una plataforma de nivel profesional, robusta y escalable diseñada específicamente para optimizar, organizar y potenciar la operación diaria de comercios locales e independientes (abastos, tiendas, minimarkets y verdulerías) en toda Latinoamérica.
 
 Este proyecto integra un diseño visual moderno y limpio, persistencia en la nube mediante **InsForge (Postgres + Auth + REST, tipo BaaS)**, un backend de analítica predictiva inteligente con **Google Gemini AI** y visualización interactiva de rendimiento financiero mediante **Recharts**.
 
@@ -97,7 +97,7 @@ El proyecto está organizado de manera predecible, limpia y balanceada, evitando
 │   ├── main.tsx                   # Punto de entrada de React
 │   └── types.ts                   # Declaración centralizada de Typescript
 ├── /api                           # Funciones serverless de Vercel (backend real de producción)
-│   ├── chat.ts                    # Único endpoint desplegado hoy: chat de BarrioPro AI
+│   ├── chat.ts                    # Único endpoint desplegado hoy: chat de Tiendly AI
 │   └── /_lib                      # Lógica compartida entre api/chat.ts y server.ts
 │       ├── auth.ts                # Verificación del Bearer token de InsForge
 │       ├── gemini.ts               # Cliente y llamadas a Gemini endurecidas
@@ -148,7 +148,7 @@ Para transformar esta aplicación web SPA en una aplicación móvil nativa insta
 
 2. **Inicializar la configuración de Capacitor en el directorio raíz:**
    ```bash
-   npx cap init BarrioPro com.barriopro.app --web-dir=dist
+   npx cap init Tiendly com.tiendly.app --web-dir=dist
    ```
    *Nota: Se debe definir `dist` como el directorio web ya que es allí donde Vite compila los archivos estáticos de producción.*
 
@@ -198,7 +198,7 @@ Para ejecutar este backend de forma aislada e independiente de los procesos de d
 2. **Desplegar en producción:**
    Puedes utilizar servicios contenerizados de despliegue como **AWS ECS**, **Google Cloud Run**, o configurar un servidor VPS propio (por ejemplo, Hostinger VPS) instalando Docker o Node.js y un gestor de procesos como **PM2**:
    ```bash
-   pm2 start dist/server.mjs --name "barriopro-backend"
+   pm2 start dist/server.mjs --name "tiendly-backend"
    ```
 
 ### B. Migrar la Base de Datos a PostgreSQL Propia
@@ -261,4 +261,4 @@ Antes de desplegar, valida localmente lo mismo que CI: `npm run lint && npm test
 El servidor de desarrollo de Vite se iniciará automáticamente y expondrá la aplicación en `http://localhost:3000` con recarga caliente y proxy asíncrono hacia los endpoints del backend en NodeJS.
 
 ---
-*BarrioPro - Herramientas de software con calidad artesanal y diseño técnico sostenible para el comercio local.*
+*Tiendly - Herramientas de software con calidad artesanal y diseño técnico sostenible para el comercio local.*

@@ -1,6 +1,6 @@
 // ======================================================
 // Archivo: api/chat.ts
-// Responsabilidad: Endpoint serverless de Vercel para el chat de BarrioPro AI.
+// Responsabilidad: Endpoint serverless de Vercel para el chat de Tiendly AI.
 // Seguridad: requiere una sesión válida de InsForge (Bearer token) y aplica
 //            un límite de tasa por usuario antes de invocar a Gemini.
 // La lógica de negocio vive en _lib/chatHandler.ts (compartida con server.ts).

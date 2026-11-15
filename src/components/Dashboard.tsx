@@ -5,6 +5,7 @@ import { Download, PlusCircle, RefreshCw } from "lucide-react";
 import { formatCurrency } from "../lib/format";
 import DashboardCharts from "./DashboardCharts";
 import QuickSaleModal from "./QuickSaleModal";
+import { APP_NAME } from "../lib/brand";
 
 interface DashboardProps {
   products: Product[];
@@ -63,7 +64,7 @@ export default function Dashboard({
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="space-y-2">
             <span className="text-xs font-semibold tracking-wider text-white/70 uppercase">Panel de Control</span>
-            <h1 className="text-4xl font-bold tracking-tight">BarrioPro</h1>
+            <h1 className="text-4xl font-bold tracking-tight">{APP_NAME}</h1>
             <p className="text-white/90 text-sm">Tus finanzas y stock optimizados al instante</p>
           </div>
 

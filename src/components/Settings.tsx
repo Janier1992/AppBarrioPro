@@ -99,7 +99,7 @@ export default function Settings({
         <div className="rounded-2xl border border-brand-primary/30 bg-brand-primary/5 p-4 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-2 text-brand-primary">
             <Download size={18} />
-            <p className="text-xs font-semibold">Instala BarrioPro en este dispositivo para abrirlo como una app, aún sin internet.</p>
+            <p className="text-xs font-semibold">Instala Tiendly en este dispositivo para abrirlo como una app, aún sin internet.</p>
           </div>
           <button
             onClick={async () => {

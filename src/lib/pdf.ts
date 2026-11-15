@@ -18,7 +18,7 @@ export const generateReceiptPDF = (sale: Sale) => {
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text("BarrioPro", 40, 12, { align: "center" });
+    doc.text("Tiendly", 40, 12, { align: "center" });
 
     doc.setTextColor(100, 116, 139);
     doc.setFont("helvetica", "normal");
@@ -128,7 +128,7 @@ export const exportSalesPDF = (
       doc.setTextColor(255, 255, 255);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(20);
-      doc.text("BARRIOPRO — HISTORIAL DE VENTAS", 15, 16);
+      doc.text("TIENDLY — HISTORIAL DE VENTAS", 15, 16);
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9.5);
@@ -140,7 +140,7 @@ export const exportSalesPDF = (
       doc.setFontSize(8);
       doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
       doc.text(`Página ${pageNum}`, 105, 287, { align: "center" });
-      doc.text("BarrioPro AI — Tu asesor y mentor comercial", 15, 287);
+      doc.text("Tiendly AI — Tu asesor y mentor comercial", 15, 287);
       doc.text("Documento Oficial de Control de Caja", 195, 287, { align: "right" });
     };
 
@@ -289,7 +289,7 @@ export const exportSalesPDF = (
     }
 
     drawFooter(pageCount);
-    doc.save(`barriopro_ventas_${currentMonthName.toLowerCase()}_${currentYear}.pdf`);
+    doc.save(`tiendly_ventas_${currentMonthName.toLowerCase()}_${currentYear}.pdf`);
   } catch (error) {
     console.error("Error generating sales PDF report:", error);
     alert("Ocurrió un error inesperado al intentar generar el PDF. Por favor, intente de nuevo.");
@@ -332,7 +332,7 @@ export const generateDashboardReportPDF = (
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
-  doc.text("BARRIOPRO — REPORTE DE GESTIÓN", 15, 18);
+  doc.text("TIENDLY — REPORTE DE GESTIÓN", 15, 18);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
@@ -552,9 +552,9 @@ export const generateDashboardReportPDF = (
     doc.setFontSize(8);
     doc.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
     doc.text(`Página ${i} de ${totalPages}`, 105, 287, { align: "center" });
-    doc.text("Reporte Generado Automáticamente por BarrioPro — Tu Asistente Digital.", 15, 287);
+    doc.text("Reporte Generado Automáticamente por Tiendly — Tu Asistente Digital.", 15, 287);
   }
 
   // Antes tenía el año "2026" escrito fijo en el nombre del archivo.
-  doc.save(`Reporte_BarrioPro_${currentMonthName}_${new Date().getFullYear()}.pdf`);
+  doc.save(`Reporte_Tiendly_${currentMonthName}_${new Date().getFullYear()}.pdf`);
 };

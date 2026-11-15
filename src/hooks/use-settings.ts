@@ -199,7 +199,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `inventario_barriopro_${new Date().toISOString().split("T")[0]}.csv`);
+    link.setAttribute("download", `inventario_tiendly_${new Date().toISOString().split("T")[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -208,7 +208,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
   const handleCargarDatosDeDemostracion = () => {
     confirm(
       "Cargar Datos de Demostración",
-      "¿Estás seguro de que deseas cargar datos de demostración? Esto agregará productos, ventas históricas y checklists predefinidos a tu cuenta para que explores BarrioPro al instante.",
+      "¿Estás seguro de que deseas cargar datos de demostración? Esto agregará productos, ventas históricas y checklists predefinidos a tu cuenta para que explores Tiendly al instante.",
       async () => {
         setLoadingDemo(true);
         try {
@@ -247,7 +247,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
     if (perm === "granted") {
       triggerSystemNotification(
         "🔔 Notificaciones Habilitadas",
-        "¡Excelente! BarrioPro te alertará cuando el stock esté bajo o tengas tareas del checklist pendientes."
+        "¡Excelente! Tiendly te alertará cuando el stock esté bajo o tengas tareas del checklist pendientes."
       );
     } else if (perm === "denied") {
       showErrorToast("Permiso denegado. Para recibir notificaciones, por favor habilítalas manualmente en la configuración de tu navegador para este sitio.");
@@ -269,7 +269,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       return;
     }
     triggerSystemNotification(
-      "🚀 Prueba de BarrioPro",
+      "🚀 Prueba de Tiendly",
       "Esta es una alerta de prueba. ¡El sistema de notificaciones en segundo plano está operando con éxito!"
     );
   };
