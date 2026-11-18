@@ -12,6 +12,7 @@ const KNOWN_ERRORS: Array<{ match: RegExp; message: string }> = [
   { match: /password should be at least|password.*(short|length)/i, message: "La contraseña debe tener al menos 6 caracteres." },
   { match: /email not confirmed/i, message: "Debes confirmar tu correo electrónico antes de iniciar sesión (revisa tu bandeja de entrada)." },
   { match: /invalid email/i, message: "El correo electrónico no es válido." },
+  { match: /invalid.*(code|token|otp)|(code|token|otp).*(invalid|expired)|expired/i, message: "El código es incorrecto o ya venció. Solicita uno nuevo." },
   { match: /rate limit|too many requests/i, message: "Demasiados intentos. Espera unos minutos y vuelve a intentarlo." },
   { match: /network|fetch|failed to fetch/i, message: "No se pudo conectar con el servidor. Verifica tu conexión a internet." },
 ];
