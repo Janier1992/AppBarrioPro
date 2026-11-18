@@ -8,7 +8,7 @@
 // Nota: en Vercel estos encabezados no aplican (sirve estáticos directamente).
 // ======================================================
 
-import insforgeConfig from "../../insforge-applet-config.json";
+import { INSFORGE_DEFAULT_BASE_URL } from "./publicConfig.js";
 
 /** Origen (esquema + host) de una URL, o null si no es válida. */
 function originOf(url: string | undefined): string | null {
@@ -21,7 +21,7 @@ function originOf(url: string | undefined): string | null {
 }
 
 export function buildCspDirectives(env: Record<string, string | undefined> = process.env) {
-  const insforgeOrigin = originOf(env.VITE_INSFORGE_URL || insforgeConfig.baseUrl);
+  const insforgeOrigin = originOf(env.VITE_INSFORGE_URL || INSFORGE_DEFAULT_BASE_URL);
   const sentryOrigin = originOf(env.VITE_SENTRY_DSN) ? "https://*.ingest.sentry.io" : null;
 
   const connectSrc = ["'self'", insforgeOrigin, sentryOrigin].filter(Boolean) as string[];

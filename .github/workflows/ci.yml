@@ -26,6 +26,9 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: API loads as ESM (Vercel runtime)
+        run: npm run check:api
+
       - name: Build
         run: npm run build
 

@@ -6,8 +6,8 @@
 // La lógica de negocio vive en _lib/chatHandler.ts (compartida con server.ts).
 // ======================================================
 
-import { authenticateRequest } from "./_lib/auth";
-import { processChatRequest, UNAUTHENTICATED_RESPONSE } from "./_lib/chatHandler";
+import { authenticateRequest } from "./_lib/auth.js";
+import { processChatRequest, UNAUTHENTICATED_RESPONSE } from "./_lib/chatHandler.js";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
