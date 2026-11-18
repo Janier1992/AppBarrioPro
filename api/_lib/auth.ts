@@ -8,10 +8,10 @@
 // ======================================================
 
 import { createServerClient } from "@insforge/sdk/ssr";
-import insforgeConfig from "../../insforge-applet-config.json";
+import { INSFORGE_DEFAULT_ANON_KEY, INSFORGE_DEFAULT_BASE_URL } from "./publicConfig.js";
 
-const INSFORGE_URL = process.env.VITE_INSFORGE_URL || insforgeConfig.baseUrl;
-const INSFORGE_ANON_KEY = process.env.VITE_INSFORGE_ANON_KEY || insforgeConfig.anonKey;
+const INSFORGE_URL = process.env.VITE_INSFORGE_URL || INSFORGE_DEFAULT_BASE_URL;
+const INSFORGE_ANON_KEY = process.env.VITE_INSFORGE_ANON_KEY || INSFORGE_DEFAULT_ANON_KEY;
 
 export interface AuthenticatedRequester {
   userId: string;

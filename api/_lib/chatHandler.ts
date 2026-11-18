@@ -7,15 +7,15 @@
 // La autenticación se resuelve en cada adaptador (necesita el objeto request).
 // ======================================================
 
-import { isRateLimited } from "./rateLimit";
-import { chatRequestSchema } from "./validation";
+import { isRateLimited } from "./rateLimit.js";
+import { chatRequestSchema } from "./validation.js";
 import {
   buildChatContents,
   buildStoreContext,
   CHAT_SYSTEM_INSTRUCTION_PREFIX,
   generateContentWithRetry,
   GeminiConfigError,
-} from "./gemini";
+} from "./gemini.js";
 
 export const CHAT_MODEL = "gemini-2.5-flash";
 export const UNAUTHENTICATED_RESPONSE = {

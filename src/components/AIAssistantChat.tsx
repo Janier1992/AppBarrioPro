@@ -93,7 +93,10 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
       });
 
       if (!response.ok) {
-        let errMsg = "No se pudo obtener respuesta del asistente.";
+        let errMsg =
+          response.status >= 500
+            ? "El asistente no está disponible en este momento. Inténtalo de nuevo en unos minutos."
+            : "No se pudo obtener respuesta del asistente.";
         try {
           const errorData = await response.json();
           if (errorData && errorData.error) {
