@@ -48,6 +48,8 @@ Hecho en código (ver historial de commits para el detalle):
 - Endpoints de IA sin ningún llamador real (`/api/recommendations/*`, `/api/grounding/maps`) retirados para reducir superficie de ataque.
 - Suite de pruebas (`npm test`), pipeline de CI (`.github/workflows/ci.yml`), `Dockerfile`, y borradores de `PRIVACY.md` / `TERMS.md`.
 
+**Recuperación de contraseña ("¿Olvidaste tu contraseña?"):** usa los endpoints de InsForge (`sendResetPasswordEmail` → `exchangeResetPasswordToken` → `resetPassword`). Para que el correo llegue, el proyecto de InsForge debe tener el envío de correo de autenticación habilitado. Se recomienda el método **código de 6 dígitos**; si se usa el método por **enlace**, la app también acepta el token en la URL (`?token=`, `?reset_token=` u `?otp=`).
+
 **Pendiente — requiere acción humana con credenciales que un agente no tiene:**
 - **Aplicar `insforge-rls-policies.sql`** en el proyecto de InsForge (dashboard o CLI autenticado). Sin esto, el aislamiento de datos entre tiendas no está garantizado a nivel de base de datos.
 - **Rotar `GEMINI_API_KEY` y la anonKey de InsForge** si alguna vez se compartieron fuera de este equipo (hoy viven en texto plano en `.env.local`, que no está en git, pero rotarlas es buena práctica tras este endurecimiento).

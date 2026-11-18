@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { LayoutDashboard, Download } from "lucide-react";
 import { APP_NAME } from "../lib/brand";
+import PasswordInput from "./PasswordInput";
+import ForgotPasswordForm from "./ForgotPasswordForm";
+import { readResetTokenFromUrl } from "../lib/passwordReset";
 
 interface AppLoginScreenProps {
   loginMode: "signin" | "signup";
@@ -44,6 +47,12 @@ export default function AppLoginScreen({
   setIsPwaInstalled,
   handleAuthSubmit
 }: AppLoginScreenProps) {
+  // Vista "Olvidé mi contraseña" (formulario independiente del login/registro).
+  // Si el usuario llega desde el enlace del correo (token en la URL) se abre directamente.
+  const [showForgot, setShowForgot] = useState(
+    () => typeof window !== "undefined" && readResetTokenFromUrl(window.location.search) !== null
+  );
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-brand-bg p-4" id="login-container">
       <motion.div 
@@ -63,6 +72,18 @@ export default function AppLoginScreen({
           </p>
         </div>
 
+        {showForgot ? (
+          <ForgotPasswordForm
+            initialEmail={authEmail}
+            onBack={(successMessage) => {
+              setShowForgot(false);
+              setAuthError("");
+              setAuthSuccess(successMessage ?? "");
+              setAuthPassword("");
+            }}
+          />
+        ) : (
+          <>
         {/* Tab Switcher */}
         <div className="w-full grid grid-cols-2 p-1 bg-brand-bg rounded-2xl border border-brand-border">
           <button
@@ -137,14 +158,27 @@ export default function AppLoginScreen({
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-brand-text block">Contraseña</label>
-            <input
-              type="password"
-              required
-              placeholder="Mínimo 6 caracteres"
+            <PasswordInput
               value={authPassword}
-              onChange={(e) => setAuthPassword(e.target.value)}
-              className="w-full rounded-2xl border border-brand-border px-4 py-3 text-sm bg-brand-bg focus:bg-white focus:border-brand-primary focus:outline-hidden"
+              onChange={setAuthPassword}
+              placeholder="Mínimo 6 caracteres"
+              autoComplete={loginMode === "signin" ? "current-password" : "new-password"}
             />
+            {loginMode === "signin" && (
+              <div className="flex justify-end pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthError("");
+                    setAuthSuccess("");
+                    setShowForgot(true);
+                  }}
+                  className="text-xs font-semibold text-brand-primary hover:underline cursor-pointer"
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
+              </div>
+            )}
           </div>
 
           <button
@@ -161,6 +195,9 @@ export default function AppLoginScreen({
             )}
           </button>
         </form>
+
+          </>
+        )}
 
         {/* PWA Install Button */}
         {!isPwaInstalled && (

@@ -11,6 +11,7 @@
 import { createClient } from "@insforge/sdk";
 import insforgeConfig from "../../insforge-applet-config.json";
 import { Product, Sale, Task, Debt, BusinessProfile } from "../types";
+import { isSixDigitCode } from "./passwordReset";
 
 // Resolución de credenciales buscando primero las variables de entorno de Vite
 const INSFORGE_URL = import.meta.env.VITE_INSFORGE_URL || insforgeConfig.baseUrl;
@@ -245,6 +246,38 @@ export const auth = {
     auth.currentUser = mock;
     localStorage.setItem("barriopro_user", JSON.stringify(mock));
     window.location.reload();
+  },
+
+  /** Paso 1 de "Olvidé mi contraseña": InsForge envía un correo con un código (o enlace) de recuperación. */
+  sendPasswordReset: async (email: string) => {
+    if (!insforge) {
+      if (import.meta.env.PROD) throw new Error("InsForge no está configurado.");
+      return; // Modo desarrollo sin backend: se simula el envío.
+    }
+    const { error } = await insforge.auth.sendResetPasswordEmail({
+      email,
+      redirectTo: typeof window !== "undefined" ? window.location.origin : undefined
+    });
+    if (error) throw error;
+  },
+
+  /**
+   * Paso 2: define la nueva contraseña. Si recibe un código de 6 dígitos primero lo
+   * canjea por un token; si recibe un token (enlace del correo) lo usa directamente.
+   */
+  confirmPasswordReset: async (email: string, codeOrToken: string, newPassword: string) => {
+    if (!insforge) {
+      if (import.meta.env.PROD) throw new Error("InsForge no está configurado.");
+      return;
+    }
+    let otp = codeOrToken.trim();
+    if (isSixDigitCode(otp)) {
+      const { data, error } = await insforge.auth.exchangeResetPasswordToken({ email, code: otp });
+      if (error || !data?.token) throw error ?? new Error("invalid reset code");
+      otp = data.token;
+    }
+    const { error } = await insforge.auth.resetPassword({ newPassword, otp });
+    if (error) throw error;
   },
 
   signOut: async () => {
