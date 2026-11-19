@@ -120,8 +120,13 @@ export function buildChatContents(messages: Array<{ role: string; content?: stri
   return contents;
 }
 
-export function buildStoreContext(products: any[] = [], sales: any[] = []): string {
+export function buildStoreContext(products: any[] = [], sales: any[] = [], businessType?: string): string {
   let storeContext = "";
+
+  if (businessType && businessType.trim()) {
+    // Se limita y se aplana: es texto del cliente que entra al prompt.
+    storeContext += `Tipo de negocio: ${businessType.replace(/\s+/g, " ").trim().slice(0, 60)}\n`;
+  }
 
   if (Array.isArray(products) && products.length > 0) {
     storeContext += "\n--- INVENTARIO DE LA TIENDA ---\n";
@@ -148,7 +153,7 @@ export function buildStoreContext(products: any[] = [], sales: any[] = []): stri
 }
 
 export const CHAT_SYSTEM_INSTRUCTION_PREFIX =
-  "Actúa como Tiendly AI, asesor de tiendas de barrio en Latinoamérica. " +
+  "Actúa como Tiendly AI, asesor de negocios de barrio en Latinoamérica (tiendas, panaderías, fruver, ferreterías, papelerías, droguerías y similares). " +
   "Responde en español, de forma MUY BREVE y directa (máximo 3-5 líneas o 3 viñetas). " +
   "Sé amigable pero conciso. Usa viñetas solo cuando sea estrictamente necesario para listar pasos o ítems. " +
   "Nunca escribas párrafos largos. Si la respuesta es simple, responde en 1-2 oraciones. " +

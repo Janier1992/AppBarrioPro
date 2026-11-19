@@ -1,6 +1,7 @@
 import React from "react";
 import { Edit2, RefreshCw, CheckCircle2 } from "lucide-react";
 import { Product } from "../types";
+import CategoryInput from "./CategoryInput";
 
 interface EditProductModalProps {
   editingProduct: Product | null;
@@ -80,15 +81,7 @@ export default function EditProductModal({
 
             <div>
               <label className="block text-xs font-medium text-brand-muted mb-1">Categoría</label>
-              <select
-                value={editCategory}
-                onChange={(e) => setEditCategory(e.target.value)}
-                className="w-full rounded-xl border border-brand-border px-3 py-2.5 text-sm bg-white text-brand-text focus:border-brand-primary focus:ring-1 focus:ring-brand-primary focus:outline-hidden"
-              >
-                {formCategories.map(c => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
+              <CategoryInput value={editCategory} onChange={setEditCategory} options={formCategories} />
             </div>
 
             <div>

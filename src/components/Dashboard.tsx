@@ -9,6 +9,8 @@ import { openAssistant } from "../lib/assistant";
 import { showErrorToast } from "../lib/toast";
 import type { AppTab } from "../lib/navigation";
 import DashboardCharts from "./DashboardCharts";
+import BusinessTypePicker from "./BusinessTypePicker";
+import { loadBusinessType } from "../lib/businessTypes";
 
 interface DashboardProps {
   products: Product[];
@@ -43,6 +45,9 @@ export default function Dashboard({ products, sales, debts, tasks, userId, onNav
 
   const todaySalesCount = useMemo(() => sales.filter((s) => s.timestamp.startsWith(todayStr)).length, [sales, todayStr]);
   const pendientes = useMemo(() => buildPendientes({ products, debts, tasks }), [products, debts, tasks]);
+
+  // Pregunta única (solo con el catálogo vacío y sin tipo elegido): afina sugerencias, no cambia pantallas.
+  const [typeChosen, setTypeChosen] = React.useState(() => loadBusinessType(userId) !== undefined);
 
   const handleAction = async (item: Pendiente) => {
     if (item.kind === "stock") return onNavigate("inventory");
@@ -87,6 +92,10 @@ export default function Dashboard({ products, sales, debts, tasks, userId, onNav
             <Plus size={22} strokeWidth={2.2} />
             Nueva venta
           </button>
+
+          {products.length === 0 && !typeChosen && (
+            <BusinessTypePicker userId={userId} onChange={() => setTypeChosen(true)} />
+          )}
 
           {products.length === 0 && (
             <button

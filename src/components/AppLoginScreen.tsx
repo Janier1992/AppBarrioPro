@@ -68,7 +68,7 @@ export default function AppLoginScreen({
         <div className="space-y-2">
           <h1 className="text-[30px] font-semibold text-brand-text tracking-tight">Bienvenido a {APP_NAME}</h1>
           <p className="text-brand-muted text-[15px] leading-relaxed">
-            Ventas, inventario y deudas de tu tienda, en un solo lugar.
+            Ventas, inventario y fiados de tu negocio, en un solo lugar.
           </p>
         </div>
 

@@ -41,6 +41,8 @@ export const chatRequestSchema = z.object({
   products: z.array(productSchema).max(2000).optional(),
   sales: z.array(saleSchema).max(2000).optional(),
   geminiApiKey: z.string().max(300).optional(),
+  /** Tipo de negocio elegido por el tendero (texto corto, solo para dar contexto al asistente). */
+  businessType: z.string().max(60).optional(),
 });
 
 export type ChatRequestBody = z.infer<typeof chatRequestSchema>;

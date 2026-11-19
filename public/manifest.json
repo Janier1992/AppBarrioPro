@@ -1,7 +1,7 @@
 {
   "name": "Tiendly - Mi Negocio",
   "short_name": "Tiendly",
-  "description": "Gestión inteligente de inventario, finanzas y ventas para comercios tradicionales.",
+  "description": "Ventas, inventario y fiados para negocios de barrio: tiendas, panaderías, ferreterías, papelerías y más.",
   "id": "/?source=pwa",
   "start_url": "/?source=pwa",
   "display": "standalone",

@@ -4,6 +4,7 @@ import { Sparkles, X, Send, Trash2, HelpCircle, Loader2 } from "lucide-react";
 import { Product, Sale } from "../types";
 import { insforge } from "../lib/insforge";
 import { OPEN_ASSISTANT_EVENT } from "../lib/assistant";
+import { loadBusinessType } from "../lib/businessTypes";
 
 interface Message {
   id: string;
@@ -96,7 +97,8 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
           messages: apiMessages,
           products,
           sales,
-          geminiApiKey
+          geminiApiKey,
+          businessType: userId ? loadBusinessType(userId)?.label : undefined
         })
       });
 

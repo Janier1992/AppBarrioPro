@@ -1,8 +1,11 @@
 import React from "react";
 import { Download, Plus, RefreshCw, Layers, ShoppingBag, Trash2 } from "lucide-react";
 import { Product } from "../types";
+import { categoryOptions } from "../lib/businessTypes";
+import CategoryInput from "./CategoryInput";
 
 interface SettingsCatalogProps {
+  userId: string;
   products: Product[];
   prodName: string;
   setProdName: (val: string) => void;
@@ -25,6 +28,7 @@ interface SettingsCatalogProps {
 }
 
 export default function SettingsCatalog({
+  userId,
   products,
   prodName,
   setProdName,
@@ -85,20 +89,7 @@ export default function SettingsCatalog({
 
           <div>
             <label className="block text-xs font-medium text-brand-muted mb-1">Categoría</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full rounded-xl border border-brand-border px-3 py-2.5 text-sm bg-white text-brand-text focus:border-brand-primary focus:ring-1 focus:ring-brand-primary focus:outline-hidden"
-            >
-              <option value="Abarrotes">Abarrotes</option>
-              <option value="Ferretería">Ferretería</option>
-              <option value="Droguería">Droguería</option>
-              <option value="Carnicería">Carnicería</option>
-              <option value="Legumbrería">Legumbrería</option>
-              <option value="Tienda Digital (Accesorios)">Tienda Digital (Accesorios)</option>
-              <option value="Papelería">Papelería</option>
-              <option value="Otros Comercios">Otros Comercios</option>
-            </select>
+            <CategoryInput value={category} onChange={setCategory} options={categoryOptions(userId, products.map((p) => p.category))} />
           </div>
 
           <div>
