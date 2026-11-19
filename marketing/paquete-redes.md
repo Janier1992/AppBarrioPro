@@ -6,21 +6,19 @@ Todo lo de este paquete se apoya en lo que la app **ya hace**. No hay cifras ni 
 
 ---
 
-## 1. Piezas de video (ya generadas en `marketing/out/`)
+## 1. Piezas de video (se generan en `marketing/out/`)
 
-Formato vertical 9:16, 1080×1920, sin audio (agrega música o voz dentro de cada red para usar su catálogo de audio sin problemas de derechos).
+Formato vertical 9:16, **1080×1920**, con **subtítulos grabados en la imagen** y un archivo `.srt` aparte (útil para subir subtítulos editables en Facebook/YouTube).
 
-| Archivo | Duración | Qué muestra | Úsalo para |
-|---|---|---|---|
-| `tiendly-demo-9x16.mp4` | ~63 s | Recorrido completo | Reel principal (IG/FB), TikTok, Estados |
-| `tiendly-1-hoy-9x16.mp4` | ~6 s | "Hoy": cifra del día y Para hoy | Gancho / historia |
-| `tiendly-2-vender-9x16.mp4` | ~9 s | Vender en 3 toques | Reel corto |
-| `tiendly-3-reponer-9x16.mp4` | ~9 s | Ver qué se acaba y reponer | Reel corto |
-| `tiendly-4-fiado-9x16.mp4` | ~15 s | Anotar un fiado y verlo en Fiados | Reel corto |
-| `tiendly-5-tarea-9x16.mp4` | ~8 s | Agregar y tachar una tarea | Reel corto |
-| `tiendly-6-asistente-9x16.mp4` | ~9 s | Asistente de IA (ver nota) | Reel corto |
+| Archivo | Qué es | Úsalo para |
+|---|---|---|
+| `tiendly-explicado-9x16.mp4` | Recorrido completo explicado (≈ 2 min) | Reel principal (IG/FB), TikTok, YouTube Shorts |
+| `tiendly-explicado-9x16.srt` | Subtítulos del video completo | Facebook / YouTube / ediciones |
+| Clips por escena (`marketing/escenas/*.mp4`) | Una escena de ~3–8 s cada una, sin voz ni subtítulos | Reels cortos: súbelos a la app de cada red y agrega tu voz o música |
 
-**Nota honesta sobre el asistente:** en el video, la *respuesta* del chat es un texto de ejemplo (la grabación se hizo sin clave de Gemini). La pantalla, la caja de preguntas y el flujo son los reales. Si quieres que la respuesta sea 100 % real, vuelve a grabar con la app en producción (ver `marketing/README.md`). **Los datos de la tienda ("Tienda La Esquina", Doña Marta, etc.) son ficticios.**
+**Voz:** el video lleva la voz que grabes tú (ver `marketing/guion-voz.md`). Sin audios, sale con subtítulos y un audio en silencio.
+
+**Notas honestas:** en la escena del asistente, la *respuesta* del chat es un texto de ejemplo (la grabación se hizo sin clave de Gemini); la pantalla y el flujo son los reales. Los datos de la tienda ("Tienda La Esquina", Doña Marta, etc.) son ficticios.
 
 ---
 

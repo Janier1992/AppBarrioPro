@@ -33,5 +33,7 @@ node_modules/.cache
 generate-icons.cjs
 generate-icons.js
 
-# Videos generados (pesados): se regeneran con marketing/record-demo.cjs
+# Videos generados (pesados): se regeneran con marketing/grabar-escenas.cjs y componer-video.cjs
 marketing/out/
+marketing/escenas/
+marketing/voz/
