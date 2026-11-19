@@ -18,7 +18,7 @@ export default function SettingsNotifications({
   handleEnviarNotificacionDePrueba
 }: SettingsNotificationsProps) {
   return (
-    <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs space-y-6">
+    <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-6">
       <div className="border-b border-brand-border pb-3 flex items-center justify-between">
         <div>
           <h3 className="font-bold text-brand-text text-sm flex items-center gap-2">

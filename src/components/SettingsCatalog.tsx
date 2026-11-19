@@ -48,7 +48,7 @@ export default function SettingsCatalog({
   return (
     <div className="space-y-6">
       {/* Export to Excel banner */}
-      <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="rounded-2xl border border-brand-border bg-white p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="space-y-1 text-center sm:text-left">
           <h4 className="text-sm font-bold text-brand-text">Exportar Inventario a Excel</h4>
           <p className="text-xs text-brand-muted">Descarga una copia completa de tu catálogo de productos en formato CSV compatible con Microsoft Excel.</p>
@@ -64,7 +64,7 @@ export default function SettingsCatalog({
       </div>
 
       {/* Add product */}
-      <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs space-y-4">
+      <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
         <h3 className="font-bold text-brand-text text-sm border-b border-brand-border pb-3 flex items-center gap-2">
           <Plus size={18} className="text-brand-primary" />
           Agregar Nuevo Producto al Catálogo
@@ -172,7 +172,7 @@ export default function SettingsCatalog({
       </div>
 
       {/* List products */}
-      <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs space-y-4">
+      <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
         <h3 className="font-bold text-brand-text text-sm border-b border-brand-border pb-3 flex items-center gap-2">
           <Layers size={18} className="text-brand-primary" />
           Inventario Registrado ({products.length})

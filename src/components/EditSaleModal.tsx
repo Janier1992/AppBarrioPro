@@ -31,7 +31,7 @@ export default function EditSaleModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="bg-white rounded-3xl border border-brand-border shadow-2xl max-w-md w-full overflow-hidden p-6 space-y-4 animate-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between border-b border-brand-bg pb-3">
-          <h3 className="text-sm font-black text-brand-text flex items-center gap-1.5 uppercase">
+          <h3 className="text-sm font-bold text-brand-text flex items-center gap-1.5 uppercase">
             <Edit3 className="text-brand-primary" size={16} />
             Editar Detalle de Venta
           </h3>
@@ -65,9 +65,9 @@ export default function EditSaleModal({
                   key={method}
                   type="button"
                   onClick={() => setEditPaymentMethod(method)}
-                  className={`py-2.5 rounded-xl border text-[9px] font-extrabold flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
+                  className={`py-2.5 rounded-xl border text-[9px] font-semibold flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
                     editPaymentMethod === method
-                      ? "bg-brand-primary/15 border-brand-primary text-brand-primary shadow-2xs font-black"
+                      ? "bg-brand-primary/15 border-brand-primary text-brand-primary font-bold"
                       : "bg-white border-brand-border text-brand-muted hover:bg-slate-50"
                   }`}
                 >
@@ -103,7 +103,7 @@ export default function EditSaleModal({
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white font-extrabold text-xs py-3 shadow-xs transition-colors cursor-pointer"
+              className="flex-1 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white font-semibold text-xs py-3 transition-colors cursor-pointer"
             >
               Guardar Cambios
             </button>

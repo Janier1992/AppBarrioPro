@@ -1,17 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --color-brand-primary: #4A5A40;
-  --color-brand-primary-dark: #374330;
-  --color-brand-bg: #FDFCF8;
-  --color-brand-accent: #D97706;
-  --color-brand-text: #1C1C1C;
-  --color-brand-muted: #717171;
-  --color-brand-border: #E5E7EB;
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --color-brand-primary: #2F6B4F;
+  --color-brand-primary-dark: #245540;
+  --color-brand-bg: #FAFAF8;
+  --color-brand-accent: #D9772F;
+  --color-brand-text: #1B1B18;
+  --color-brand-muted: #6B6A63;
+  --color-brand-border: #ECEBE6;
 }
 
 body {
+  -webkit-font-smoothing: antialiased;
   background-color: var(--color-brand-bg);
   color: var(--color-brand-text);
   font-family: var(--font-sans);
@@ -24,8 +25,8 @@ body {
   --color-brand-text: #f4f4f5 !important;
   --color-brand-muted: #a1a1aa !important;
   --color-brand-border: #27272a !important;
-  --color-brand-primary: #86997B !important;
-  --color-brand-primary-dark: #63755A !important;
+  --color-brand-primary: #7FBF9C !important;
+  --color-brand-primary-dark: #5FA07F !important;
 
   background-color: #09090b !important;
   color: #f4f4f5 !important;
@@ -92,12 +93,12 @@ body {
 }
 
 .dark .bg-brand-primary {
-  background-color: #4A5A40 !important;
+  background-color: #2F6B4F !important;
   color: #ffffff !important;
 }
 
 .dark .text-brand-primary {
-  color: #86997B !important;
+  color: #7FBF9C !important;
 }
 
 .dark .bg-amber-50 {

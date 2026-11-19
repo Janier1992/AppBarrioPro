@@ -155,7 +155,7 @@ export default function QuickSaleModal({
                                 {p.name}
                               </p>
                               {isActive && !isOutOfStock && (
-                                <span className="text-[8px] bg-brand-primary text-white px-1 py-0.5 rounded font-black font-mono shrink-0 animate-pulse">
+                                <span className="text-[8px] bg-brand-primary text-white px-1 py-0.5 rounded font-bold font-mono shrink-0 animate-pulse">
                                   ↵ ENTER
                                 </span>
                               )}
@@ -204,7 +204,7 @@ export default function QuickSaleModal({
                     quickCart.map(item => (
                       <div
                         key={item.product.id}
-                        className="flex items-center justify-between p-2 rounded-xl bg-white border border-brand-border shadow-3xs"
+                        className="flex items-center justify-between p-2 rounded-xl bg-white border border-brand-border"
                       >
                         <div className="min-w-0 flex-1 pr-2">
                           <p className="text-xs font-bold text-brand-text truncate">{item.product.name}</p>
@@ -249,7 +249,7 @@ export default function QuickSaleModal({
 
                 <div className="bg-slate-50 rounded-xl p-2.5 border border-brand-border flex justify-between items-center text-xs font-bold text-brand-text font-mono shrink-0">
                   <span>TOTAL:</span>
-                  <span className="text-emerald-700 font-extrabold text-sm">
+                  <span className="text-emerald-700 font-semibold text-sm">
                     ${quickCart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0).toLocaleString("es-CO", { minimumFractionDigits: 2 })}
                   </span>
                 </div>

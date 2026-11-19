@@ -163,8 +163,8 @@ export default function Deudas({
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold text-brand-text">Registro de Deudas / Clientes Fiados</h2>
-          <p className="text-xs text-brand-muted">Lleva el control de las cuentas fiadas para mantener tus finanzas sanas.</p>
+          <h2 className="text-[28px] sm:text-3xl font-semibold tracking-tight text-brand-text">Deudas</h2>
+          <p className="text-sm text-brand-muted">Lo que tus clientes te deben por ventas fiadas.</p>
         </div>
         <button
           onClick={() => setShowAddForm(prev => !prev)}
@@ -177,39 +177,39 @@ export default function Deudas({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" id="deudas-kpis">
-        <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-xs flex items-center gap-4">
+        <div className="bg-white rounded-2xl border border-brand-border p-5 flex items-center gap-4">
           <div className="rounded-xl bg-rose-50 text-rose-600 p-3">
             <DollarSign size={24} />
           </div>
           <div>
             <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Total Pendiente</p>
-            <p className="text-xl font-black text-rose-600">
+            <p className="text-xl font-bold text-rose-600">
               {formatCurrency(totalPendingAmount)}
             </p>
             <p className="text-[10px] text-brand-muted">{pendingDebts.length} cuentas por cobrar</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-xs flex items-center gap-4">
+        <div className="bg-white rounded-2xl border border-brand-border p-5 flex items-center gap-4">
           <div className="rounded-xl bg-emerald-50 text-emerald-600 p-3">
             <Check size={24} />
           </div>
           <div>
             <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Total Cobrado</p>
-            <p className="text-xl font-black text-emerald-600">
+            <p className="text-xl font-bold text-emerald-600">
               {formatCurrency(totalPaidAmount)}
             </p>
             <p className="text-[10px] text-brand-muted">{paidDebts.length} cuentas pagadas</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-xs flex items-center gap-4">
+        <div className="bg-white rounded-2xl border border-brand-border p-5 flex items-center gap-4">
           <div className="rounded-xl bg-slate-50 text-brand-primary p-3">
             <User size={24} />
           </div>
           <div>
             <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Total Clientes</p>
-            <p className="text-xl font-black text-brand-text">
+            <p className="text-xl font-bold text-brand-text">
               {Array.from(new Set(debts.map(d => d.clientName.toLowerCase()))).length}
             </p>
             <p className="text-[10px] text-brand-muted">Historial acumulado</p>
@@ -299,7 +299,7 @@ export default function Deudas({
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Active Debts List */}
-        <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs space-y-4">
+        <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-brand-border pb-3">
             <h3 className="font-bold text-brand-text text-sm">Cuentas Pendientes por Cobrar</h3>
             <span className="rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-semibold text-rose-700 border border-rose-100">
@@ -366,7 +366,7 @@ export default function Deudas({
         </div>
 
         {/* Paid Debts List */}
-        <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs space-y-4">
+        <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-brand-border pb-3">
             <h3 className="font-bold text-brand-text text-sm">Historial de Cobros Recientes (Pagado)</h3>
             <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-100">

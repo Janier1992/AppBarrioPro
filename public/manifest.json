@@ -6,8 +6,8 @@
   "start_url": "/?source=pwa",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#1e3a8a",
-  "theme_color": "#1e3a8a",
+  "background_color": "#FAFAF8",
+  "theme_color": "#2F6B4F",
   "categories": ["business", "finance", "productivity"],
   "icons": [
     {

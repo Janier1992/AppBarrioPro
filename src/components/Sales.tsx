@@ -7,7 +7,7 @@
 import React from "react";
 import { Product, Sale } from "../types";
 import { useSales } from "../hooks/use-sales";
-import { ShoppingCart, Download, RefreshCw, Check } from "lucide-react";
+import { Download, RefreshCw, Check } from "lucide-react";
 import POSCatalog from "./POSCatalog";
 import POSCart from "./POSCart";
 import SalesHistory from "./SalesHistory";
@@ -75,13 +75,13 @@ export default function Sales({ products, sales, userId }: SalesProps) {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold text-brand-text">Caja y Ventas</h2>
-          <p className="text-xs text-brand-muted">Registra transacciones de forma inmediata y mantén al día tus ventas diarias.</p>
+          <h2 className="text-[28px] sm:text-3xl font-semibold tracking-tight text-brand-text">Nueva venta</h2>
+          <p className="text-sm text-brand-muted">Toca un producto para agregarlo al carrito.</p>
         </div>
         <button
           onClick={handleExportPDF}
           disabled={exportingPdf || currentMonthSales.length === 0}
-          className="flex items-center gap-2 px-4 py-2.5 bg-brand-primary hover:bg-brand-primary-dark text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed self-start sm:self-auto"
+          className="flex items-center gap-2 h-11 px-4 bg-white border border-[#E2E1DB] hover:bg-brand-bg text-brand-text text-sm font-medium rounded-xl transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed self-start sm:self-auto"
         >
           {exportingPdf ? (
             <>
@@ -91,7 +91,7 @@ export default function Sales({ products, sales, userId }: SalesProps) {
           ) : (
             <>
               <Download size={14} />
-              Exportar Ventas del Mes (PDF)
+              Exportar ventas del mes
             </>
           )}
         </button>
@@ -106,7 +106,7 @@ export default function Sales({ products, sales, userId }: SalesProps) {
           {lastRegisteredSale && (
             <button
               onClick={() => handleGenerateReceiptPDF(lastRegisteredSale)}
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 flex items-center gap-2 cursor-pointer shadow-xs transition-colors self-start sm:self-auto shrink-0"
+              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 flex items-center gap-2 cursor-pointer transition-colors self-start sm:self-auto shrink-0"
             >
               <Download size={14} />
               <span>Imprimir Recibo PDF</span>
@@ -115,70 +115,47 @@ export default function Sales({ products, sales, userId }: SalesProps) {
         </div>
       )}
 
-      {/* Main split grid layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6" id="sales-layout">
-        {/* Left POS Column */}
-        <div className="lg:col-span-8 space-y-6">
-          <div className="bg-white rounded-2xl border border-brand-border shadow-xs overflow-hidden">
-            {/* POS Workspace Header */}
-            <div className="p-5 border-b border-brand-border flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
-              <div className="flex items-center gap-2">
-                <ShoppingCart size={18} className="text-brand-primary" />
-                <h3 className="font-extrabold text-sm text-brand-text">Punto de Venta Interactiva (POS)</h3>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs text-brand-muted bg-white px-3 py-1.5 rounded-lg border border-brand-border font-medium">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Terminal Activo
-              </div>
-            </div>
+      {/* Punto de venta: catálogo a la izquierda, carrito siempre a la vista a la derecha */}
+      <div className="space-y-10" id="sales-layout">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-8 items-start">
+          <POSCatalog
+            filteredCatalogProducts={filteredCatalogProducts}
+            catalogSearch={catalogSearch}
+            catalogCategories={catalogCategories}
+            selectedCatalogCategory={selectedCatalogCategory}
+            activeCatalogIndex={activeCatalogIndex}
+            cart={cart}
+            handleCatalogSearchChange={handleCatalogSearchChange}
+            handleCategoryChange={handleCategoryChange}
+            handleAddToCart={handleAddToCart}
+            setActiveCatalogIndex={setActiveCatalogIndex}
+          />
 
-            {/* POS Workspace Body */}
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-brand-border">
-              {/* POS Left Pane: Catalog */}
-              <POSCatalog
-                filteredCatalogProducts={filteredCatalogProducts}
-                catalogSearch={catalogSearch}
-                catalogCategories={catalogCategories}
-                selectedCatalogCategory={selectedCatalogCategory}
-                activeCatalogIndex={activeCatalogIndex}
-                cart={cart}
-                handleCatalogSearchChange={handleCatalogSearchChange}
-                handleCategoryChange={handleCategoryChange}
-                handleAddToCart={handleAddToCart}
-                setActiveCatalogIndex={setActiveCatalogIndex}
-              />
-
-              {/* POS Right Pane: Cart */}
-              <POSCart
-                cart={cart}
-                clientName={clientName}
-                setClientName={setClientName}
-                paymentMethod={paymentMethod}
-                setPaymentMethod={setPaymentMethod}
-                dueDate={dueDate}
-                setDueDate={setDueDate}
-                loading={loading}
-                handleUpdateQuantity={handleUpdateQuantity}
-                handleRemoveFromCart={handleRemoveFromCart}
-                handleClearCart={handleClearCart}
-                handleRegistrarVenta={handleRegistrarVenta}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Right Stats & History Column */}
-        <div className="lg:col-span-4 space-y-6">
-          <SalesHistory
-            sales={sales}
-            todaySalesData={todaySalesData}
-            lastTenSales={lastTenSales}
-            currentWeekSalesData={currentWeekSalesData}
-            totalWeeklySales={totalWeeklySales}
-            handleStartEditSale={handleStartEditSale}
-            handleDeleteSale={handleDeleteSale}
+          <POSCart
+            cart={cart}
+            clientName={clientName}
+            setClientName={setClientName}
+            paymentMethod={paymentMethod}
+            setPaymentMethod={setPaymentMethod}
+            dueDate={dueDate}
+            setDueDate={setDueDate}
+            loading={loading}
+            handleUpdateQuantity={handleUpdateQuantity}
+            handleRemoveFromCart={handleRemoveFromCart}
+            handleClearCart={handleClearCart}
+            handleRegistrarVenta={handleRegistrarVenta}
           />
         </div>
+
+        <SalesHistory
+          sales={sales}
+          todaySalesData={todaySalesData}
+          lastTenSales={lastTenSales}
+          currentWeekSalesData={currentWeekSalesData}
+          totalWeeklySales={totalWeeklySales}
+          handleStartEditSale={handleStartEditSale}
+          handleDeleteSale={handleDeleteSale}
+        />
       </div>
 
       {/* Modal para Editar Venta */}

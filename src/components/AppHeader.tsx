@@ -40,10 +40,10 @@ export default function AppHeader({
   handleToggleTheme
 }: AppHeaderProps) {
   return (
-    <header className="bg-white border-b border-brand-border px-6 py-4 flex items-center justify-between shadow-xs shrink-0">
+    <header className="bg-brand-bg border-b border-brand-border px-4 sm:px-6 py-3 flex items-center justify-between shrink-0">
       <div className="flex items-center gap-3">
         <div>
-          <h1 className="font-extrabold text-brand-text tracking-tight flex items-center gap-2">
+          <h1 className="font-semibold text-brand-text tracking-tight flex items-center gap-2">
             {profile?.businessName || "Mi Negocio"}
           </h1>
           <div className="hidden sm:flex items-center gap-3 text-[10px] text-brand-muted">
@@ -94,17 +94,17 @@ export default function AppHeader({
         <div className="relative">
           <button
             onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-            className="flex items-center gap-2 rounded-2xl border border-brand-border px-3 py-1.5 hover:bg-brand-bg transition-all cursor-pointer text-left"
+            className="flex items-center gap-2 rounded-xl border border-brand-border bg-white px-3 py-1.5 hover:bg-brand-bg transition-all cursor-pointer text-left"
             id="user-profile-menu-button"
           >
             {profile?.logoUrl ? (
               <img 
                 src={profile.logoUrl} 
                 alt="Logo" 
-                className="h-8 w-8 rounded-full object-cover border border-brand-border shadow-xs shrink-0 bg-white" 
+                className="h-8 w-8 rounded-full object-cover border border-brand-border shrink-0 bg-white" 
               />
             ) : (
-              <div className="h-8 w-8 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold text-[11px] tracking-wide shadow-xs shrink-0 uppercase">
+              <div className="h-8 w-8 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold text-[11px] tracking-wide shrink-0 uppercase">
                 {profile?.businessName ? profile.businessName.substring(0, 2) : "US"}
               </div>
             )}
@@ -126,10 +126,10 @@ export default function AppHeader({
                     <img 
                       src={profile.logoUrl} 
                       alt="Logo" 
-                      className="h-8 w-8 rounded-full object-cover border border-brand-border shadow-xs shrink-0 bg-white" 
+                      className="h-8 w-8 rounded-full object-cover border border-brand-border shrink-0 bg-white" 
                     />
                   ) : (
-                    <div className="h-8 w-8 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold text-xs tracking-wide shadow-xs shrink-0 uppercase">
+                    <div className="h-8 w-8 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold text-xs tracking-wide shrink-0 uppercase">
                       {profile?.businessName ? profile.businessName.substring(0, 2) : "US"}
                     </div>
                   )}

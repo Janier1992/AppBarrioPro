@@ -170,7 +170,7 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
         if (match.index > lastIndex) {
           parts.push(trimmed.substring(lastIndex, match.index));
         }
-        parts.push(<strong key={match.index} className="font-extrabold text-brand-text dark:text-white">{match[1]}</strong>);
+        parts.push(<strong key={match.index} className="font-semibold text-brand-text dark:text-white">{match[1]}</strong>);
         lastIndex = regex.lastIndex;
       }
 
@@ -278,7 +278,7 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
                   }`}
                 >
                   <div
-                    className={`rounded-2xl py-2.5 px-3.5 shadow-xs max-w-[85%] text-[12px] break-words ${
+                    className={`rounded-2xl py-2.5 px-3.5 max-w-[85%] text-[12px] break-words ${
                       m.role === "user"
                         ? "bg-brand-primary dark:bg-brand-primary-dark text-white rounded-tr-none"
                         : "bg-white dark:bg-zinc-800 text-brand-text dark:text-zinc-100 border border-brand-border rounded-tl-none"
@@ -304,7 +304,7 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
                       <button
                         key={idx}
                         onClick={() => handleSendMessage(q.q)}
-                        className="text-left text-[11px] text-brand-text dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-brand-border hover:bg-slate-50 dark:hover:bg-zinc-700/50 hover:border-brand-primary/40 py-2 px-3 rounded-xl transition-all cursor-pointer font-medium shadow-xs"
+                        className="text-left text-[11px] text-brand-text dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-brand-border hover:bg-slate-50 dark:hover:bg-zinc-700/50 hover:border-brand-primary/40 py-2 px-3 rounded-xl transition-all cursor-pointer font-medium"
                       >
                         {q.label}
                       </button>
@@ -354,7 +354,7 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isLoading}
-                className="p-2.5 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white disabled:opacity-40 transition-colors cursor-pointer shadow-xs shrink-0"
+                className="p-2.5 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white disabled:opacity-40 transition-colors cursor-pointer shrink-0"
                 title="Enviar"
               >
                 <Send size={15} />

@@ -53,8 +53,8 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
       description: "No necesitas ser experto en tecnología: si tienes dudas sobre alguna función, el asistente de IA (el botón flotante con la estrella) puede ayudarte con preguntas sobre tu inventario y tus ventas.",
       badge: "LISTO PARA EMPEZAR",
       icon: Users,
-      color: "bg-[#3A4A3A]",
-      accent: "text-[#3A4A3A] bg-emerald-50",
+      color: "bg-[#2F6B4F]",
+      accent: "text-[#2F6B4F] bg-emerald-50",
       image: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
       tip: "Puedes cargar datos de ejemplo desde el Panel de Control para explorar la app antes de meter tu inventario real."
     }
@@ -85,19 +85,19 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
         id="onboarding-card"
       >
         {/* Left column: Visual context / illustrative banner */}
-        <div className="md:w-5/12 bg-[#3A4A3A] text-white p-8 flex flex-col justify-between relative overflow-hidden select-none">
+        <div className="md:w-5/12 bg-[#2F6B4F] text-white p-8 flex flex-col justify-between relative overflow-hidden select-none">
           {/* Accent decoration blobs */}
           <div className="absolute top-0 right-0 -mt-16 -mr-16 h-36 w-36 rounded-full bg-white/5 blur-xl" />
           <div className="absolute bottom-0 left-0 -mb-16 -ml-16 h-36 w-36 rounded-full bg-white/5 blur-xl" />
           
           <div className="relative z-10 space-y-4">
-            <span className={`inline-block text-[10px] font-extrabold tracking-widest uppercase px-3 py-1 rounded-full ${current.accent}`}>
+            <span className={`inline-block text-[10px] font-semibold tracking-widest uppercase px-3 py-1 rounded-full ${current.accent}`}>
               {current.badge}
             </span>
             <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center">
               <current.icon size={24} className="text-emerald-300" />
             </div>
-            <h2 className="text-2xl font-black leading-tight tracking-tight mt-4">
+            <h2 className="text-2xl font-bold leading-tight tracking-tight mt-4">
               {current.title}
             </h2>
           </div>
@@ -120,7 +120,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                 <div 
                   key={idx}
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    idx === currentStep ? "w-8 bg-[#4CAF50]" : "w-2 bg-slate-200"
+                    idx === currentStep ? "w-8 bg-[#2F6B4F]" : "w-2 bg-slate-200"
                   }`}
                 />
               ))}
@@ -167,7 +167,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
 
             <button
               onClick={handleNext}
-              className="rounded-2xl bg-[#4CAF50] hover:bg-[#45a049] text-white text-xs font-bold px-6 py-3.5 shadow-md flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+              className="rounded-2xl bg-[#2F6B4F] hover:bg-[#245540] text-white text-xs font-bold px-6 py-3.5 shadow-md flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
             >
               <span>{currentStep === steps.length - 1 ? "Comenzar Ahora 🏪" : "Siguiente"}</span>
               <ChevronRight size={14} />

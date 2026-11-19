@@ -1,22 +1,38 @@
 import React from "react";
-import { 
-  LayoutDashboard, 
-  Boxes, 
-  ShoppingCart, 
-  CheckSquare, 
-  DollarSign, 
-  Settings as SettingsIcon, 
-  ChevronRight, 
-  ChevronLeft 
+import {
+  Home,
+  Boxes,
+  Receipt,
+  ListChecks,
+  Wallet,
+  SlidersHorizontal,
+  PanelLeftClose,
+  PanelLeftOpen
 } from "lucide-react";
 import { BusinessProfile } from "../types";
 
+export type AppTab = "dashboard" | "inventory" | "sales" | "checklist" | "debts" | "settings";
+
 interface AppSidebarProps {
-  activeTab: "dashboard" | "inventory" | "sales" | "checklist" | "debts" | "settings";
-  setActiveTab: (tab: "dashboard" | "inventory" | "sales" | "checklist" | "debts" | "settings") => void;
+  activeTab: AppTab;
+  setActiveTab: (tab: AppTab) => void;
   isSidebarCollapsed: boolean;
   setIsSidebarCollapsed: (val: boolean) => void;
   profile: BusinessProfile | null;
+}
+
+// Un solo grupo de destinos, en el orden en que el tendero los usa a diario.
+const NAV_ITEMS = [
+  { id: "dashboard", label: "Inicio", icon: Home },
+  { id: "sales", label: "Ventas", icon: Receipt },
+  { id: "inventory", label: "Inventario", icon: Boxes },
+  { id: "debts", label: "Deudas", icon: Wallet },
+  { id: "checklist", label: "Tareas", icon: ListChecks },
+  { id: "settings", label: "Ajustes", icon: SlidersHorizontal },
+] as const;
+
+function initialsOf(name: string): string {
+  return name.trim().slice(0, 2).toUpperCase();
 }
 
 export default function AppSidebar({
@@ -26,151 +42,60 @@ export default function AppSidebar({
   setIsSidebarCollapsed,
   profile
 }: AppSidebarProps) {
-  const sections = [
-    {
-      title: "MENÚ PRINCIPAL",
-      items: [
-        { id: "dashboard", label: "Panel de Control", icon: LayoutDashboard },
-        { id: "inventory", label: "Inventario", icon: Boxes },
-        { id: "sales", label: "Caja y Ventas", icon: ShoppingCart },
-      ] as const,
-    },
-    {
-      title: "RUTINAS Y ASISTENCIA",
-      items: [
-        { id: "checklist", label: "Checklist Diario", icon: CheckSquare },
-        { id: "debts", label: "Deudas", icon: DollarSign },
-      ] as const,
-    },
-    {
-      title: "CONFIGURACIÓN",
-      items: [
-        { id: "settings", label: "Ajustes de Negocio", icon: SettingsIcon },
-      ] as const,
-    },
-  ];
-
-  if (isSidebarCollapsed) {
-    const collapsedItems = [
-      { id: "dashboard", label: "Panel de Control", icon: LayoutDashboard },
-      { id: "inventory", label: "Inventario", icon: Boxes },
-      { id: "sales", label: "Caja y Ventas", icon: ShoppingCart },
-      { id: "checklist", label: "Checklist Diario", icon: CheckSquare },
-      { id: "debts", label: "Deudas", icon: DollarSign },
-      { id: "settings", label: "Ajustes de Negocio", icon: SettingsIcon },
-    ] as const;
-
-    return (
-      <div className="flex-1 flex flex-col justify-between py-6 space-y-6 overflow-y-auto">
-        <div className="flex flex-col items-center gap-6">
-          <button
-            onClick={() => setIsSidebarCollapsed(false)}
-            className="p-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/10 cursor-pointer transition-all active:scale-95"
-            title="Expandir menú"
-            id="expand-sidebar-btn"
-          >
-            <ChevronRight size={20} />
-          </button>
-
-          <div className="flex flex-col items-center gap-3 w-full px-2">
-            {collapsedItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`p-2.5 rounded-xl transition-all cursor-pointer relative group ${
-                    isActive
-                      ? "bg-[#2E3A2E] text-white shadow-xs"
-                      : "text-white/70 hover:text-white hover:bg-white/10"
-                  }`}
-                  title={item.label}
-                  id={`sidebar-link-${item.id}`}
-                >
-                  <Icon size={24} />
-                  <div className="absolute left-16 top-1/2 -translate-y-1/2 scale-0 group-hover:scale-100 bg-[#2E3A2E] border border-white/10 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all duration-150 shadow-lg z-50 whitespace-nowrap pointer-events-none">
-                    {item.label}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {profile && (
-          <div className="flex flex-col items-center pb-4">
-            <div 
-              className="h-10 w-10 rounded-xl bg-[#2E3A2E] border border-white/10 flex items-center justify-center text-xs font-extrabold text-emerald-400 uppercase tracking-wider animate-pulse"
-              title={profile.businessName}
+  return (
+    <div className="flex-1 flex flex-col justify-between py-4 overflow-y-auto">
+      <nav aria-label="Principal" className={`flex flex-col gap-0.5 ${isSidebarCollapsed ? "px-3 items-center" : "px-4"}`}>
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              aria-current={isActive ? "page" : undefined}
+              title={isSidebarCollapsed ? item.label : undefined}
+              className={`flex items-center rounded-[10px] text-sm transition-colors cursor-pointer border ${
+                isSidebarCollapsed ? "h-10 w-10 justify-center" : "h-10 w-full gap-3 px-3"
+              } ${
+                isActive
+                  ? "bg-white border-brand-border text-brand-text font-medium"
+                  : "border-transparent text-brand-muted hover:text-brand-text hover:bg-white/70"
+              }`}
+              id={`sidebar-link-${item.id}`}
             >
-              {profile.businessName.slice(0, 2)}
+              <Icon size={18} strokeWidth={1.8} />
+              {!isSidebarCollapsed && <span>{item.label}</span>}
+            </button>
+          );
+        })}
+      </nav>
+
+      <div className={`flex flex-col gap-3 ${isSidebarCollapsed ? "items-center px-3" : "px-4"}`}>
+        {profile && (
+          <div className={`flex items-center gap-2.5 ${isSidebarCollapsed ? "" : "px-2"}`} title={profile.businessName}>
+            <div className="h-8 w-8 shrink-0 rounded-full bg-[#EAF2ED] text-brand-primary text-[13px] font-semibold flex items-center justify-center">
+              {initialsOf(profile.businessName)}
             </div>
+            {!isSidebarCollapsed && (
+              <div className="min-w-0">
+                <p className="text-[13px] font-medium text-brand-text truncate">{profile.businessName}</p>
+                <p className="text-xs text-brand-muted truncate">Mi tienda</p>
+              </div>
+            )}
           </div>
         )}
+        <button
+          onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          className={`flex items-center rounded-[10px] text-xs text-brand-muted hover:text-brand-text hover:bg-white/70 cursor-pointer transition-colors ${
+            isSidebarCollapsed ? "h-10 w-10 justify-center" : "h-9 gap-2 px-3 self-start"
+          }`}
+          title={isSidebarCollapsed ? "Expandir menú" : "Colapsar menú"}
+          aria-label={isSidebarCollapsed ? "Expandir menú" : "Colapsar menú"}
+          id={isSidebarCollapsed ? "expand-sidebar-btn" : "collapse-sidebar-btn"}
+        >
+          {isSidebarCollapsed ? <PanelLeftOpen size={18} strokeWidth={1.8} /> : <><PanelLeftClose size={18} strokeWidth={1.8} /> Ocultar menú</>}
+        </button>
       </div>
-    );
-  }
-
-  return (
-    <div className="flex-1 flex flex-col justify-between p-4 space-y-6 overflow-y-auto">
-      <div className="space-y-6">
-        <div className="flex justify-end px-3">
-          <button
-            onClick={() => setIsSidebarCollapsed(true)}
-            className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 cursor-pointer transition-all active:scale-95"
-            title="Colapsar menú"
-            id="collapse-sidebar-btn"
-          >
-            <ChevronLeft size={18} />
-          </button>
-        </div>
-
-        {sections.map((sec, idx) => (
-          <div key={idx} className="space-y-2">
-            <span className="text-[9px] font-bold tracking-widest text-white/50 uppercase px-3 block">
-              {sec.title}
-            </span>
-            <div className="space-y-0.5">
-              {sec.items.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer group ${
-                      isActive
-                        ? "bg-[#2E3A2E] text-white shadow-xs font-bold"
-                        : "text-white/70 hover:text-white hover:bg-white/10"
-                    }`}
-                    id={`sidebar-link-${item.id}`}
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <Icon size={24} className={isActive ? "text-white" : "text-white/80 group-hover:text-white"} />
-                      {item.label}
-                    </span>
-                    {isActive && <ChevronRight size={12} className="opacity-80" />}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {profile && (
-        <div className="rounded-2xl border border-white/10 bg-[#2E3A2E] p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] font-bold text-white uppercase tracking-wider">Negocio Activo</span>
-          </div>
-          <div className="space-y-1">
-            <p className="text-xs font-bold text-white truncate">{profile.businessName}</p>
-            <p className="text-[9px] text-white/60 truncate">{profile.address || "Sin dirección"}</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

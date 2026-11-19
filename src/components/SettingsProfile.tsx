@@ -48,7 +48,7 @@ export default function SettingsProfile({
   handleGuardarConfiguracionPerfil
 }: SettingsProfileProps) {
   return (
-    <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs space-y-6">
+    <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-6">
       <h3 className="font-bold text-brand-text text-sm border-b border-brand-border pb-3">Editar Información de la Tienda</h3>
       <form onSubmit={handleGuardarConfiguracionPerfil} className="space-y-4">
         {/* Logo del Negocio */}
@@ -60,7 +60,7 @@ export default function SettingsProfile({
                 <img 
                   src={logoUrl} 
                   alt="Logo del negocio" 
-                  className="h-20 w-20 rounded-2xl object-cover border border-brand-border bg-brand-bg shadow-xs" 
+                  className="h-20 w-20 rounded-2xl object-cover border border-brand-border bg-brand-bg" 
                 />
                 <button
                   type="button"
@@ -95,7 +95,7 @@ export default function SettingsProfile({
               />
               <label
                 htmlFor="logo-file-input"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-brand-border bg-white text-xs font-semibold text-brand-text hover:bg-brand-bg transition-colors cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-brand-border bg-white text-xs font-semibold text-brand-text hover:bg-brand-bg transition-colors cursor-pointer"
               >
                 <Plus size={12} />
                 Cargar Imagen

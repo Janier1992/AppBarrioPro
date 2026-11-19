@@ -9,15 +9,16 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  LayoutDashboard, 
-  Settings as SettingsIcon, 
+import {
+  Store,
   AlertTriangle,
   Boxes,
-  ShoppingCart,
-  CheckSquare,
-  DollarSign,
-  MoreVertical
+  Home,
+  Receipt,
+  ListChecks,
+  Wallet,
+  SlidersHorizontal,
+  Ellipsis
 } from "lucide-react";
 
 import { useApp } from "./hooks/use-app";
@@ -174,20 +175,17 @@ export default function App() {
       </AnimatePresence>
 
       {/* 1. PERSISTENT SIDEBAR FOR DESKTOP */}
-      <aside className={`hidden lg:flex ${isSidebarCollapsed ? "w-[72px]" : "w-[250px]"} bg-[#3A4A3A] border-r border-white/10 flex-col justify-between shrink-0 h-screen sticky top-0 transition-all duration-300`} id="desktop-sidebar">
+      <aside className={`hidden lg:flex ${isSidebarCollapsed ? "w-[72px]" : "w-[232px]"} bg-brand-bg border-r border-brand-border flex-col shrink-0 h-screen sticky top-0 transition-all duration-300`} id="desktop-sidebar">
         {/* Brand Header */}
-        <div className={`p-4 border-b border-white/10 flex items-center ${isSidebarCollapsed ? "justify-center" : "gap-3"}`}>
-          <div className="rounded-xl bg-[#2E3A2E] p-2 text-white">
-            <LayoutDashboard size={20} />
+        <div className={`px-5 pt-7 pb-5 flex items-center ${isSidebarCollapsed ? "justify-center" : "gap-2.5"}`}>
+          <div className="h-7 w-7 shrink-0 rounded-lg bg-brand-primary text-white flex items-center justify-center">
+            <Store size={16} strokeWidth={2} />
           </div>
           {!isSidebarCollapsed && (
-            <div>
-              <h1 className="font-extrabold text-base text-white tracking-tight">{APP_NAME}</h1>
-              <span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">Gestión Local</span>
-            </div>
+            <h1 className="font-semibold text-lg text-brand-text tracking-tight">{APP_NAME}</h1>
           )}
         </div>
-        
+
         {/* Navigation links */}
         <AppSidebar
           activeTab={activeTab}
@@ -231,7 +229,7 @@ export default function App() {
             className="bg-amber-50 hover:bg-amber-100/80 border-b border-amber-100 px-6 py-2.5 text-amber-800 text-[11px] font-medium flex items-center justify-between gap-4 animate-in slide-in-from-top duration-300 shrink-0 cursor-pointer transition-colors"
           >
             <span className="flex items-center gap-1.5">
-              <AlertTriangle size={14} className="text-amber-500 flex-shrink-0 animate-bounce" />
+              <AlertTriangle size={14} className="text-amber-600 flex-shrink-0" />
               Atención: Tienes {lowStockItems.length} productos con inventario críticamente bajo.
             </span>
             <button
@@ -320,18 +318,18 @@ export default function App() {
         </div>
 
         {/* Footer */}
-        <footer className="border-t border-brand-border py-4 px-6 pb-24 lg:pb-4 text-center text-[10px] text-brand-muted bg-white shrink-0">
+        <footer className="py-4 px-6 pb-24 lg:pb-4 text-center text-[11px] text-brand-muted shrink-0">
           &copy; {new Date().getFullYear()} {APP_NAME}. {APP_TAGLINE}
         </footer>
       </div>
 
       {/* 3. FIXED BOTTOM NAVIGATION BAR FOR MOBILE */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#3A4A3A] border-t border-white/10 h-[56px] flex items-center justify-around px-2 lg:hidden shadow-xl" id="mobile-bottom-nav">
+      <nav aria-label="Principal" className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-brand-border grid grid-cols-5 px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden" id="mobile-bottom-nav">
         {[
-          { id: "dashboard", label: "Panel", icon: LayoutDashboard },
+          { id: "dashboard", label: "Inicio", icon: Home },
+          { id: "sales", label: "Ventas", icon: Receipt },
           { id: "inventory", label: "Inventario", icon: Boxes },
-          { id: "sales", label: "Ventas", icon: ShoppingCart },
-          { id: "checklist", label: "Checklist", icon: CheckSquare },
+          { id: "debts", label: "Deudas", icon: Wallet },
         ].map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -342,22 +340,14 @@ export default function App() {
                 setActiveTab(item.id as any);
                 setIsMobileMoreOpen(false);
               }}
-              className="flex flex-col items-center justify-center flex-1 py-1 h-full cursor-pointer transition-all active:scale-95"
+              aria-current={isActive ? "page" : undefined}
+              className={`flex flex-col items-center justify-center gap-1 min-h-[52px] rounded-xl text-[11px] cursor-pointer transition-colors ${
+                isActive ? "text-brand-primary font-semibold" : "text-brand-muted font-medium"
+              }`}
               id={`mobile-nav-${item.id}`}
             >
-              <Icon 
-                size={24} 
-                className={`transition-colors duration-150 ${
-                  isActive ? "text-[#4CAF50] scale-105" : "text-white/70"
-                }`} 
-              />
-              <span 
-                className={`text-[9px] mt-0.5 transition-colors duration-150 font-semibold ${
-                  isActive ? "text-[#4CAF50] font-bold" : "text-white/60"
-                }`}
-              >
-                {item.label}
-              </span>
+              <Icon size={22} strokeWidth={1.8} />
+              <span>{item.label}</span>
             </button>
           );
         })}
@@ -365,82 +355,63 @@ export default function App() {
         {/* More Button */}
         <button
           onClick={() => setIsMobileMoreOpen(prev => !prev)}
-          className="flex flex-col items-center justify-center flex-1 py-1 h-full cursor-pointer transition-all active:scale-95 animate-none"
+          aria-expanded={isMobileMoreOpen}
+          className={`flex flex-col items-center justify-center gap-1 min-h-[52px] rounded-xl text-[11px] cursor-pointer transition-colors ${
+            isMobileMoreOpen || activeTab === "checklist" || activeTab === "settings"
+              ? "text-brand-primary font-semibold"
+              : "text-brand-muted font-medium"
+          }`}
           id="mobile-nav-more"
         >
-          <MoreVertical 
-            size={24} 
-            className={`transition-colors duration-150 ${
-              isMobileMoreOpen || activeTab === "debts" || activeTab === "settings"
-                ? "text-[#4CAF50] scale-105"
-                : "text-white/70"
-            }`} 
-          />
-          <span 
-            className={`text-[9px] mt-0.5 transition-colors duration-150 font-semibold ${
-              isMobileMoreOpen || activeTab === "debts" || activeTab === "settings"
-                ? "text-[#4CAF50] font-bold"
-                : "text-white/60"
-            }`}
-          >
-            Más
-          </span>
+          <Ellipsis size={22} strokeWidth={1.8} />
+          <span>Más</span>
         </button>
 
-        {/* Floating "Más" Popover Menu */}
+        {/* Menú "Más": Tareas y Ajustes */}
         <AnimatePresence>
           {isMobileMoreOpen && (
             <>
-              {/* Backdrop */}
-              <div 
-                className="fixed inset-0 bg-black/30 z-30 lg:hidden"
+              <div
+                className="fixed inset-0 bg-black/20 z-30 lg:hidden"
                 onClick={() => setIsMobileMoreOpen(false)}
               />
-              {/* Popover */}
               <motion.div
-                initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
                 transition={{ duration: 0.12 }}
-                className="fixed bottom-[64px] right-4 z-40 w-48 bg-[#3A4A3A] border border-white/10 rounded-2xl shadow-2xl overflow-hidden divide-y divide-white/5"
+                className="fixed bottom-[76px] right-4 z-40 w-52 bg-white border border-brand-border rounded-2xl shadow-lg overflow-hidden"
                 id="mobile-more-popover"
               >
-                <button
-                  onClick={() => {
-                    setActiveTab("debts");
-                    setIsMobileMoreOpen(false);
-                  }}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-left text-xs font-semibold cursor-pointer transition-colors ${
-                    activeTab === "debts"
-                      ? "bg-[#2E3A2E] text-[#4CAF50]"
-                      : "text-white/80 hover:text-white hover:bg-white/5"
-                  }`}
-                  id="mobile-popover-debts"
-                >
-                  <DollarSign size={18} />
-                  Deudas
-                </button>
-                <button
-                  onClick={() => {
-                    setActiveTab("settings");
-                    setIsMobileMoreOpen(false);
-                  }}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-left text-xs font-semibold cursor-pointer transition-colors ${
-                    activeTab === "settings"
-                      ? "bg-[#2E3A2E] text-[#4CAF50]"
-                      : "text-white/80 hover:text-white hover:bg-white/5"
-                  }`}
-                  id="mobile-popover-settings"
-                >
-                  <SettingsIcon size={18} />
-                  Ajustes de Negocio
-                </button>
+                {[
+                  { id: "checklist", label: "Tareas", icon: ListChecks },
+                  { id: "settings", label: "Ajustes", icon: SlidersHorizontal },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveTab(item.id as any);
+                        setIsMobileMoreOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 min-h-[48px] text-left text-sm cursor-pointer transition-colors ${
+                        isActive ? "text-brand-primary font-semibold bg-[#EAF2ED]" : "text-brand-text hover:bg-brand-bg"
+                      }`}
+                      id={`mobile-popover-${item.id}`}
+                    >
+                      <Icon size={18} strokeWidth={1.8} />
+                      {item.label}
+                    </button>
+                  );
+                })}
               </motion.div>
             </>
           )}
         </AnimatePresence>
       </nav>
-      
+
       {/* Floating AI Assistant Chat Bot */}
       <AIAssistantChat products={products} sales={sales} userId={user.uid} geminiApiKey={profile?.geminiApiKey} />
 

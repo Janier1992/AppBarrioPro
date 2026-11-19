@@ -1,7 +1,7 @@
 import React from "react";
 import { Product, BusinessProfile } from "../types";
 import { useSettings } from "../hooks/use-settings";
-import { Settings as SettingsIcon, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import SettingsProfile from "./SettingsProfile";
 import SettingsCatalog from "./SettingsCatalog";
 import SettingsSecurity from "./SettingsSecurity";
@@ -88,11 +88,8 @@ export default function Settings({
   return (
     <div className="space-y-6" id="settings-container">
       <div className="space-y-1">
-        <h2 className="text-xl font-bold text-brand-text flex items-center gap-2">
-          <SettingsIcon size={22} className="text-brand-muted" />
-          Ajustes de Cuenta y Negocio
-        </h2>
-        <p className="text-xs text-brand-muted">Configura tu perfil, maneja tu catálogo de productos y gestiona la seguridad de tus datos.</p>
+        <h2 className="text-[28px] sm:text-3xl font-semibold tracking-tight text-brand-text">Ajustes</h2>
+        <p className="text-sm text-brand-muted">Datos de tu tienda, seguridad y preferencias.</p>
       </div>
 
       {!isPwaInstalled && deferredInstallPrompt && (

@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, Plus } from "lucide-react";
+import { Search } from "lucide-react";
 import { Product } from "../types";
 import { showErrorToast } from "../lib/toast";
 
@@ -29,20 +29,17 @@ export default function POSCatalog({
   setActiveCatalogIndex
 }: POSCatalogProps) {
   return (
-    <div className="p-5 space-y-4">
-      <div className="space-y-1">
-        <h4 className="text-xs font-extrabold text-brand-text uppercase tracking-wider">1. Buscar Productos</h4>
-        <p className="text-[10px] text-brand-muted">Filtra por categoría o busca por nombre. Usa las flechas ↑↓ y presiona Enter para agregar.</p>
-      </div>
-
+    <div className="space-y-5">
       {/* Search Input */}
       <div className="relative">
-        <span className="absolute left-3 top-2.5 text-brand-muted">
-          <Search size={14} />
+        <span className="absolute left-4 top-3.5 text-brand-muted">
+          <Search size={18} strokeWidth={1.8} />
         </span>
+        <label htmlFor="pos-search" className="sr-only">Buscar producto</label>
         <input
-          type="text"
-          placeholder="Buscar por nombre o SKU..."
+          id="pos-search"
+          type="search"
+          placeholder="Buscar por nombre o código"
           value={catalogSearch}
           onChange={e => handleCatalogSearchChange(e.target.value)}
           onKeyDown={e => {
@@ -68,21 +65,21 @@ export default function POSCatalog({
               }
             }
           }}
-          className="w-full rounded-xl border border-brand-border pl-9 pr-3.5 py-2 text-xs bg-brand-bg text-brand-text focus:bg-white focus:border-brand-primary focus:outline-hidden"
+          className="w-full h-11 rounded-xl border border-[#E2E1DB] pl-11 pr-4 text-sm bg-white text-brand-text focus:border-brand-primary focus:outline-hidden"
         />
       </div>
 
-      {/* Categories Scrollable Row */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+      {/* Categorías */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {catalogCategories.map(cat => (
           <button
             key={cat}
             type="button"
             onClick={() => handleCategoryChange(cat)}
-            className={`px-3 py-1 rounded-full text-[10px] font-bold shrink-0 transition-all cursor-pointer border ${
+            className={`h-9 px-4 rounded-full text-[13px] shrink-0 transition-colors cursor-pointer border ${
               selectedCatalogCategory === cat
-                ? "bg-brand-primary/15 border-brand-primary/30 text-brand-primary font-black"
-                : "bg-slate-50 border-brand-border/60 text-brand-muted hover:bg-slate-100"
+                ? "bg-brand-text border-brand-text text-white font-medium"
+                : "bg-white border-[#E2E1DB] text-brand-text hover:bg-brand-bg"
             }`}
           >
             {cat}
@@ -90,82 +87,53 @@ export default function POSCatalog({
         ))}
       </div>
 
-      {/* Catalog Products List */}
-      <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
-        {filteredCatalogProducts.length === 0 ? (
-          <div className="text-center py-12 text-xs text-brand-muted space-y-1">
-            <p className="font-semibold">No se encontraron productos</p>
-            <p className="text-[10px] text-brand-muted/70">Asegúrate de registrar stock en Inventario.</p>
-          </div>
-        ) : (
-          filteredCatalogProducts.map((p, idx) => {
+      {/* Productos en tarjetas grandes y fáciles de tocar */}
+      {filteredCatalogProducts.length === 0 ? (
+        <div className="text-center py-16 text-sm text-brand-muted space-y-1">
+          <p className="font-medium text-brand-text">No se encontraron productos</p>
+          <p className="text-[13px]">Registra stock en Inventario para empezar a vender.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3.5">
+          {filteredCatalogProducts.map((p, idx) => {
             const inCart = cart.find(item => item.product.id === p.id);
             const currentQty = inCart ? inCart.quantity : 0;
             const remainingStock = p.stock - currentQty;
             const isOutOfStock = remainingStock <= 0;
             const isActive = idx === activeCatalogIndex;
+            const isLow = !isOutOfStock && remainingStock <= Math.max(1, Math.round((p.minStock ?? 5) * 0.3));
 
             return (
-              <div
+              <button
                 key={p.id}
+                type="button"
+                disabled={isOutOfStock}
                 onClick={() => {
-                  if (!isOutOfStock) {
-                    handleAddToCart(p);
-                    setActiveCatalogIndex(idx);
-                  }
+                  handleAddToCart(p);
+                  setActiveCatalogIndex(idx);
                 }}
-                className={`flex items-center justify-between p-2.5 rounded-xl border transition-all cursor-pointer group ${
+                className={`text-left flex flex-col gap-3.5 min-h-[112px] rounded-2xl border bg-white p-4 transition-colors cursor-pointer ${
                   isOutOfStock
-                    ? "opacity-50 bg-slate-50/50 border-dashed border-brand-border/40 cursor-not-allowed"
+                    ? "opacity-50 cursor-not-allowed border-dashed border-brand-border"
                     : isActive
-                      ? "bg-brand-primary/10 border-brand-primary ring-2 ring-brand-primary/10"
-                      : "bg-brand-bg hover:bg-brand-primary/5 hover:border-brand-primary/30 border-transparent"
+                      ? "border-brand-primary ring-2 ring-brand-primary/15"
+                      : "border-brand-border hover:border-brand-primary/40"
                 }`}
               >
-                <div className="space-y-0.5 pr-2 min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5">
-                    <p className="text-xs font-bold text-brand-text truncate group-hover:text-brand-primary transition-colors">
-                      {p.name}
-                    </p>
-                    {isActive && !isOutOfStock && (
-                      <span className="text-[8px] bg-brand-primary text-white px-1 py-0.5 rounded font-black font-mono shrink-0 animate-pulse">
-                        ↵ ENTER
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1.5 text-[9px] text-brand-muted">
-                    <span className="bg-white border border-brand-border/40 px-1.5 py-0.5 rounded-md font-bold">
-                      {p.category}
-                    </span>
-                    <span>SKU: {p.sku || "N/A"}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 shrink-0">
-                  <div className="text-right">
-                    <p className="text-xs font-mono font-black text-brand-text">
-                      ${p.price.toLocaleString("es-CO")}
-                    </p>
-                    <p className="text-[9px] text-brand-muted font-semibold">
-                      {isOutOfStock ? "Agotado" : `${remainingStock} disp.`}
-                    </p>
-                  </div>
-
-                  <div className={`p-1.5 rounded-lg border transition-all ${
-                    isOutOfStock 
-                      ? "bg-slate-100 text-slate-400 border-slate-200" 
-                      : isActive
-                        ? "bg-brand-primary text-white border-brand-primary shadow-2xs"
-                        : "bg-white text-brand-primary border-brand-border shadow-2xs group-hover:bg-brand-primary group-hover:text-white group-hover:border-brand-primary"
-                  }`}>
-                    <Plus size={12} />
-                  </div>
-                </div>
-              </div>
+                <span className="text-sm font-medium leading-snug text-brand-text">{p.name}</span>
+                <span className="mt-auto flex items-baseline justify-between gap-2">
+                  <span className="text-base font-semibold tabular-nums text-brand-text">
+                    ${p.price.toLocaleString("es-CO")}
+                  </span>
+                  <span className={`text-xs ${isLow || isOutOfStock ? "text-[#A24A16] font-semibold" : "text-brand-muted"}`}>
+                    {isOutOfStock ? "Agotado" : isLow ? `Quedan ${remainingStock}` : `${remainingStock} en stock`}
+                  </span>
+                </span>
+              </button>
             );
-          })
-        )}
-      </div>
+          })}
+        </div>
+      )}
     </div>
   );
 }

@@ -34,22 +34,22 @@ export default function SalesHistory({
   return (
     <div className="space-y-6">
       {/* Daily Summary Box */}
-      <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-brand-border p-6 space-y-4">
         <div className="flex items-center gap-2 border-b border-brand-border pb-3">
           <TrendingUp size={18} className="text-brand-primary" />
-          <h3 className="font-extrabold text-sm text-brand-text">Resumen Diario de Ventas</h3>
+          <h3 className="font-semibold text-sm text-brand-text">Resumen Diario de Ventas</h3>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-emerald-50/50 rounded-xl p-4 border border-emerald-100/50">
             <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">Total Ventas de Hoy</span>
-            <span className="text-xl font-black text-emerald-700 font-mono block mt-1">
+            <span className="text-xl font-bold text-emerald-700 font-mono block mt-1">
               ${todaySalesData.total.toLocaleString("es-CO", { minimumFractionDigits: 2 })}
             </span>
           </div>
           <div className="bg-brand-bg rounded-xl p-4 border border-brand-border">
             <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider block">Transacciones de Hoy</span>
-            <span className="text-xl font-black text-brand-text font-mono block mt-1">
+            <span className="text-xl font-bold text-brand-text font-mono block mt-1">
               {todaySalesData.count} ventas
             </span>
           </div>
@@ -57,11 +57,11 @@ export default function SalesHistory({
       </div>
 
       {/* Last 10 Sales List */}
-      <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-brand-border p-6 space-y-4">
         <div className="flex items-center gap-2 border-b border-brand-border pb-3 justify-between">
           <div className="flex items-center gap-2">
             <ClipboardList size={18} className="text-brand-primary" />
-            <h3 className="font-extrabold text-sm text-brand-text">Últimas 10 Ventas Registradas</h3>
+            <h3 className="font-semibold text-sm text-brand-text">Últimas 10 Ventas Registradas</h3>
           </div>
           <span className="text-[10px] text-brand-muted uppercase tracking-wider font-bold">Historial en Vivo</span>
         </div>
@@ -76,7 +76,7 @@ export default function SalesHistory({
               <div key={sale.id || i} className="py-3.5 flex items-center justify-between gap-4 border-b last:border-b-0 border-slate-50">
                 <div className="space-y-1.5 min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-extrabold text-brand-text">
+                    <span className="text-xs font-semibold text-brand-text">
                       {sale.items && sale.items.length > 0 ? (
                         sale.items.length === 1 ? (
                           sale.items[0].name
@@ -115,7 +115,7 @@ export default function SalesHistory({
                 </div>
 
                 <div className="shrink-0 text-right flex items-center gap-3">
-                  <span className="font-mono font-black text-brand-text text-sm block">
+                  <span className="font-mono font-bold text-brand-text text-sm block">
                     ${sale.total.toLocaleString("es-CO", { minimumFractionDigits: 2 })}
                   </span>
                   <div className="flex items-center gap-1">
@@ -144,18 +144,18 @@ export default function SalesHistory({
       </div>
 
       {/* weekly sales chart */}
-      <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-xs space-y-6" id="weekly-sales-chart-container">
+      <div className="bg-white rounded-2xl border border-brand-border p-6 space-y-6" id="weekly-sales-chart-container">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-brand-border pb-4">
           <div className="flex items-center gap-2">
             <BarChart3 size={18} className="text-brand-primary" />
             <div>
-              <h3 className="font-extrabold text-sm text-brand-text">Análisis de Ventas Diarias (Semana Actual)</h3>
+              <h3 className="font-semibold text-sm text-brand-text">Análisis de Ventas Diarias (Semana Actual)</h3>
               <p className="text-[11px] text-brand-muted">Monitorea y optimiza el flujo de ingresos diario en tu tienda.</p>
             </div>
           </div>
           <div className="bg-brand-primary/5 border border-brand-primary/10 px-3 py-1.5 rounded-xl text-right">
             <span className="text-[10px] font-bold text-brand-primary uppercase block tracking-wider">Total esta Semana</span>
-            <span className="font-mono text-xs font-extrabold text-brand-text">
+            <span className="font-mono text-xs font-semibold text-brand-text">
               ${totalWeeklySales.toLocaleString("es-CO", { minimumFractionDigits: 2 })}
             </span>
           </div>
@@ -169,8 +169,8 @@ export default function SalesHistory({
             >
               <defs>
                 <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-brand-primary, #4A5A40)" stopOpacity={0.9}/>
-                  <stop offset="95%" stopColor="var(--color-brand-primary, #4A5A40)" stopOpacity={0.4}/>
+                  <stop offset="5%" stopColor="var(--color-brand-primary, #2F6B4F)" stopOpacity={0.9}/>
+                  <stop offset="95%" stopColor="var(--color-brand-primary, #2F6B4F)" stopOpacity={0.4}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
