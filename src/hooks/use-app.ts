@@ -25,7 +25,6 @@ export function useApp() {
   const [authLoading, setAuthLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"dashboard" | "inventory" | "sales" | "checklist" | "debts" | "settings">("dashboard");
   const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   // PWA Install Prompt
@@ -45,16 +44,6 @@ export function useApp() {
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
     };
-  }, []);
-
-  // Screen size detection
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // App States sourced from Firestore
@@ -314,7 +303,6 @@ export function useApp() {
     setActiveTab,
     isMobileMoreOpen,
     setIsMobileMoreOpen,
-    isMobile,
     isProfileDropdownOpen,
     setIsProfileDropdownOpen,
     deferredInstallPrompt,

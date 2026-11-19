@@ -93,7 +93,6 @@ export default function Inventory({
     handleDragOver,
     handleDrop,
     handleFileChange,
-    processFile,
     handleDescargarPlantilla,
     handleIniciarCargaMasiva,
     handleCargarDatosEdicion,

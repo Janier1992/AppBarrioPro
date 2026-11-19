@@ -1,93 +1,70 @@
 # Manual de Usuario - Tiendly
 
-Bienvenido a **Tiendly**, el sistema de gestión inteligente diseñado específicamente para tiendas de barrio, abastos y comercios locales. 
+Bienvenido a **Tiendly**, el sistema de gestión pensado para tiendas de barrio, abastos y comercios locales.
 
-Este manual te guiará paso a paso para que puedas configurar tu negocio, registrar productos, realizar ventas y llevar el control de tus finanzas (deudas y créditos) de forma sencilla.
-
----
-
-## 1. Inicio de Sesión y Registro
-
-Al abrir la aplicación, te encontrarás con la pantalla de acceso.
-
-*   **Ingresar**: Si ya tienes cuenta, escribe tu correo y contraseña.
-*   **Crear Cuenta**: Si eres nuevo, haz clic en "Crear Cuenta". Ingresa el **Nombre de tu Negocio**, un **Correo Electrónico** y una **Contraseña**. Al registrarte, se creará tu base de datos privada automáticamente.
-
-> **Nota:** Para que el inicio de sesión funcione correctamente en producción, el sistema debe estar conectado correctamente a tu base de datos de InsForge.
+Este manual te guía para registrar productos, vender y llevar el control de tus fiados de forma sencilla. La versión con capturas de pantalla está en `docs/Manual-de-Usuario-Tiendly.pdf`.
 
 ---
 
-## 2. Inicio (Dashboard)
+## 1. Iniciar sesión y navegación
 
-Una vez ingreses, verás el **Inicio**, que es el corazón de tu negocio.
+*   **Ingresar**: escribe tu correo y contraseña. Toca el **ojo** del campo para ver lo que escribes.
+*   **Crear Cuenta**: ingresa el nombre de tu negocio, tu correo y una contraseña de al menos 6 caracteres. Confirma tu correo antes de ingresar.
+*   **¿Olvidaste tu contraseña?**: te enviamos un código por correo para crear una nueva.
 
-Aquí podrás observar de un vistazo:
-*   **Ventas de Hoy**: El total de dinero ingresado en el día.
-*   **Deudas Pendientes**: El dinero que te deben los clientes.
-*   **Inventario Crítico**: Cuántos productos están a punto de agotarse.
-
-### Venta Rápida
-En la parte superior, encontrarás la opción de **Venta Rápida**.
-1. Busca un producto por nombre o escanea su código de barras.
-2. Selecciona la cantidad que el cliente está llevando.
-3. Haz clic en **Cobrar**. El sistema descontará automáticamente el producto del inventario y sumará el valor a las ventas del día.
+**Navegación.** Tiendly tiene cuatro destinos para el uso diario: **Hoy, Productos, Vender y Fiados**.
+*   En el **celular** están en la barra inferior (Vender es el botón grande del centro). El botón **Más** abre Tareas, Ajustes y el Asistente IA, además de tema claro/oscuro, bloqueo con PIN y cerrar sesión.
+*   En el **computador** están en la barra superior; el menú de tu tienda (arriba a la derecha) contiene lo mismo que "Más".
 
 ---
 
-## 3. Inventario y Catálogo
+## 2. Hoy
 
-En la sección **Inventario** (menú izquierdo), podrás gestionar todo lo que vendes.
+Responde una pregunta: ¿cómo va el día?
 
-*   **Agregar Producto**: Haz clic en el botón `+ Nuevo Producto`. Ingresa el nombre, categoría, precio de compra (costo), precio de venta y la cantidad que tienes en stock (existencias).
-*   **Alertas de Stock**: Si un producto llega a 0 o a la cantidad mínima que configuraste, aparecerá resaltado en rojo como "Stock Crítico" para que recuerdes pedirle a tu proveedor.
-*   **Carga Masiva**: Si tienes un archivo Excel con tus productos, puedes usar el botón de **Carga Masiva** para importarlos todos al mismo tiempo.
-
----
-
-## 4. Ventas
-
-En **Ventas** podrás ver el historial completo de todas las transacciones realizadas.
-
-*   **Historial**: Muestra la fecha, hora, productos vendidos y el total de cada venta.
-*   **Filtros**: Puedes filtrar por día, semana o mes para ver cuánto vendiste en un periodo específico.
-*   **Anulación**: Si te equivocaste en una venta, puedes anularla. Esto devolverá el producto al inventario automáticamente.
+*   **Hoy vendiste**: total del día, número de ventas y comparación con ayer.
+*   **Nueva venta**: te lleva a Vender.
+*   **Para hoy**: una sola lista, ordenada por urgencia, con fiados por cobrar (**Cobrar**), productos que se acaban (**Pedir**) y tareas pendientes (**Listo**, que la marca como hecha).
+*   **Pregúntale a Tiendly**: abre el asistente de IA.
+*   **Ver gráficos y reporte**: historial de ventas, productos más vendidos y exportación del reporte del mes en PDF.
 
 ---
 
-## 5. Gestión de Deudas (Fiado)
+## 3. Productos
 
-Sabemos que en las tiendas de barrio el "fiado" es común. La sección **Deudas** te ayuda a no perder dinero.
-
-*   **Registrar Deuda**: Haz clic en `+ Nueva Deuda`. Ingresa el nombre del cliente, su teléfono (opcional) y el monto que debe.
-*   **Abonos**: Cuando el cliente pague una parte, haz clic en la deuda y registra un "Abono". El saldo se actualizará automáticamente.
-*   **Saldar**: Cuando el cliente pague todo, marca la deuda como "Pagada". Pasará al historial y ya no sumará al total de deudas pendientes.
-
----
-
-## 6. Ajustes
-
-En la pestaña **Ajustes** puedes personalizar la aplicación:
-
-*   **Perfil**: Cambia el nombre de tu tienda, dirección y horarios de atención.
-*   **Alertas**: Define a partir de cuántas unidades un producto debe marcarse como "Stock Crítico" (por ejemplo, avisarme cuando queden solo 5 leches).
-*   **Seguridad**: Configura un PIN de seguridad para que nadie pueda borrar productos o deudas sin tu autorización.
-*   **Tema**: Cambia entre modo claro (blanco) y modo oscuro (negro) según tu preferencia visual.
+*   **Nuevo producto** agrega un artículo; **Importar Excel** carga muchos de una vez.
+*   El filtro **Se acaban** muestra los productos con 30 % o menos de su stock mínimo (se marcan "Quedan N" en naranja).
+*   En el celular, **+ Reponer** abre la edición del producto para actualizar su stock. En el computador, la tabla permite ajustar el stock con −/+, editar y eliminar.
+*   **Ver cifras del inventario** muestra el valor estimado y la inversión en stock.
 
 ---
 
-## 7. Instalación en tu Celular (PWA)
+## 4. Vender y Cobrar
 
-Tiendly está diseñado para funcionar como una aplicación en tu teléfono sin necesidad de descargarla de una tienda de apps.
+1.  Busca el producto o tócalo en las fichas; cada toque suma una unidad.
+2.  En el celular, toca la barra **"N productos · $ total · Cobrar"**. En el computador, el carrito siempre está a la derecha.
+3.  Ajusta cantidades, elige la **forma de pago** (Efectivo, Tarjeta, Transferencia o **Fiado**) y toca **Cobrar**.
+4.  Con **Fiado** debes indicar el cliente y la fecha de pago; la cuenta aparece sola en Fiados.
 
-**En Android (Chrome):**
-1. Abre la página de la aplicación.
-2. En la pantalla de inicio de sesión verás un botón azul que dice **"Instalar App en este Dispositivo"**.
-3. Haz clic en él y confirma. El icono de tu negocio aparecerá en la pantalla de tu celular.
-
-**En iPhone (Safari):**
-1. Abre la página en Safari.
-2. Toca el botón de "Compartir" (el cuadrado con la flecha hacia arriba).
-3. Selecciona **"Agregar a inicio"**. 
+El stock se descuenta automáticamente y puedes imprimir el recibo en PDF. **Ver ventas registradas** (al final) permite editar o eliminar ventas y exportar las del mes.
 
 ---
-*Fin del Manual. Si tienes dudas adicionales, puedes utilizar el Asistente Inteligente ubicado en la esquina superior derecha de la aplicación.*
+
+## 5. Fiados
+
+*   Muestra **"Te deben $ X"** y la lista de clientes con su saldo y vencimiento (primero las vencidas).
+*   **Nuevo fiado** registra una deuda a mano. **Cobrar** la marca como pagada.
+*   **Ya cobrados** guarda el historial y permite reabrir una cuenta.
+
+---
+
+## 6. Tareas y Ajustes (menú Más)
+
+*   **Tareas**: rutinas de apertura, operación y cierre. Las pendientes también salen en "Para hoy".
+*   **Ajustes**: perfil del negocio, catálogo, PIN de seguridad, notificaciones e instalación como app.
+
+---
+
+## 7. Asistente Tiendly AI
+
+Ábrelo con **Pregúntale a Tiendly** (en Hoy) o desde **Más → Asistente IA**. Tiene acceso a tu inventario y ventas reales para recomendar qué reponer, promociones y mejoras. Requiere tener la sesión iniciada.

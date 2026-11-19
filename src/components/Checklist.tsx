@@ -7,7 +7,7 @@
 
 import React, { useState } from "react";
 import { Task } from "../types";
-import { Plus, Check, Trash2, Edit2, CheckCircle2, Circle, RefreshCw } from "lucide-react";
+import { Plus, Trash2, Edit2, CheckCircle2, Circle, RefreshCw } from "lucide-react";
 import { db } from "../lib/insforge";
 import { useDialogs } from "../hooks/use-dialogs";
 import Dialogs from "./Dialogs";

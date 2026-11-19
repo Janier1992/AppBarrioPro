@@ -10,7 +10,6 @@
 
 import { createClient } from "@insforge/sdk";
 import insforgeConfig from "../../insforge-applet-config.json";
-import { Product, Sale, Task, Debt, BusinessProfile } from "../types";
 import { isSixDigitCode } from "./passwordReset";
 
 // Resolución de credenciales buscando primero las variables de entorno de Vite

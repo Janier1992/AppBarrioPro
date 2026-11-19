@@ -126,7 +126,7 @@ A continuación se detallan las principales funciones operativas del sistema con
 
 | Nombre de la Función | Ubicación | Propósito Técnico |
 | :--- | :--- | :--- |
-| `handleRegistrarVentaRapida` | `use-dashboard.ts` | Registra una venta rápida disminuyendo stock y subiendo la transacción a la base de datos. |
+| `registerSale` | `checkout.ts` | Registra una venta (descuenta stock, crea la venta y, si es fiado, la deuda). Lo usa el punto de venta (Vender). |
 | `handleCargarDatosDeDemostracion` | `use-dashboard.ts` | Carga stock inicial, checklist y transacciones ficticias para visualización realista. |
 | `handleAddTask` | `Checklist.tsx` | Valida, crea y registra una nueva tarea operativa diaria para el tendero. |
 | `handleToggleComplete` | `Checklist.tsx` | Invierte el estado de completado de una tarea diaria (`completed: true/false`). |

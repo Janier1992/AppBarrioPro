@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { 
   Sparkles, 
   ChevronRight, 
-  CheckCircle, 
   TrendingUp, 
   Smartphone, 
-  HelpCircle,
   Users
 } from "lucide-react";
 

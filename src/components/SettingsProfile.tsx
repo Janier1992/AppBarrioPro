@@ -1,6 +1,5 @@
 import React from "react";
 import { Trash2, ShoppingBag, Plus, Sparkles, Sun, Moon, RefreshCw } from "lucide-react";
-import { BusinessProfile } from "../types";
 
 interface SettingsProfileProps {
   businessName: string;
