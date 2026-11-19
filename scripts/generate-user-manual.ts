@@ -71,20 +71,20 @@ const sections: Section[] = [
       "La primera vez, toca \u201cCrear Cuenta\u201d, escribe el nombre de tu negocio, tu correo y una contraseña de al menos 6 caracteres.",
       "Revisa tu correo: te llegará un enlace de confirmación. Debes confirmarlo antes de poder ingresar.",
       "Ya confirmado, vuelve a la pantalla de \u201cIniciar Sesión\u201d con tu correo y contraseña.",
-      "Si tu navegador lo permite, puedes instalar Tiendly como una aplicación en tu dispositivo tocando \u201cInstalar App en este Dispositivo\u201d, para abrirla como cualquier otra app.",
+      "En el celular, la barra inferior te lleva a Inicio, Ventas, Inventario y Deudas; el botón \u201cMás\u201d abre Tareas y Ajustes. En el computador, el menú está a la izquierda. Si tu navegador lo permite, puedes instalar Tiendly como una aplicación en tu dispositivo tocando \u201cInstalar App en este Dispositivo\u201d, para abrirla como cualquier otra app.",
     ],
-    tip: "Guarda bien tu contraseña. Si compartes el dispositivo con empleados o familiares, configura además un PIN de 4 dígitos desde Ajustes de Negocio para proteger la información de tu caja.",
+    tip: "Guarda bien tu contraseña. Si compartes el dispositivo con empleados o familiares, configura además un PIN de 4 dígitos desde Ajustes para proteger la información de tu caja.",
     image: "00-login.png",
   },
   {
     badge: "MÓDULO 1",
-    title: "Panel de Control",
+    title: "Inicio",
     intro:
       "Es la pantalla principal: un vistazo rápido a cómo va tu negocio hoy. Aquí ves tus ventas del día comparadas con ayer, cuántos productos tienen stock crítico, el total de transacciones, y un gráfico con el historial de ventas de los últimos días.",
     steps: [
-      "\u201cRegistrar Venta\u201d abre un cobro rápido en efectivo, ideal para ventas de mostrador simples.",
-      "\u201cExportar Reporte PDF\u201d genera un informe completo con tus ventas del mes, el estado del inventario y las alertas de reposición.",
-      "La tarjeta \u201cInventario Crítico\u201d te muestra de un vistazo qué productos necesitan reabastecerse pronto.",
+      "\u201cRegistrar venta\u201d abre un cobro rápido en efectivo, ideal para ventas de mostrador simples.",
+      "\u201cExportar reporte\u201d genera un informe completo con tus ventas del mes, el estado del inventario y las alertas de reposición.",
+      "La tarjeta \u201cCon stock crítico\u201d te muestra de un vistazo qué productos necesitan reabastecerse pronto.",
       "Si es tu primera vez usando la app, puedes usar el botón \u201cSembrar Datos Demo\u201d para explorar Tiendly con información de ejemplo antes de cargar tu inventario real.",
     ],
     image: "01-dashboard.png",
@@ -95,9 +95,9 @@ const sections: Section[] = [
     intro:
       "Aquí administras todo tu catálogo de productos: nombre, categoría, SKU (código), stock disponible, costo y precio de venta. La app calcula automáticamente el valor de tu inventario y te avisa cuándo un producto está por agotarse.",
     steps: [
-      "\u201cNuevo Producto\u201d abre un formulario para agregar un artículo uno por uno.",
-      "\u201cCarga Masiva (Excel)\u201d te permite subir muchos productos de una sola vez desde una plantilla de Excel — ideal para arrancar con tu inventario completo.",
-      "El botón \u201cStock Crítico\u201d filtra únicamente los productos que necesitan reposición urgente (30% o menos de su stock mínimo configurado).",
+      "\u201cAgregar producto\u201d abre un formulario para agregar un artículo uno por uno.",
+      "\u201cImportar Excel\u201d te permite subir muchos productos de una sola vez desde una plantilla de Excel — ideal para arrancar con tu inventario completo.",
+      "El botón \u201cStock crítico\u201d filtra únicamente los productos que necesitan reposición urgente (30% o menos de su stock mínimo configurado).",
       "En cada fila puedes ajustar el stock rápidamente con los botones +/-, o editar/eliminar el producto con los íconos de la columna \u201cAcciones\u201d.",
       "Usa la barra de búsqueda o los filtros por categoría para encontrar productos específicos rápidamente.",
     ],
@@ -106,29 +106,29 @@ const sections: Section[] = [
   },
   {
     badge: "MÓDULO 3",
-    title: "Caja y Ventas",
+    title: "Ventas",
     intro:
-      "El punto de venta (POS) de Tiendly: aquí registras cada venta del día. A la izquierda buscas y agregas productos al carrito; a la derecha completas los datos del cobro.",
+      "El punto de venta (POS) de Tiendly: aquí registras cada venta del día. A la izquierda buscas y tocas los productos para agregarlos; a la derecha, el carrito siempre a la vista, completas los datos del cobro.",
     steps: [
       "Busca el producto por nombre o SKU, o navega por categoría, y tócalo (o presiona Enter) para agregarlo al carrito.",
       "Ajusta la cantidad de cada producto con los botones +/- del carrito.",
       "Elige el método de pago: Efectivo, Tarjeta, Transferencia o Fiado. Si eliges Fiado, deberás indicar el nombre del cliente y la fecha en que te pagará — esa cuenta aparecerá automáticamente en el módulo de Deudas.",
-      "Presiona \u201cRegistrar Venta\u201d para completar el cobro. El stock de cada producto se descuenta automáticamente.",
-      "En el panel derecho puedes ver tus últimas ventas, imprimir el recibo en PDF de cualquiera de ellas, editarlas o eliminarlas si te equivocaste.",
+      "Presiona \u201cCobrar\u201d para completar el cobro. El stock de cada producto se descuenta automáticamente.",
+      "Debajo del punto de venta puedes ver tus últimas ventas, imprimir el recibo en PDF de cualquiera de ellas, editarlas o eliminarlas si te equivocaste.",
     ],
     tip: "Usa las flechas ↑↓ y la tecla Enter en el buscador de productos para agregar artículos al carrito sin tocar la pantalla — muy útil si usas un lector de código de barras.",
     image: "03-sales.png",
   },
   {
     badge: "MÓDULO 4",
-    title: "Checklist Diario",
+    title: "Tareas",
     intro:
       "Una lista de tareas para tus rutinas del día a día: abrir la tienda, revisar vencimientos, cuadrar la caja, o cualquier pendiente operativo que no quieras olvidar.",
     steps: [
       "Escribe la tarea en el campo de texto y presiona \u201cAñadir Tarea\u201d.",
       "Toca el círculo junto a una tarea pendiente para marcarla como completada (y viceversa).",
       "Pasa el cursor sobre una tarea para ver los íconos de editar y eliminar.",
-      "Las tareas completadas quedan agrupadas en el panel derecho para que tengas un registro de lo que ya hiciste.",
+      "Las tareas completadas quedan agrupadas en la columna de la derecha para que tengas un registro de lo que ya hiciste.",
     ],
     image: "04-checklist.png",
   },
@@ -147,7 +147,7 @@ const sections: Section[] = [
   },
   {
     badge: "MÓDULO 6",
-    title: "Ajustes de Negocio",
+    title: "Ajustes",
     intro:
       "Configura los datos de tu negocio, gestiona tu catálogo, la seguridad de tu cuenta y tus preferencias de notificaciones.",
     steps: [
@@ -221,35 +221,35 @@ function buildHtml(): string {
   * { box-sizing: border-box; }
   body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; margin: 0; color: #212121; }
   .cover {
-    width: 210mm; height: 297mm; background: #3A4A3A; color: #fff;
+    width: 210mm; height: 297mm; background: #2F6B4F; color: #fff;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     page-break-after: always; text-align: center;
   }
   .cover h1 { font-size: 52px; margin: 0; font-weight: 800; }
   .cover h2 { font-size: 20px; font-weight: 400; margin: 10px 0 20px; }
-  .cover hr { width: 60px; border: none; border-top: 2px solid #4CAF50; margin: 0 0 20px; }
-  .cover p { font-size: 13px; color: #d7e0d7; margin: 2px 0; }
-  .cover .date { position: absolute; bottom: 25mm; font-size: 11px; color: #b4c9b4; }
+  .cover hr { width: 60px; border: none; border-top: 2px solid #7FBF9C; margin: 0 0 20px; }
+  .cover p { font-size: 13px; color: #ECEBE6; margin: 2px 0; }
+  .cover .date { position: absolute; bottom: 25mm; font-size: 11px; color: #CFE0D6; }
 
   .toc-page { width: 210mm; min-height: 297mm; padding: 25mm 15mm; page-break-after: always; }
-  .toc-page h1 { font-size: 24px; border-bottom: 2px solid #3A4A3A; padding-bottom: 8px; }
+  .toc-page h1 { font-size: 24px; border-bottom: 2px solid #2F6B4F; padding-bottom: 8px; }
   .toc-page ul { list-style: none; padding: 0; margin-top: 20px; }
   .toc-page li { font-size: 14px; font-weight: 600; padding: 7px 0; }
-  .toc-num { color: #3A4A3A; font-weight: 800; margin-right: 8px; }
+  .toc-num { color: #2F6B4F; font-weight: 800; margin-right: 8px; }
   .toc-note { margin-top: 30px; font-size: 10.5px; color: #6b7280; font-style: italic; }
 
   .module-page { width: 210mm; min-height: 297mm; page-break-after: always; position: relative; padding-bottom: 20mm; }
-  .module-header { background: #3A4A3A; color: #fff; padding: 12mm 15mm 8mm; }
-  .badge { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #c8e6c9; }
+  .module-header { background: #2F6B4F; color: #fff; padding: 12mm 15mm 8mm; }
+  .badge { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #EAF2ED; }
   .module-header h1 { font-size: 21px; margin: 4px 0 0; }
   .module-body { padding: 8mm 15mm 0; }
   .intro { font-size: 11.5px; line-height: 1.55; }
-  .module-body h3 { font-size: 12.5px; color: #3A4A3A; margin: 14px 0 6px; }
+  .module-body h3 { font-size: 12.5px; color: #2F6B4F; margin: 14px 0 6px; }
   .steps { padding-left: 5mm; margin: 0 0 10px; }
   .steps li { font-size: 10.5px; line-height: 1.5; margin-bottom: 5px; padding-left: 2px; }
-  .steps li::marker { color: #4CAF50; }
-  .tip { background: #f5f7f2; border: 1px solid #4CAF50; border-radius: 4px; padding: 8px 12px; margin-bottom: 10px; }
-  .tip-label { font-size: 10px; font-weight: 700; color: #3A4A3A; display: block; margin-bottom: 3px; }
+  .steps li::marker { color: #7FBF9C; }
+  .tip { background: #FAFAF8; border: 1px solid #7FBF9C; border-radius: 4px; padding: 8px 12px; margin-bottom: 10px; }
+  .tip-label { font-size: 10px; font-weight: 700; color: #2F6B4F; display: block; margin-bottom: 3px; }
   .tip p { font-size: 10px; margin: 0; line-height: 1.5; }
   .screenshot-frame { border: 1px solid #ddd; border-radius: 4px; overflow: hidden; margin-top: 6px; }
   .screenshot-frame img { width: 100%; display: block; }
