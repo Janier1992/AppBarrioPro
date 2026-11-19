@@ -147,6 +147,7 @@ export default function Settings({
         <div className="md:col-span-3">
           {activeSection === "profile" && (
             <SettingsProfile
+              userId={userId}
               businessName={businessName}
               setBusinessName={setBusinessName}
               address={address}
@@ -172,6 +173,7 @@ export default function Settings({
 
           {activeSection === "inventory" && (
             <SettingsCatalog
+              userId={userId}
               products={products}
               prodName={prodName}
               setProdName={setProdName}

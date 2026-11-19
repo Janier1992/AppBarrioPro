@@ -12,6 +12,7 @@ import { db } from "../lib/insforge";
 import { useDialogs } from "../hooks/use-dialogs";
 import Dialogs from "./Dialogs";
 import { showErrorToast } from "../lib/toast";
+import { BUSINESS_TYPES, loadBusinessType } from "../lib/businessTypes";
 
 interface ChecklistProps {
   tasks: Task[];
@@ -152,6 +153,23 @@ export default function Checklist({
     }
   };
 
+  const suggestedType = loadBusinessType(userId) ?? BUSINESS_TYPES[0];
+  const [addingSuggested, setAddingSuggested] = useState(false);
+
+  const handleAgregarSugeridas = async () => {
+    setAddingSuggested(true);
+    try {
+      for (const text of suggestedType.tasks) {
+        await db.addTask(userId, { text, completed: false, createdAt: new Date().toISOString() });
+      }
+    } catch (error) {
+      console.error("Error al agregar tareas sugeridas:", error);
+      showErrorToast("No se pudieron agregar las tareas sugeridas. Inténtalo de nuevo.");
+    } finally {
+      setAddingSuggested(false);
+    }
+  };
+
   return (
     <div className="space-y-6" id="checklist-container">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
@@ -192,6 +210,23 @@ export default function Checklist({
           Añadir Tarea
         </button>
       </form>
+
+      {tasks.length === 0 && (
+        <div className="rounded-2xl border border-brand-border bg-white p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="space-y-1">
+            <p className="text-[15px] font-medium">¿Empiezas con tareas sugeridas?</p>
+            <p className="text-[13px] text-brand-muted">Para {suggestedType.label.toLowerCase()}: {suggestedType.tasks.join(" · ")}</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleAgregarSugeridas}
+            disabled={addingSuggested}
+            className="shrink-0 h-11 px-5 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-medium cursor-pointer disabled:opacity-50"
+          >
+            {addingSuggested ? "Agregando..." : "Agregar las sugeridas"}
+          </button>
+        </div>
+      )}
 
       {/* Task Sections */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="checklist-grid">

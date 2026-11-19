@@ -9,4 +9,4 @@
 
 export const APP_NAME = "Tiendly";
 export const APP_AI_NAME = `${APP_NAME} AI`;
-export const APP_TAGLINE = "Herramientas sencillas para el comercio local.";
+export const APP_TAGLINE = "Herramientas sencillas para los negocios de barrio.";

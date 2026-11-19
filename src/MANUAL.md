@@ -11,6 +11,7 @@ Este manual te guía para registrar productos, vender y llevar el control de tus
 *   **Ingresar**: escribe tu correo y contraseña. Toca el **ojo** del campo para ver lo que escribes.
 *   **Crear Cuenta**: ingresa el nombre de tu negocio, tu correo y una contraseña de al menos 6 caracteres. Confirma tu correo antes de ingresar.
 *   **¿Olvidaste tu contraseña?**: te enviamos un código por correo para crear una nueva.
+*   **Tipo de negocio**: Tiendly sirve para tiendas, panaderías, fruver, ferreterías, papelerías, droguerías y otros negocios de barrio. Elige el tuyo en **Hoy** (o en Ajustes) para recibir sugerencias de categorías y tareas. Es opcional y no limita nada.
 
 **Navegación.** Tiendly tiene cuatro destinos para el uso diario: **Hoy, Productos, Vender y Fiados**.
 *   En el **celular** están en la barra inferior (Vender es el botón grande del centro). El botón **Más** abre Tareas, Ajustes y el Asistente IA, además de tema claro/oscuro, bloqueo con PIN y cerrar sesión.
@@ -33,6 +34,7 @@ Responde una pregunta: ¿cómo va el día?
 ## 3. Productos
 
 *   **Nuevo producto** agrega un artículo; **Importar Excel** carga muchos de una vez.
+*   La **categoría** se elige de las sugerencias de tu tipo de negocio o la escribes tú; al importar desde Excel se conserva la que pusiste.
 *   El filtro **Se acaban** muestra los productos con 30 % o menos de su stock mínimo (se marcan "Quedan N" en naranja).
 *   En el celular, **+ Reponer** abre la edición del producto para actualizar su stock. En el computador, la tabla permite ajustar el stock con −/+, editar y eliminar.
 *   **Ver cifras del inventario** muestra el valor estimado y la inversión en stock.
@@ -60,7 +62,7 @@ El stock se descuenta automáticamente y puedes imprimir el recibo en PDF. **Ver
 
 ## 6. Tareas y Ajustes (menú Más)
 
-*   **Tareas**: rutinas de apertura, operación y cierre. Las pendientes también salen en "Para hoy".
+*   **Tareas**: rutinas de apertura, operación y cierre; si no tienes ninguna, Tiendly te ofrece las sugeridas para tu tipo de negocio. Las pendientes también salen en "Para hoy".
 *   **Ajustes**: perfil del negocio, catálogo, PIN de seguridad, notificaciones e instalación como app.
 
 ---

@@ -38,13 +38,13 @@ export async function processChatRequest(userId: string, rawBody: unknown): Prom
   if (!parsed.success) {
     return { status: 400, body: { error: "La solicitud no tiene un formato válido." } };
   }
-  const { messages, products, sales, geminiApiKey } = parsed.data;
+  const { messages, products, sales, geminiApiKey, businessType } = parsed.data;
 
   try {
     const response = await generateContentWithRetry({
       model: CHAT_MODEL,
       contents: buildChatContents(messages),
-      config: { systemInstruction: CHAT_SYSTEM_INSTRUCTION_PREFIX + buildStoreContext(products, sales) },
+      config: { systemInstruction: CHAT_SYSTEM_INSTRUCTION_PREFIX + buildStoreContext(products, sales, businessType) },
       apiKey: geminiApiKey,
     });
     return { status: 200, body: { text: response.text } };

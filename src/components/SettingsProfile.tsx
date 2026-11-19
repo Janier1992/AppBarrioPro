@@ -1,5 +1,6 @@
 import React from "react";
 import { Trash2, ShoppingBag, Plus, Sparkles, Sun, Moon, RefreshCw } from "lucide-react";
+import BusinessTypePicker from "./BusinessTypePicker";
 
 interface SettingsProfileProps {
   businessName: string;
@@ -22,6 +23,7 @@ interface SettingsProfileProps {
   loadingProfile: boolean;
   handleToggleTheme: () => void;
   handleGuardarConfiguracionPerfil: (e: React.FormEvent) => void;
+  userId: string;
 }
 
 export default function SettingsProfile({
@@ -44,12 +46,15 @@ export default function SettingsProfile({
   setGeminiApiKey,
   loadingProfile,
   handleToggleTheme,
-  handleGuardarConfiguracionPerfil
+  handleGuardarConfiguracionPerfil,
+  userId
 }: SettingsProfileProps) {
   return (
     <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-6">
       <h3 className="font-bold text-brand-text text-sm border-b border-brand-border pb-3">Editar Información de la Tienda</h3>
       <form onSubmit={handleGuardarConfiguracionPerfil} className="space-y-4">
+        <BusinessTypePicker userId={userId} variant="select" />
+
         {/* Logo del Negocio */}
         <div className="space-y-2">
           <label className="block text-xs font-semibold text-brand-muted">Logo del Negocio</label>

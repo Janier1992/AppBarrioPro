@@ -1,6 +1,7 @@
 import React from "react";
 import { Edit2, RefreshCw, CheckCircle2 } from "lucide-react";
 import { Product } from "../types";
+import CategoryInput from "./CategoryInput";
 
 interface EditProductModalProps {
   editingProduct: Product | null;
@@ -48,8 +49,8 @@ export default function EditProductModal({
   if (!editingProduct) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/55 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl border border-brand-border shadow-xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex justify-center p-4 overflow-y-auto bg-black/55 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="my-auto bg-white rounded-2xl border border-brand-border shadow-xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header del Modal */}
         <div className="flex items-center justify-between border-b border-brand-border bg-brand-bg/30 px-6 py-4">
           <h3 className="font-bold text-brand-text text-sm flex items-center gap-2">
@@ -80,15 +81,7 @@ export default function EditProductModal({
 
             <div>
               <label className="block text-xs font-medium text-brand-muted mb-1">Categoría</label>
-              <select
-                value={editCategory}
-                onChange={(e) => setEditCategory(e.target.value)}
-                className="w-full rounded-xl border border-brand-border px-3 py-2.5 text-sm bg-white text-brand-text focus:border-brand-primary focus:ring-1 focus:ring-brand-primary focus:outline-hidden"
-              >
-                {formCategories.map(c => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
+              <CategoryInput value={editCategory} onChange={setEditCategory} options={formCategories} />
             </div>
 
             <div>

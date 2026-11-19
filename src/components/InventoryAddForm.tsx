@@ -1,5 +1,6 @@
 import React from "react";
 import { Plus, RefreshCw } from "lucide-react";
+import CategoryInput from "./CategoryInput";
 
 interface InventoryAddFormProps {
   prodName: string;
@@ -64,15 +65,7 @@ export default function InventoryAddForm({
 
         <div>
           <label className="block text-xs font-medium text-brand-muted mb-1">Categoría</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full rounded-xl border border-brand-border px-3 py-2.5 text-sm bg-white text-brand-text focus:border-brand-primary focus:ring-1 focus:ring-brand-primary focus:outline-hidden"
-          >
-            {formCategories.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+          <CategoryInput value={category} onChange={setCategory} options={formCategories} />
         </div>
 
         <div>

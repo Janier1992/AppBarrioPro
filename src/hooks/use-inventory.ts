@@ -5,6 +5,7 @@ import { db } from "../lib/insforge";
 import { isCriticalStock } from "../lib/stock";
 import { useDialogs } from "./use-dialogs";
 import { showErrorToast } from "../lib/toast";
+import { categoryOptions, defaultCategory, normalizeCategory } from "../lib/businessTypes";
 
 interface UseInventoryProps {
   products: Product[];
@@ -59,7 +60,7 @@ export function useInventory({
   // New Product Form States
   const [prodName, setProdName] = useState("");
   const [sku, setSku] = useState("");
-  const [category, setCategory] = useState("Abarrotes");
+  const [category, setCategory] = useState(() => defaultCategory(userId));
   const [stock, setStock] = useState(10);
   const [minStock, setMinStock] = useState(5);
   const [price, setPrice] = useState(1.0);
@@ -70,7 +71,7 @@ export function useInventory({
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editName, setEditName] = useState("");
   const [editSku, setEditSku] = useState("");
-  const [editCategory, setEditCategory] = useState("Abarrotes");
+  const [editCategory, setEditCategory] = useState(() => defaultCategory(userId));
   const [editStock, setEditStock] = useState(10);
   const [editMinStock, setEditMinStock] = useState(5);
   const [editPrice, setEditPrice] = useState(1.0);
@@ -80,17 +81,12 @@ export function useInventory({
   // --- Diálogos y Alertas Personalizados (compartidos, ver use-dialogs.ts) ---
   const { confirmDialog, setConfirmDialog, alertDialog, setAlertDialog, alert: showAlertDialog } = useDialogs();
 
-  const categories = [
-    "Todas", 
-    "Abarrotes", 
-    "Ferretería", 
-    "Droguería", 
-    "Carnicería", 
-    "Legumbrería", 
-    "Tienda Digital (Accesorios)", 
-    "Papelería", 
-    "Otros Comercios"
-  ];
+  // Categorías: las sugeridas para el tipo de negocio + las que ya usan los productos
+  // (así una categoría escrita a mano o importada desde Excel nunca desaparece).
+  const categories = useMemo(
+    () => ["Todas", ...categoryOptions(userId, products.map((p) => p.category))],
+    [userId, products]
+  );
   const formCategories = categories.filter(c => c !== "Todas");
 
   const handleRegistrarNuevoProducto = async (e: React.FormEvent) => {
@@ -269,19 +265,7 @@ export function useInventory({
           const parsedCost = parseFloat(rawCost);
           const costVal = isNaN(parsedCost) ? 0.0 : Math.max(0, parsedCost);
 
-          let catVal = "Otros Comercios";
-          const normalizedCat = String(rawCategory || "").trim().toLowerCase();
-          if (normalizedCat.includes("abarrote")) catVal = "Abarrotes";
-          else if (normalizedCat.includes("ferre")) catVal = "Ferretería";
-          else if (normalizedCat.includes("drog") || normalizedCat.includes("medic") || normalizedCat.includes("farmac")) catVal = "Droguería";
-          else if (normalizedCat.includes("carn") || normalizedCat.includes("res") || normalizedCat.includes("cerdo") || normalizedCat.includes("pollo")) catVal = "Carnicería";
-          else if (normalizedCat.includes("legum") || normalizedCat.includes("verdu") || normalizedCat.includes("fruta") || normalizedCat.includes("fruver") || normalizedCat.includes("legumbr")) catVal = "Legumbrería";
-          else if (normalizedCat.includes("digit") || normalizedCat.includes("acces") || normalizedCat.includes("cel") || normalizedCat.includes("tecno")) catVal = "Tienda Digital (Accesorios)";
-          else if (normalizedCat.includes("papel") || normalizedCat.includes("util") || normalizedCat.includes("librer") || normalizedCat.includes("cuadern")) catVal = "Papelería";
-          else {
-            const exactCat = categories.find(c => c.toLowerCase() === normalizedCat);
-            if (exactCat && exactCat !== "Todas") catVal = exactCat;
-          }
+          const catVal = normalizeCategory(rawCategory, formCategories);
 
           mappedRows.push({
             name: String(rawName).trim(),

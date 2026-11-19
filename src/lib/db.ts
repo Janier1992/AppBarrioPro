@@ -28,8 +28,6 @@ export const db = {
     };
 
     localStorage.setItem(`barriopro_profile_${userId}`, JSON.stringify(profileWithId));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -40,6 +38,10 @@ export const db = {
         console.error("Failed to save profile to InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
   },
 
   // 2. PRODUCTS
@@ -67,8 +69,6 @@ export const db = {
     const list: Product[] = local ? JSON.parse(local) : [];
     list.push(newProduct);
     localStorage.setItem(`barriopro_products_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -79,6 +79,10 @@ export const db = {
         console.error("Failed to add product to InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
     return id;
   },
 
@@ -87,8 +91,6 @@ export const db = {
     let list: Product[] = local ? JSON.parse(local) : [];
     list = list.map(p => p.id === productId ? { ...p, ...updates } : p);
     localStorage.setItem(`barriopro_products_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -101,6 +103,10 @@ export const db = {
         console.error("Failed to update product in InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
   },
 
   deleteProduct: async (userId: string, productId: string): Promise<void> => {
@@ -108,8 +114,6 @@ export const db = {
     let list: Product[] = local ? JSON.parse(local) : [];
     list = list.filter(p => p.id !== productId);
     localStorage.setItem(`barriopro_products_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -122,6 +126,10 @@ export const db = {
         console.error("Failed to delete product from InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
   },
 
   // 3. SALES
@@ -149,8 +157,6 @@ export const db = {
     const list: Sale[] = local ? JSON.parse(local) : [];
     list.push(newSale);
     localStorage.setItem(`barriopro_sales_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -161,6 +167,10 @@ export const db = {
         console.error("Failed to add sale to InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
     return id;
   },
 
@@ -169,8 +179,6 @@ export const db = {
     const list: Sale[] = local ? JSON.parse(local) : [];
     const filtered = list.filter(s => s.id !== id);
     localStorage.setItem(`barriopro_sales_${userId}`, JSON.stringify(filtered));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -183,6 +191,10 @@ export const db = {
         console.error("Error al eliminar la venta de InsForge:", error);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
   },
 
   updateSale: async (userId: string, id: string, sale: Partial<Sale>): Promise<void> => {
@@ -190,8 +202,6 @@ export const db = {
     const list: Sale[] = local ? JSON.parse(local) : [];
     const updated = list.map(s => s.id === id ? { ...s, ...sale } : s);
     localStorage.setItem(`barriopro_sales_${userId}`, JSON.stringify(updated));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -204,6 +214,10 @@ export const db = {
         console.error("Error al actualizar la venta en InsForge:", error);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
   },
 
   // 4. TASKS (CHECKLIST)
@@ -231,8 +245,6 @@ export const db = {
     const list: Task[] = local ? JSON.parse(local) : [];
     list.push(newTask);
     localStorage.setItem(`barriopro_tasks_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -243,6 +255,10 @@ export const db = {
         console.error("Failed to add task to InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
     return id;
   },
 
@@ -251,8 +267,6 @@ export const db = {
     let list: Task[] = local ? JSON.parse(local) : [];
     list = list.map(t => t.id === taskId ? { ...t, ...updates } : t);
     localStorage.setItem(`barriopro_tasks_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -265,6 +279,10 @@ export const db = {
         console.error("Failed to update task in InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
   },
 
   deleteTask: async (userId: string, taskId: string): Promise<void> => {
@@ -272,8 +290,6 @@ export const db = {
     let list: Task[] = local ? JSON.parse(local) : [];
     list = list.filter(t => t.id !== taskId);
     localStorage.setItem(`barriopro_tasks_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -286,6 +302,10 @@ export const db = {
         console.error("Failed to delete task from InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
   },
 
   // 5. DEBTS
@@ -313,8 +333,6 @@ export const db = {
     const list: Debt[] = local ? JSON.parse(local) : [];
     list.push(newDebt);
     localStorage.setItem(`barriopro_debts_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -325,6 +343,10 @@ export const db = {
         console.error("Failed to add debt to InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
     return id;
   },
 
@@ -333,8 +355,6 @@ export const db = {
     let list: Debt[] = local ? JSON.parse(local) : [];
     list = list.map(d => d.id === debtId ? { ...d, ...updates } : d);
     localStorage.setItem(`barriopro_debts_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -347,6 +367,10 @@ export const db = {
         console.error("Failed to update debt in InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
   },
 
   deleteDebt: async (userId: string, debtId: string): Promise<void> => {
@@ -354,8 +378,6 @@ export const db = {
     let list: Debt[] = local ? JSON.parse(local) : [];
     list = list.filter(d => d.id !== debtId);
     localStorage.setItem(`barriopro_debts_${userId}`, JSON.stringify(list));
-    notifySubscribers();
-
     if (isInsForgeConfigured()) {
       try {
         const { error } = await insforge!.database
@@ -368,5 +390,9 @@ export const db = {
         console.error("Failed to delete debt from InsForge:", e);
       }
     }
+
+    // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
+    // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
+    notifySubscribers();
   }
 };

@@ -28,8 +28,8 @@ export default function EditSaleModal({
   if (!editingSale) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl border border-brand-border shadow-2xl max-w-md w-full overflow-hidden p-6 space-y-4 animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex justify-center p-4 overflow-y-auto bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="my-auto bg-white rounded-3xl border border-brand-border shadow-2xl max-w-md w-full overflow-hidden p-6 space-y-4 animate-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between border-b border-brand-bg pb-3">
           <h3 className="text-sm font-bold text-brand-text flex items-center gap-1.5 uppercase">
             <Edit3 className="text-brand-primary" size={16} />

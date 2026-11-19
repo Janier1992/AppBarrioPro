@@ -13,6 +13,7 @@ import {
 } from "../lib/notifications";
 import { useDialogs } from "./use-dialogs";
 import { showSuccessToast, showErrorToast } from "../lib/toast";
+import { defaultCategory } from "../lib/businessTypes";
 
 interface UseSettingsProps {
   products: Product[];
@@ -44,7 +45,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
   // New Product Form States
   const [prodName, setProdName] = useState("");
   const [sku, setSku] = useState("");
-  const [category, setCategory] = useState("Abarrotes");
+  const [category, setCategory] = useState(() => defaultCategory(userId));
   const [stock, setStock] = useState(10);
   const [minStock, setMinStock] = useState(5);
   const [price, setPrice] = useState(1.0);

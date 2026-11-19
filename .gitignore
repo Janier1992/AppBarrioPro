@@ -32,3 +32,8 @@ node_modules/.cache
 # Temporary scripts
 generate-icons.cjs
 generate-icons.js
+
+# Videos generados (pesados): se regeneran con marketing/grabar-escenas.cjs y componer-video.cjs
+marketing/out/
+marketing/escenas/
+marketing/voz/
