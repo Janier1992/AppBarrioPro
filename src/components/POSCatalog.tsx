@@ -2,6 +2,7 @@ import React from "react";
 import { Search } from "lucide-react";
 import { Product } from "../types";
 import { showErrorToast } from "../lib/toast";
+import { formatMoney } from "../lib/format";
 
 interface POSCatalogProps {
   filteredCatalogProducts: Product[];
@@ -123,7 +124,7 @@ export default function POSCatalog({
                 <span className="text-sm font-medium leading-snug text-brand-text">{p.name}</span>
                 <span className="mt-auto flex items-baseline justify-between gap-2">
                   <span className="text-base font-semibold tabular-nums text-brand-text">
-                    ${p.price.toLocaleString("es-CO")}
+                    {formatMoney(p.price)}
                   </span>
                   <span className={`text-xs ${isLow || isOutOfStock ? "text-[#A24A16] font-semibold" : "text-brand-muted"}`}>
                     {isOutOfStock ? "Agotado" : isLow ? `Quedan ${remainingStock}` : `${remainingStock} en stock`}

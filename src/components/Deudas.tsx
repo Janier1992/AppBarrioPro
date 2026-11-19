@@ -7,12 +7,12 @@
 
 import React, { useState, useMemo } from "react";
 import { Debt } from "../types";
-import { Plus, Check, Trash2, Calendar, User, DollarSign, RefreshCw, AlertCircle, Sparkles } from "lucide-react";
+import { Plus, Trash2, RefreshCw, ChevronDown } from "lucide-react";
 import { db } from "../lib/insforge";
 import { useDialogs } from "../hooks/use-dialogs";
 import Dialogs from "./Dialogs";
 import { showErrorToast } from "../lib/toast";
-import { formatCurrency } from "../lib/format";
+import { formatMoney, formatDueLabel } from "../lib/format";
 
 interface DeudasProps {
   debts: Debt[];
@@ -48,6 +48,11 @@ export default function Deudas({
   const pendingDebts = useMemo(() => debts.filter(d => !d.paid), [debts]);
   const paidDebts = useMemo(() => debts.filter(d => d.paid), [debts]);
 
+  const pendingClientsCount = useMemo(
+    () => new Set(pendingDebts.map(d => d.clientName.trim().toLowerCase())).size,
+    [pendingDebts]
+  );
+
   const filteredPendingDebts = useMemo(() => {
     return pendingDebts
       .filter(d => d.clientName.toLowerCase().includes(localSearchQuery.toLowerCase()))
@@ -64,10 +69,6 @@ export default function Deudas({
   const totalPendingAmount = useMemo(() => {
     return pendingDebts.reduce((sum, d) => sum + d.amount, 0);
   }, [pendingDebts]);
-
-  const totalPaidAmount = useMemo(() => {
-    return paidDebts.reduce((sum, d) => sum + d.amount, 0);
-  }, [paidDebts]);
 
   /**
    * @function handleRegistrarNuevaDeuda
@@ -130,7 +131,7 @@ export default function Deudas({
     if (!debt.paid) {
       confirm(
         "Marcar Cuenta como Pagada",
-        `¿Confirmas que ${debt.clientName} ya pagó ${formatCurrency(debt.amount)}? Podrás reabrir la cuenta después si te equivocas.`,
+        `¿Confirmas que ${debt.clientName} ya pagó ${formatMoney(debt.amount)}? Podrás reabrir la cuenta después si te equivocas.`,
         applyToggle
       );
     } else {
@@ -146,7 +147,7 @@ export default function Deudas({
     if (!debt.id) return;
     confirm(
       "Eliminar Registro de Deuda",
-      `¿Seguro que deseas eliminar la cuenta fiada de ${debt.clientName} por ${formatCurrency(debt.amount)}? Esta acción no se puede deshacer.`,
+      `¿Seguro que deseas eliminar la cuenta fiada de ${debt.clientName} por ${formatMoney(debt.amount)}? Esta acción no se puede deshacer.`,
       async () => {
         try {
           await db.deleteDebt(userId, debt.id!);
@@ -160,61 +161,22 @@ export default function Deudas({
 
   return (
     <div className="space-y-6" id="deudas-container">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-        <div className="space-y-1">
-          <h2 className="text-[28px] sm:text-3xl font-semibold tracking-tight text-brand-text">Deudas</h2>
-          <p className="text-sm text-brand-muted">Lo que tus clientes te deben por ventas fiadas.</p>
-        </div>
+      {/* Cifra principal */}
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <section aria-label="Total por cobrar" className="space-y-1.5">
+          <h2 className="text-[15px] text-brand-muted">Te deben</h2>
+          <p className="text-5xl sm:text-6xl font-semibold tracking-[-0.04em] tabular-nums leading-none">{formatMoney(totalPendingAmount)}</p>
+          <p className="text-sm text-brand-muted">
+            {pendingClientsCount} {pendingClientsCount === 1 ? "cliente" : "clientes"}
+          </p>
+        </section>
         <button
           onClick={() => setShowAddForm(prev => !prev)}
-          className="rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer self-start sm:self-center"
+          className="hidden sm:flex items-center gap-2 h-11 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white px-5 text-sm font-medium transition-colors cursor-pointer"
         >
           <Plus size={16} />
-          {showAddForm ? "Cancelar Registro" : "Nueva Cuenta Fiada"}
+          {showAddForm ? "Cerrar" : "Nuevo fiado"}
         </button>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" id="deudas-kpis">
-        <div className="bg-white rounded-2xl border border-brand-border p-5 flex items-center gap-4">
-          <div className="rounded-xl bg-rose-50 text-rose-600 p-3">
-            <DollarSign size={24} />
-          </div>
-          <div>
-            <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Total Pendiente</p>
-            <p className="text-xl font-bold text-rose-600">
-              {formatCurrency(totalPendingAmount)}
-            </p>
-            <p className="text-[10px] text-brand-muted">{pendingDebts.length} cuentas por cobrar</p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-brand-border p-5 flex items-center gap-4">
-          <div className="rounded-xl bg-emerald-50 text-emerald-600 p-3">
-            <Check size={24} />
-          </div>
-          <div>
-            <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Total Cobrado</p>
-            <p className="text-xl font-bold text-emerald-600">
-              {formatCurrency(totalPaidAmount)}
-            </p>
-            <p className="text-[10px] text-brand-muted">{paidDebts.length} cuentas pagadas</p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-brand-border p-5 flex items-center gap-4">
-          <div className="rounded-xl bg-slate-50 text-brand-primary p-3">
-            <User size={24} />
-          </div>
-          <div>
-            <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Total Clientes</p>
-            <p className="text-xl font-bold text-brand-text">
-              {Array.from(new Set(debts.map(d => d.clientName.toLowerCase()))).length}
-            </p>
-            <p className="text-[10px] text-brand-muted">Historial acumulado</p>
-          </div>
-        </div>
       </div>
 
       {/* Form block */}
@@ -296,128 +258,92 @@ export default function Deudas({
         </div>
       )}
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Active Debts List */}
-        <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-brand-border pb-3">
-            <h3 className="font-bold text-brand-text text-sm">Cuentas Pendientes por Cobrar</h3>
-            <span className="rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-semibold text-rose-700 border border-rose-100">
-              {filteredPendingDebts.length} activas
-            </span>
-          </div>
-
-          {filteredPendingDebts.length === 0 ? (
-            <div className="flex h-48 flex-col items-center justify-center text-center text-brand-muted space-y-2">
-              <div className="rounded-full bg-emerald-50 p-3 text-emerald-600">
-                <Check size={24} />
-              </div>
-              <p className="text-xs font-semibold">No se encontraron deudas pendientes.</p>
-              <p className="text-[10px] text-brand-muted">Prueba cambiando tu búsqueda o registra una nueva cuenta fiada.</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-brand-bg max-h-[400px] overflow-y-auto pr-1">
-              {filteredPendingDebts.map(debt => {
-                const isOverdue = new Date(debt.dueDate) < new Date(new Date().setHours(0,0,0,0));
-                return (
-                  <div key={debt.id} className="py-3.5 flex items-center justify-between gap-4 group">
-                    <div className="space-y-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-brand-text text-xs truncate block max-w-[180px] sm:max-w-xs">{debt.clientName}</span>
-                        {isOverdue && (
-                          <span className="inline-flex items-center gap-1 text-[9px] font-bold text-rose-600 bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded">
-                            <AlertCircle size={10} />
-                            Vencido
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-3 text-[10px] text-brand-muted">
-                        <span className="flex items-center gap-1">
-                          <Calendar size={11} />
-                          Límite: {debt.dueDate}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-3">
-                      <span className="font-bold text-rose-600 text-sm font-mono">${debt.amount.toFixed(2)}</span>
-                      <div className="flex items-center gap-1.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => handleAlternarPagoDeuda(debt)}
-                          className="text-emerald-600 hover:bg-emerald-50 border border-emerald-100 p-1.5 rounded-lg transition-colors cursor-pointer"
-                          title="Marcar como pagado"
-                        >
-                          <Check size={13} />
-                        </button>
-                        <button
-                          onClick={() => handleEliminarDeuda(debt)}
-                          className="text-rose-600 hover:bg-rose-50 border border-rose-100 p-1.5 rounded-lg transition-colors cursor-pointer"
-                          title="Eliminar registro"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+      {/* Por cobrar */}
+      {filteredPendingDebts.length === 0 ? (
+        <div className="py-14 text-center space-y-1">
+          <p className="text-base font-medium text-brand-text">Nadie te debe nada</p>
+          <p className="text-sm text-brand-muted">Cuando fíes una venta, aparecerá aquí.</p>
         </div>
-
-        {/* Paid Debts List */}
-        <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-brand-border pb-3">
-            <h3 className="font-bold text-brand-text text-sm">Historial de Cobros Recientes (Pagado)</h3>
-            <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-100">
-              {filteredPaidDebts.length} cobradas
-            </span>
-          </div>
-
-          {filteredPaidDebts.length === 0 ? (
-            <div className="flex h-48 flex-col items-center justify-center text-center text-brand-muted space-y-2">
-              <p className="text-xs font-semibold">No se encontraron cobros registrados.</p>
-              <p className="text-[10px] text-brand-muted">Cuando tus clientes paguen lo fiado, se verán aquí.</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-brand-bg max-h-[400px] overflow-y-auto pr-1">
-              {filteredPaidDebts.map(debt => (
-                <div key={debt.id} className="py-3.5 flex items-center justify-between gap-4 group">
-                  <div className="space-y-1 min-w-0">
-                    <span className="font-bold text-brand-muted line-through text-xs truncate block max-w-[180px] sm:max-w-xs">{debt.clientName}</span>
-                    <div className="flex items-center gap-3 text-[10px] text-brand-muted">
-                      <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                        <Check size={11} />
-                        Pagado el {debt.paidAt ? new Date(debt.paidAt).toLocaleDateString("es-CO") : "Recientemente"}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold text-emerald-600 text-xs font-mono line-through">${debt.amount.toFixed(2)}</span>
-                    <div className="flex items-center gap-1.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => handleAlternarPagoDeuda(debt)}
-                        className="text-brand-muted hover:bg-slate-100 border border-brand-border p-1.5 rounded-lg transition-colors cursor-pointer"
-                        title="Reabrir cuenta fiada"
-                      >
-                        <RefreshCw size={12} />
-                      </button>
-                      <button
-                        onClick={() => handleEliminarDeuda(debt)}
-                        className="text-rose-600 hover:bg-rose-50 border border-rose-100 p-1.5 rounded-lg transition-colors cursor-pointer"
-                        title="Eliminar registro"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
+      ) : (
+        <ul>
+          {filteredPendingDebts.map(debt => {
+            const overdue = new Date(debt.dueDate) < new Date(new Date().setHours(0, 0, 0, 0));
+            return (
+              <li key={debt.id} className="flex items-center gap-3.5 min-h-[84px] border-b border-brand-border">
+                <span className="h-11 w-11 shrink-0 rounded-full bg-[#EAF2ED] text-brand-primary text-[13px] font-semibold flex items-center justify-center" aria-hidden="true">
+                  {debt.clientName.trim().slice(0, 2).toUpperCase()}
+                </span>
+                <div className="min-w-0 flex-1 space-y-1">
+                  <p className="text-base font-medium truncate">{debt.clientName}</p>
+                  <p className={`text-[13px] ${overdue ? "text-[#A24A16] font-medium" : "text-brand-muted"}`}>{formatDueLabel(debt.dueDate)}</p>
+                </div>
+                <div className="shrink-0 flex flex-col items-end gap-2">
+                  <span className="text-base font-semibold tabular-nums">{formatMoney(debt.amount)}</span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => handleEliminarDeuda(debt)}
+                      aria-label={`Eliminar la deuda de ${debt.clientName}`}
+                      className="h-9 w-9 rounded-full text-brand-muted hover:text-rose-700 hover:bg-brand-bg flex items-center justify-center cursor-pointer"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                    <button
+                      onClick={() => handleAlternarPagoDeuda(debt)}
+                      className="h-9 px-4 rounded-full bg-[#EAF2ED] text-[#1F3D2E] text-sm font-semibold cursor-pointer hover:bg-[#DCEBE2]"
+                    >
+                      Cobrar
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {/* Historial de cobros (plegado) */}
+      {filteredPaidDebts.length > 0 && (
+        <details className="group rounded-2xl border border-brand-border bg-white">
+          <summary className="flex items-center justify-between gap-3 px-6 min-h-[56px] cursor-pointer list-none text-[15px] font-medium [&::-webkit-details-marker]:hidden">
+            Ya cobrados ({filteredPaidDebts.length})
+            <ChevronDown size={18} className="text-brand-muted transition-transform group-open:rotate-180" />
+          </summary>
+          <ul className="px-6 pb-4">
+            {filteredPaidDebts.map(debt => (
+              <li key={debt.id} className="flex items-center justify-between gap-3 min-h-[60px] border-b border-brand-border last:border-0">
+                <div className="min-w-0">
+                  <p className="text-[15px] text-brand-muted line-through truncate">{debt.clientName}</p>
+                  <p className="text-xs text-brand-muted">
+                    Cobrado {debt.paidAt ? new Date(debt.paidAt).toLocaleDateString("es-CO") : "recientemente"}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-sm text-brand-muted tabular-nums">{formatMoney(debt.amount)}</span>
+                  <button
+                    onClick={() => handleAlternarPagoDeuda(debt)}
+                    className="h-9 px-3 rounded-full border border-[#E2E1DB] text-xs font-medium text-brand-muted hover:bg-brand-bg cursor-pointer"
+                    title="Reabrir cuenta fiada"
+                  >
+                    Reabrir
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+
+      {/* Botón flotante: nuevo fiado (móvil) */}
+      <button
+        onClick={() => {
+          setShowAddForm(prev => !prev);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        className="sm:hidden fixed right-5 bottom-24 z-30 h-[52px] px-[22px] rounded-full bg-brand-primary text-white text-[15px] font-semibold flex items-center gap-2 shadow-[0_6px_16px_rgba(47,107,79,0.28)] cursor-pointer"
+      >
+        <Plus size={18} strokeWidth={2.2} />
+        {showAddForm ? "Cerrar" : "Nuevo fiado"}
+      </button>
 
       <Dialogs
         confirmDialog={confirmDialog}

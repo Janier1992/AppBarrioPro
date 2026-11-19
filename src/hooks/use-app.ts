@@ -24,7 +24,6 @@ export function useApp() {
   const [user, setUser] = useState<MockUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"dashboard" | "inventory" | "sales" | "checklist" | "debts" | "settings">("dashboard");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -313,8 +312,6 @@ export function useApp() {
     authLoading,
     activeTab,
     setActiveTab,
-    isSidebarCollapsed,
-    setIsSidebarCollapsed,
     isMobileMoreOpen,
     setIsMobileMoreOpen,
     isMobile,

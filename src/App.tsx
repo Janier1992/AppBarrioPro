@@ -9,17 +9,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import {
-  Store,
-  AlertTriangle,
-  Boxes,
-  Home,
-  Receipt,
-  ListChecks,
-  Wallet,
-  SlidersHorizontal,
-  Ellipsis
-} from "lucide-react";
+import { Home, Boxes, Wallet, Plus, Ellipsis } from "lucide-react";
 
 import { useApp } from "./hooks/use-app";
 import { db } from "./lib/insforge";
@@ -36,11 +26,11 @@ const Onboarding = React.lazy(() => import("./components/Onboarding"));
 import AIAssistantChat from "./components/AIAssistantChat";
 import AppLoginScreen from "./components/AppLoginScreen";
 import AppLockScreen from "./components/AppLockScreen";
-import AppSidebar from "./components/AppSidebar";
-import AppHeader from "./components/AppHeader";
+import AppTopNav from "./components/AppTopNav";
+import MoreMenuList from "./components/MoreMenuList";
 import ToastContainer from "./components/ToastContainer";
 import NotificationPrompt from "./components/NotificationPrompt";
-import { APP_NAME, APP_TAGLINE } from "./lib/brand";
+import { APP_NAME } from "./lib/brand";
 
 export default function App() {
   const {
@@ -48,8 +38,6 @@ export default function App() {
     authLoading,
     activeTab,
     setActiveTab,
-    isSidebarCollapsed,
-    setIsSidebarCollapsed,
     isMobileMoreOpen,
     setIsMobileMoreOpen,
     isMobile,
@@ -94,9 +82,7 @@ export default function App() {
     handleCerrarSesionGoogle,
     handleToggleTheme,
     handleDesbloquearConPin,
-    handleAuthSubmit,
-    umbralCritico,
-    lowStockItems
+    handleAuthSubmit
   } = useApp();
 
   if (authLoading) {
@@ -151,8 +137,17 @@ export default function App() {
     );
   }
 
+  // En Vender y Cobrar no hay menú inferior: el tendero se concentra en terminar la venta.
+  const hideMobileNav = activeTab === "sales";
+  const isMoreActive = isMobileMoreOpen || activeTab === "checklist" || activeTab === "settings";
+
+  const mobileTabClass = (isActive: boolean) =>
+    `flex flex-col items-center justify-center gap-1 min-h-[56px] rounded-xl text-[11px] cursor-pointer transition-colors ${
+      isActive ? "text-brand-primary font-semibold" : "text-brand-muted font-medium"
+    }`;
+
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-text flex font-sans w-full overflow-hidden" id="app-root-layout">
+    <div className="min-h-screen bg-brand-bg text-brand-text flex flex-col font-sans w-full" id="app-root-layout">
       {/* Onboarding Overlay */}
       <AnimatePresence mode="wait">
         {!hasCompletedOnboarding && (
@@ -174,245 +169,152 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* 1. PERSISTENT SIDEBAR FOR DESKTOP */}
-      <aside className={`hidden lg:flex ${isSidebarCollapsed ? "w-[72px]" : "w-[232px]"} bg-brand-bg border-r border-brand-border flex-col shrink-0 h-screen sticky top-0 transition-all duration-300`} id="desktop-sidebar">
-        {/* Brand Header */}
-        <div className={`px-5 pt-7 pb-5 flex items-center ${isSidebarCollapsed ? "justify-center" : "gap-2.5"}`}>
-          <div className="h-7 w-7 shrink-0 rounded-lg bg-brand-primary text-white flex items-center justify-center">
-            <Store size={16} strokeWidth={2} />
-          </div>
-          {!isSidebarCollapsed && (
-            <h1 className="font-semibold text-lg text-brand-text tracking-tight">{APP_NAME}</h1>
-          )}
-        </div>
+      {/* Barra superior (solo escritorio) */}
+      <AppTopNav
+        profile={profile}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        setInventoryFilterCritical={setInventoryFilterCritical}
+        isProfileDropdownOpen={isProfileDropdownOpen}
+        setIsProfileDropdownOpen={setIsProfileDropdownOpen}
+        setIsLocked={setIsLocked}
+        handleToggleTheme={handleToggleTheme}
+        handleCerrarSesionGoogle={handleCerrarSesionGoogle}
+      />
 
-        {/* Navigation links */}
-        <AppSidebar
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          isSidebarCollapsed={isSidebarCollapsed}
-          setIsSidebarCollapsed={setIsSidebarCollapsed}
-          profile={profile}
-        />
-      </aside>
+      <NotificationPrompt />
 
-      {/* 2. MAIN CONTAINER */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
-        {/* Top Header */}
-        <AppHeader
-          profile={profile}
-          user={user}
-          products={products}
-          tasks={tasks}
-          debts={debts}
-          isLocked={isLocked}
-          setIsLocked={setIsLocked}
-          isProfileDropdownOpen={isProfileDropdownOpen}
-          setIsProfileDropdownOpen={setIsProfileDropdownOpen}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          setInventoryFilterCritical={setInventoryFilterCritical}
-          setGlobalSearchTerm={setGlobalSearchTerm}
-          handleCerrarSesionGoogle={handleCerrarSesionGoogle}
-          handleToggleTheme={handleToggleTheme}
-        />
-
-        <NotificationPrompt />
-
-        {/* Critical low stock alert banner */}
-        {lowStockItems.length > 0 && (
-          <div 
-            onClick={() => {
-              setInventoryFilterCritical(true);
-              setActiveTab("inventory");
-            }}
-            className="bg-amber-50 hover:bg-amber-100/80 border-b border-amber-100 px-6 py-2.5 text-amber-800 text-[11px] font-medium flex items-center justify-between gap-4 animate-in slide-in-from-top duration-300 shrink-0 cursor-pointer transition-colors"
+      {/* Contenido */}
+      <main className="flex-1 w-full min-w-0 max-w-5xl mx-auto px-5 lg:px-10 pt-6 lg:pt-10 pb-28 lg:pb-14">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
           >
-            <span className="flex items-center gap-1.5">
-              <AlertTriangle size={14} className="text-amber-600 flex-shrink-0" />
-              Atención: Tienes {lowStockItems.length} productos con inventario críticamente bajo.
-            </span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setInventoryFilterCritical(true);
-                setActiveTab("inventory");
-              }}
-              className="text-amber-950 underline font-semibold hover:text-amber-900 flex-shrink-0 cursor-pointer text-xs"
-            >
-              Revisar Inventario
-            </button>
-          </div>
-        )}
+            <React.Suspense fallback={
+              <div className="flex h-64 items-center justify-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-primary border-t-transparent" />
+              </div>
+            }>
+              {activeTab === "dashboard" && (
+                <Dashboard
+                  products={products}
+                  sales={sales}
+                  debts={debts}
+                  tasks={tasks}
+                  userId={user.uid}
+                  onNavigate={(tab) => {
+                    setInventoryFilterCritical(tab === "inventory");
+                    setActiveTab(tab);
+                  }}
+                />
+              )}
+              {activeTab === "inventory" && (
+                <Inventory
+                  products={products}
+                  profile={profile}
+                  userId={user.uid}
+                  initialFilterCritical={inventoryFilterCritical}
+                  searchQueryParam={globalSearchTerm}
+                  onClearSearchParam={() => setGlobalSearchTerm("")}
+                />
+              )}
+              {activeTab === "sales" && (
+                <Sales products={products} sales={sales} userId={user.uid} onBack={() => setActiveTab("dashboard")} />
+              )}
+              {activeTab === "debts" && (
+                <Deudas
+                  debts={debts}
+                  userId={user.uid}
+                  searchQueryParam={globalSearchTerm}
+                  onClearSearchParam={() => setGlobalSearchTerm("")}
+                />
+              )}
+              {activeTab === "checklist" && (
+                <Checklist
+                  tasks={tasks}
+                  userId={user.uid}
+                  searchQueryParam={globalSearchTerm}
+                  onClearSearchParam={() => setGlobalSearchTerm("")}
+                />
+              )}
+              {activeTab === "settings" && (
+                <Settings
+                  products={products}
+                  profile={profile}
+                  userId={user.uid}
+                  handleToggleTheme={handleToggleTheme}
+                  isPwaInstalled={isPwaInstalled}
+                  deferredInstallPrompt={deferredInstallPrompt}
+                  setDeferredInstallPrompt={setDeferredInstallPrompt}
+                  setIsPwaInstalled={setIsPwaInstalled}
+                />
+              )}
+            </React.Suspense>
+          </motion.div>
+        </AnimatePresence>
+      </main>
 
-        {/* Main Content Viewport */}
-        <div className="flex-1 p-4 md:p-6 pb-24 lg:pb-6 max-w-7xl w-full mx-auto overflow-y-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15 }}
-            >
-              <React.Suspense fallback={
-                <div className="flex h-64 items-center justify-center">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-primary border-t-transparent" />
-                </div>
-              }>
-                {activeTab === "dashboard" && (
-                  <Dashboard 
-                    products={products} 
-                    sales={sales} 
-                    userId={user.uid} 
-                    onNavigateToCriticalStock={() => {
-                      setInventoryFilterCritical(true);
-                      setActiveTab("inventory");
-                    }}
-                  />
-                )}
-                {activeTab === "inventory" && (
-                  <Inventory 
-                    products={products} 
-                    profile={profile} 
-                    userId={user.uid} 
-                    initialFilterCritical={inventoryFilterCritical} 
-                    searchQueryParam={globalSearchTerm}
-                    onClearSearchParam={() => setGlobalSearchTerm("")}
-                  />
-                )}
-                {activeTab === "sales" && (
-                  <Sales products={products} sales={sales} userId={user.uid} />
-                )}
-                {activeTab === "debts" && (
-                  <Deudas 
-                    debts={debts} 
-                    userId={user.uid} 
-                    searchQueryParam={globalSearchTerm}
-                    onClearSearchParam={() => setGlobalSearchTerm("")}
-                  />
-                )}
-                {activeTab === "checklist" && (
-                  <Checklist 
-                    tasks={tasks} 
-                    userId={user.uid} 
-                    searchQueryParam={globalSearchTerm}
-                    onClearSearchParam={() => setGlobalSearchTerm("")}
-                  />
-                )}
-                {activeTab === "settings" && (
-                  <Settings
-                    products={products}
-                    profile={profile}
-                    userId={user.uid}
-                    handleToggleTheme={handleToggleTheme}
-                    isPwaInstalled={isPwaInstalled}
-                    deferredInstallPrompt={deferredInstallPrompt}
-                    setDeferredInstallPrompt={setDeferredInstallPrompt}
-                    setIsPwaInstalled={setIsPwaInstalled}
-                  />
-                )}
-              </React.Suspense>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Footer */}
-        <footer className="py-4 px-6 pb-24 lg:pb-4 text-center text-[11px] text-brand-muted shrink-0">
-          &copy; {new Date().getFullYear()} {APP_NAME}. {APP_TAGLINE}
-        </footer>
-      </div>
-
-      {/* 3. FIXED BOTTOM NAVIGATION BAR FOR MOBILE */}
-      <nav aria-label="Principal" className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-brand-border grid grid-cols-5 px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden" id="mobile-bottom-nav">
-        {[
-          { id: "dashboard", label: "Inicio", icon: Home },
-          { id: "sales", label: "Ventas", icon: Receipt },
-          { id: "inventory", label: "Inventario", icon: Boxes },
-          { id: "debts", label: "Deudas", icon: Wallet },
-        ].map((item) => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActiveTab(item.id as any);
-                setIsMobileMoreOpen(false);
-              }}
-              aria-current={isActive ? "page" : undefined}
-              className={`flex flex-col items-center justify-center gap-1 min-h-[52px] rounded-xl text-[11px] cursor-pointer transition-colors ${
-                isActive ? "text-brand-primary font-semibold" : "text-brand-muted font-medium"
-              }`}
-              id={`mobile-nav-${item.id}`}
-            >
-              <Icon size={22} strokeWidth={1.8} />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-
-        {/* More Button */}
-        <button
-          onClick={() => setIsMobileMoreOpen(prev => !prev)}
-          aria-expanded={isMobileMoreOpen}
-          className={`flex flex-col items-center justify-center gap-1 min-h-[52px] rounded-xl text-[11px] cursor-pointer transition-colors ${
-            isMobileMoreOpen || activeTab === "checklist" || activeTab === "settings"
-              ? "text-brand-primary font-semibold"
-              : "text-brand-muted font-medium"
-          }`}
-          id="mobile-nav-more"
-        >
-          <Ellipsis size={22} strokeWidth={1.8} />
+      {/* Barra inferior móvil: 4 destinos + "Vender" grande al centro + "Más" */}
+      <nav
+        aria-label="Principal"
+        className={`${hideMobileNav ? "hidden" : "grid"} fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-brand-border grid-cols-5 items-end px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden`}
+        id="mobile-bottom-nav"
+      >
+        <button onClick={() => { setInventoryFilterCritical(false); setActiveTab("dashboard"); setIsMobileMoreOpen(false); }} aria-current={activeTab === "dashboard" ? "page" : undefined} className={mobileTabClass(activeTab === "dashboard")} id="mobile-nav-dashboard">
+          <Home size={24} strokeWidth={1.9} />
+          <span>Hoy</span>
+        </button>
+        <button onClick={() => { setInventoryFilterCritical(false); setActiveTab("inventory"); setIsMobileMoreOpen(false); }} aria-current={activeTab === "inventory" ? "page" : undefined} className={mobileTabClass(activeTab === "inventory")} id="mobile-nav-inventory">
+          <Boxes size={24} strokeWidth={1.9} />
+          <span>Productos</span>
+        </button>
+        <button onClick={() => { setActiveTab("sales"); setIsMobileMoreOpen(false); }} className="flex flex-col items-center justify-start gap-1 min-h-[56px] text-[11px] font-semibold text-brand-primary cursor-pointer" id="mobile-nav-sales">
+          <span className="-mt-[22px] h-14 w-14 rounded-full bg-brand-primary text-white flex items-center justify-center shadow-[0_6px_16px_rgba(47,107,79,0.28)]">
+            <Plus size={26} strokeWidth={2.2} />
+          </span>
+          <span>Vender</span>
+        </button>
+        <button onClick={() => { setActiveTab("debts"); setIsMobileMoreOpen(false); }} aria-current={activeTab === "debts" ? "page" : undefined} className={mobileTabClass(activeTab === "debts")} id="mobile-nav-debts">
+          <Wallet size={24} strokeWidth={1.9} />
+          <span>Fiados</span>
+        </button>
+        <button onClick={() => setIsMobileMoreOpen((prev) => !prev)} aria-expanded={isMobileMoreOpen} className={mobileTabClass(isMoreActive)} id="mobile-nav-more">
+          <Ellipsis size={24} strokeWidth={1.9} />
           <span>Más</span>
         </button>
 
-        {/* Menú "Más": Tareas y Ajustes */}
         <AnimatePresence>
           {isMobileMoreOpen && (
             <>
-              <div
-                className="fixed inset-0 bg-black/20 z-30 lg:hidden"
-                onClick={() => setIsMobileMoreOpen(false)}
-              />
+              <div className="fixed inset-0 bg-black/20 z-30 lg:hidden" onClick={() => setIsMobileMoreOpen(false)} />
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 12 }}
                 transition={{ duration: 0.12 }}
-                className="fixed bottom-[76px] right-4 z-40 w-52 bg-white border border-brand-border rounded-2xl shadow-lg overflow-hidden"
+                className="fixed bottom-[84px] right-4 z-40 w-60 bg-white border border-brand-border rounded-2xl shadow-lg overflow-hidden"
                 id="mobile-more-popover"
               >
-                {[
-                  { id: "checklist", label: "Tareas", icon: ListChecks },
-                  { id: "settings", label: "Ajustes", icon: SlidersHorizontal },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  const isActive = activeTab === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        setActiveTab(item.id as any);
-                        setIsMobileMoreOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-3 px-4 min-h-[48px] text-left text-sm cursor-pointer transition-colors ${
-                        isActive ? "text-brand-primary font-semibold bg-[#EAF2ED]" : "text-brand-text hover:bg-brand-bg"
-                      }`}
-                      id={`mobile-popover-${item.id}`}
-                    >
-                      <Icon size={18} strokeWidth={1.8} />
-                      {item.label}
-                    </button>
-                  );
-                })}
+                <MoreMenuList
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  profile={profile}
+                  setIsLocked={setIsLocked}
+                  handleToggleTheme={handleToggleTheme}
+                  handleCerrarSesionGoogle={handleCerrarSesionGoogle}
+                  onClose={() => setIsMobileMoreOpen(false)}
+                />
               </motion.div>
             </>
           )}
         </AnimatePresence>
       </nav>
 
-      {/* Floating AI Assistant Chat Bot */}
+      {/* Asistente IA: se abre desde "Pregúntale a Tiendly" (Inicio) o desde el menú "Más" */}
       <AIAssistantChat products={products} sales={sales} userId={user.uid} geminiApiKey={profile?.geminiApiKey} />
 
       <ToastContainer />

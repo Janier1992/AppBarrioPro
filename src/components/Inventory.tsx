@@ -2,19 +2,11 @@ import React from "react";
 import { Product, BusinessProfile } from "../types";
 import { useInventory } from "../hooks/use-inventory";
 import { isCriticalStock } from "../lib/stock";
-import {
-  Plus,
-  Search,
-  AlertCircle,
-  Package,
-  Boxes,
-  DollarSign,
-  AlertTriangle,
-  FileSpreadsheet
-} from "lucide-react";
+import { Plus, Search, FileSpreadsheet, ChevronDown } from "lucide-react";
 import InventoryAddForm from "./InventoryAddForm";
 import InventoryBulkUpload from "./InventoryBulkUpload";
 import InventoryTable from "./InventoryTable";
+import InventoryList from "./InventoryList";
 import EditProductModal from "./EditProductModal";
 import Dialogs from "./Dialogs";
 
@@ -124,13 +116,13 @@ export default function Inventory({
 
   return (
     <div className="space-y-6" id="inventory-container">
-      {/* Encabezado: título y acciones */}
+      {/* Encabezado */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4">
         <div className="space-y-1.5">
-          <h2 className="text-[28px] sm:text-3xl font-semibold tracking-tight text-brand-text">Inventario</h2>
-          <p className="text-sm text-brand-muted">{totalProductsCount} productos · {criticalStockCount} con stock crítico</p>
+          <h2 className="text-[28px] sm:text-3xl font-semibold tracking-tight text-brand-text">Productos</h2>
+          <p className="text-sm text-brand-muted">{totalProductsCount} productos · {criticalStockCount} se acaban</p>
         </div>
-        <div className="flex flex-wrap gap-2.5 self-start sm:self-auto">
+        <div className="hidden sm:flex flex-wrap gap-2.5">
           <button
             onClick={() => {
               setShowBulkUpload(prev => !prev);
@@ -149,13 +141,19 @@ export default function Inventory({
             className="flex items-center gap-2 h-11 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white px-5 text-sm font-medium transition-colors cursor-pointer"
           >
             <Plus size={16} />
-            {showAddForm ? "Cerrar formulario" : "Agregar producto"}
+            {showAddForm ? "Cerrar formulario" : "Nuevo producto"}
           </button>
         </div>
       </div>
 
-      {/* Cifras del inventario */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4" id="inventory-metrics">
+      {/* Cifras del inventario (plegadas) */}
+      <details className="group rounded-2xl border border-brand-border bg-white">
+        <summary className="flex items-center justify-between gap-3 px-6 min-h-[56px] cursor-pointer list-none text-[15px] font-medium [&::-webkit-details-marker]:hidden">
+          Ver cifras del inventario
+          <ChevronDown size={18} className="text-brand-muted transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="px-4 sm:px-6 pb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4" id="inventory-metrics">
         {[
           { label: "Productos", value: String(totalProductsCount), warn: false },
           { label: "Con stock bajo", value: String(criticalStockCount), warn: criticalStockCount > 0 },
@@ -168,6 +166,9 @@ export default function Inventory({
           </div>
         ))}
       </div>
+
+        </div>
+      </details>
 
       {/* Add product form */}
       {showAddForm && (
@@ -215,56 +216,91 @@ export default function Inventory({
       )}
 
       {/* Búsqueda y filtros */}
-      <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-        <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center w-full md:max-w-xl">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-3.5 text-brand-muted" size={18} strokeWidth={1.8} />
-            <label htmlFor="inventory-search" className="sr-only">Buscar en el inventario</label>
-            <input
-              id="inventory-search"
-              type="search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar producto"
-              className="w-full h-11 rounded-xl border border-[#E2E1DB] pl-11 pr-4 text-sm focus:border-brand-primary focus:outline-hidden bg-white text-brand-text placeholder-brand-muted"
-            />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setFilterCriticalOnly(prev => !prev)}
-            aria-pressed={filterCriticalOnly}
-            className={"flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl text-[13px] transition-colors border shrink-0 cursor-pointer " + (filterCriticalOnly ? "bg-brand-text text-white border-brand-text font-medium" : "bg-white text-brand-text border-[#E2E1DB] hover:bg-brand-bg")}
-          >
-            <AlertTriangle size={14} className={filterCriticalOnly ? "" : "text-[#A24A16]"} />
-            <span>Stock crítico · {products.filter(isCriticalStock).length}</span>
-          </button>
+      <div className="space-y-3">
+        <div className="relative max-w-xl">
+          <Search className="absolute left-4 top-3.5 text-brand-muted" size={18} strokeWidth={1.8} />
+          <label htmlFor="inventory-search" className="sr-only">Buscar producto</label>
+          <input
+            id="inventory-search"
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar producto"
+            className="w-full h-12 rounded-full border border-[#E2E1DB] pl-11 pr-4 text-[15px] focus:border-brand-primary focus:outline-hidden bg-white text-brand-text placeholder-brand-muted"
+          />
         </div>
 
-        <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none" id="categories-filter-scroll">
-          {categories.map((cat) => (
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none" id="categories-filter-scroll">
+          <button
+            type="button"
+            onClick={() => setFilterCriticalOnly(false)}
+            aria-pressed={!filterCriticalOnly}
+            className={"h-10 px-[18px] rounded-full text-sm transition-colors shrink-0 cursor-pointer border " + (!filterCriticalOnly ? "bg-brand-text border-brand-text text-white font-medium" : "bg-white border-[#E2E1DB] text-brand-text hover:bg-brand-bg")}
+          >
+            Todos
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterCriticalOnly(true)}
+            aria-pressed={filterCriticalOnly}
+            className={"h-10 px-[18px] rounded-full text-sm transition-colors shrink-0 cursor-pointer border " + (filterCriticalOnly ? "bg-brand-text border-brand-text text-white font-medium" : "bg-white border-[#E2E1DB] text-brand-text hover:bg-brand-bg")}
+          >
+            Se acaban · {products.filter(isCriticalStock).length}
+          </button>
+          {categories.filter((cat) => cat !== categories[0]).map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={"h-9 px-4 rounded-full text-[13px] transition-colors flex-shrink-0 cursor-pointer border " + (selectedCategory === cat ? "bg-brand-text border-brand-text text-white font-medium" : "bg-white border-[#E2E1DB] text-brand-text hover:bg-brand-bg")}
+              className={"h-10 px-[18px] rounded-full text-sm transition-colors shrink-0 cursor-pointer border " + (selectedCategory === cat ? "bg-[#EAF2ED] border-brand-primary text-[#1F3D2E] font-medium" : "bg-white border-[#E2E1DB] text-brand-muted hover:bg-brand-bg")}
             >
               {cat}
             </button>
           ))}
         </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            setShowBulkUpload(prev => !prev);
+            setShowAddForm(false);
+          }}
+          className="sm:hidden flex items-center gap-2 text-sm font-medium text-brand-primary cursor-pointer"
+        >
+          <FileSpreadsheet size={16} />
+          {showBulkUpload ? "Cerrar carga" : "Importar desde Excel"}
+        </button>
       </div>
 
       {/* Main Table view */}
-      <InventoryTable
-        sortedProducts={sortedProducts}
-        umbralCritico={umbralCritico}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        handleAlternarOrdenamiento={handleAlternarOrdenamiento}
-        handleAjustarStockRapido={handleAjustarStockRapido}
-        handleCargarDatosEdicion={handleCargarDatosEdicion}
-        handleEliminarProductoDeInventario={handleEliminarProductoDeInventario}
-      />
+      <div className="hidden md:block">
+        <InventoryTable
+          sortedProducts={sortedProducts}
+          umbralCritico={umbralCritico}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          handleAlternarOrdenamiento={handleAlternarOrdenamiento}
+          handleAjustarStockRapido={handleAjustarStockRapido}
+          handleCargarDatosEdicion={handleCargarDatosEdicion}
+          handleEliminarProductoDeInventario={handleEliminarProductoDeInventario}
+        />
+      </div>
+      <div className="md:hidden">
+        <InventoryList products={sortedProducts} onRestock={handleCargarDatosEdicion} />
+      </div>
+
+      {/* Botón flotante: nuevo producto (móvil) */}
+      <button
+        onClick={() => {
+          setShowAddForm(prev => !prev);
+          setShowBulkUpload(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        className="sm:hidden fixed right-5 bottom-24 z-30 h-[52px] px-[22px] rounded-full bg-brand-primary text-white text-[15px] font-semibold flex items-center gap-2 shadow-[0_6px_16px_rgba(47,107,79,0.28)] cursor-pointer"
+      >
+        <Plus size={18} strokeWidth={2.2} />
+        {showAddForm ? "Cerrar" : "Nuevo producto"}
+      </button>
+
 
       {/* Modal para Editar Producto */}
       <EditProductModal
