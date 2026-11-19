@@ -13,6 +13,7 @@ import { verifyPin, isHashedPin, hashPin, markSessionUnlocked, clearSessionUnloc
 import { translateAuthError } from "../lib/authErrors";
 import { isCriticalStock } from "../lib/stock";
 import { 
+import { nextTheme, resolveTheme } from "../lib/theme";
   Product, 
   Sale, 
   Task, 
@@ -205,7 +206,7 @@ export function useApp() {
 
   // Synchronize dark/light theme preference
   useEffect(() => {
-    if (profile?.theme === "dark") {
+    if (resolveTheme(profile?.theme) === "dark") {
       document.documentElement.classList.add("dark");
       document.body.classList.add("dark");
     } else {
@@ -224,8 +225,7 @@ export function useApp() {
 
   const handleToggleTheme = async () => {
     if (!profile || !user) return;
-    const nextTheme: "light" | "dark" = profile.theme === "light" ? "dark" : "light";
-    const updated = { ...profile, theme: nextTheme };
+    const updated = { ...profile, theme: nextTheme(profile.theme) };
     // Optimista: actualiza el estado compartido (y por tanto la clase "dark"
     // del documento) de inmediato, sin esperar el viaje de ida y vuelta a la
     // base de datos. Antes existían dos implementaciones de este mismo
