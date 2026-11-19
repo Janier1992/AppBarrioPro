@@ -74,6 +74,7 @@ const sections: Section[] = [
       "Si olvidaste tu contraseña, toca “¿Olvidaste tu contraseña?”: te enviamos un código por correo para crear una nueva.",
       "En el celular, la barra inferior tiene cuatro destinos (Hoy, Productos, Vender y Fiados) y un botón “Más” con Tareas, Ajustes y el Asistente. En el computador, esos destinos están en la barra superior y en el menú de tu tienda (arriba a la derecha).",
       "Si tu navegador lo permite, puedes instalar Tiendly como una aplicación en tu dispositivo (opción en Ajustes, o “Agregar a pantalla de inicio”) para abrirla como cualquier otra app.",
+      "Tiendly sirve para tiendas, panaderías, fruver, ferreterías, papelerías, droguerías y otros negocios de barrio. En Hoy (o en Ajustes) elige tu tipo de negocio: así te sugerimos las categorías y tareas que usa tu negocio. Es opcional y no limita nada.",
     ],
     tip: "Guarda bien tu contraseña. Si compartes el dispositivo con empleados o familiares, configura además un PIN de 4 dígitos desde Ajustes para proteger la información de tu caja.",
     image: "00-login.png",
@@ -100,6 +101,7 @@ const sections: Section[] = [
     steps: [
       "“Nuevo producto” abre un formulario para agregar un artículo.",
       "“Importar Excel” permite subir muchos productos de una sola vez desde una plantilla — ideal para arrancar con tu inventario completo.",
+      "La categoría se elige de las sugerencias de tu tipo de negocio o la escribes tú: puedes usar cualquiera (por ejemplo “Empanadas” o “Tornillería”). Al importar desde Excel se conserva la categoría que escribiste.",
       "El filtro “Se acaban” muestra solo los productos con 30 % o menos de su stock mínimo; “Todos” los muestra todos. También puedes filtrar por categoría o buscar por nombre.",
       "En el celular, cada fila tiene el botón “+ Reponer”, que abre la edición del producto para actualizar su stock. En el computador verás la tabla completa, con costo, precio y botones para ajustar el stock con −/+, editar o eliminar.",
       "“Ver cifras del inventario” despliega el valor estimado y la inversión en stock.",
@@ -142,6 +144,7 @@ const sections: Section[] = [
     intro:
       "Una lista para tus rutinas de apertura, operación y cierre: abrir la caja, revisar vencimientos, cuadrar al final del día. Se encuentra en “Más” (celular) o en el menú de tu tienda (computador).",
     steps: [
+      "Si aún no tienes tareas, Tiendly te ofrece las sugeridas para tu tipo de negocio (apertura, durante el día y cierre); tócalas con “Agregar las sugeridas”.",
       "Escribe la tarea y toca “Añadir Tarea”.",
       "Toca el círculo junto a una tarea para marcarla como completada (y de nuevo para desmarcarla).",
       "Pasa el cursor sobre una tarea para editarla o eliminarla.",
@@ -155,11 +158,11 @@ const sections: Section[] = [
     intro:
       "Configura los datos de tu negocio, la seguridad de tu cuenta y tus avisos. Se abre desde “Más” (celular) o desde el menú de tu tienda (computador).",
     steps: [
-      "“Perfil del Negocio”: nombre comercial, dirección, horario, logo y el umbral general de stock bajo.",
+      "“Perfil del Negocio”: tipo de negocio, nombre comercial, dirección, horario, logo y el umbral general de stock bajo.",
       "“Gestión de Catálogo”: otra forma de administrar tus productos y exportar tu inventario a Excel.",
       "“Seguridad”: configura tu PIN de 4 dígitos para bloquear la app, o carga datos de demostración.",
       "“Notificaciones”: activa avisos del navegador cuando un producto esté por agotarse o tengas tareas pendientes.",
-      "En el menú “Más” también cambias entre tema claro y oscuro, bloqueas la app con tu PIN y cierras sesión.",
+      "En el menú “Más” también cambias entre tema claro y oscuro (con un solo toque), bloqueas la app con tu PIN y cierras sesión.",
     ],
     image: "06-settings.png",
   },
