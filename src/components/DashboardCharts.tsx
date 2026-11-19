@@ -10,8 +10,7 @@ import {
   Tooltip,
   CartesianGrid,
   BarChart,
-  Bar,
-  Cell
+  Bar
 } from "recharts";
 
 const CustomTooltip = ({ active, payload, label }: any) => {

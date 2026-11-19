@@ -1,8 +1,7 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Product, Sale } from "../types";
 import { loadDemoDataToFirestore } from "../lib/demoData";
 import { isCriticalStock } from "../lib/stock";
-import { registerSale } from "../lib/checkout";
 import { showErrorToast, showSuccessToast } from "../lib/toast";
 import { generateDashboardReportPDF } from "../lib/pdf";
 
@@ -13,65 +12,8 @@ interface UseDashboardProps {
 }
 
 export function useDashboard({ products, sales, userId }: UseDashboardProps) {
-  const [showAddSaleModal, setShowAddSaleModal] = useState(false);
-  const [quickCart, setQuickCart] = useState<{ product: Product; quantity: number }[]>([]);
-  const [quickSearch, setQuickSearch] = useState("");
-  const [activeQuickIndex, setActiveQuickIndex] = useState(0);
-  const [loadingSale, setLoadingSale] = useState(false);
   const [loadingDemo, setLoadingDemo] = useState(false);
   const [exportingPdf, setExportingPdf] = useState(false);
-
-  const handleQuickSearchChange = (val: string) => {
-    setQuickSearch(val);
-    setActiveQuickIndex(0);
-  };
-
-  const handleAddToQuickCart = (product: Product) => {
-    setQuickCart(prev => {
-      const existing = prev.find(item => item.product.id === product.id);
-      if (existing) {
-        if (existing.quantity >= product.stock) {
-          showErrorToast(`No puedes agregar más unidades de ${product.name}. Stock máximo alcanzado (${product.stock}).`);
-          return prev;
-        }
-        return prev.map(item => 
-          item.product.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { product, quantity: 1 }];
-    });
-  };
-
-  const handleUpdateQuickQuantity = (productId: string, qty: number) => {
-    const item = quickCart.find(i => i.product.id === productId);
-    if (!item) return;
-    if (qty > item.product.stock) {
-      showErrorToast(`No puedes agregar más unidades de ${item.product.name}. Stock disponible: ${item.product.stock}`);
-      return;
-    }
-    if (qty <= 0) {
-      handleRemoveFromQuickCart(productId);
-      return;
-    }
-    setQuickCart(prev => prev.map(i => i.product.id === productId ? { ...i, quantity: qty } : i));
-  };
-
-  const handleRemoveFromQuickCart = (productId: string) => {
-    setQuickCart(prev => prev.filter(i => i.product.id !== productId));
-  };
-
-  const filteredModalProducts = useMemo(() => {
-    const available = products.filter(p => p.stock > 0);
-    if (!quickSearch.trim()) return available;
-    const query = quickSearch.toLowerCase();
-    return available.filter(p => 
-      p.name.toLowerCase().includes(query) ||
-      (p.sku && p.sku.toLowerCase().includes(query)) ||
-      (p.category && p.category.toLowerCase().includes(query))
-    );
-  }, [products, quickSearch]);
 
   const handleCargarDatosDeDemostracion = async () => {
     if (!window.confirm("¿Deseas cargar productos de muestra y ventas ficticias? Esto agregará stock inicial, checklists y ventas de los últimos días para ver el panel en acción.")) return;
@@ -89,7 +31,6 @@ export function useDashboard({ products, sales, userId }: UseDashboardProps) {
     }
   };
 
-  const totalSalesCount = sales.length;
   const todayStr = new Date().toISOString().split("T")[0];
   const todaySales = useMemo(() => sales.filter(s => s.timestamp.startsWith(todayStr)), [sales, todayStr]);
   const todayTotalEarnings = useMemo(() => todaySales.reduce((acc, curr) => acc + curr.total, 0), [todaySales]);
@@ -203,59 +144,11 @@ export function useDashboard({ products, sales, userId }: UseDashboardProps) {
     }
   };
 
-  const handleRegistrarVentaRapida = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (quickCart.length === 0) return;
-
-    for (const item of quickCart) {
-      if (item.quantity > item.product.stock) {
-        showErrorToast(`No hay suficiente stock para "${item.product.name}". Disponible: ${item.product.stock}`);
-        return;
-      }
-    }
-
-    setLoadingSale(true);
-    try {
-      // "Venta Rápida" es un atajo de cobro en efectivo/mostrador: usa la
-      // misma función de registro que el POS de Ventas (src/lib/checkout.ts)
-      // para no mantener dos implementaciones de checkout por separado.
-      await registerSale({ userId, cart: quickCart, clientName: "Consumidor Final", paymentMethod: "Efectivo" });
-
-      setShowAddSaleModal(false);
-      setQuickCart([]);
-      setQuickSearch("");
-      showSuccessToast("Venta registrada correctamente.");
-    } catch (error) {
-      console.error("Error in sale registration:", error);
-      showErrorToast("No se pudo registrar la venta. Verifica tu conexión e inténtalo de nuevo.");
-    } finally {
-      setLoadingSale(false);
-    }
-  };
-
   return {
-    showAddSaleModal,
-    setShowAddSaleModal,
-    quickCart,
-    setQuickCart,
-    quickSearch,
-    setQuickSearch,
-    activeQuickIndex,
-    setActiveQuickIndex,
-    loadingSale,
     loadingDemo,
-    handleQuickSearchChange,
-    handleAddToQuickCart,
-    handleUpdateQuickQuantity,
-    handleRemoveFromQuickCart,
     handleCargarDatosDeDemostracion,
-    totalSalesCount,
     todayStr,
-    todaySales,
     todayTotalEarnings,
-    yesterdayStr,
-    yesterdaySales,
-    yesterdayTotalEarnings,
     growthPercent,
     criticalProducts,
     popularItems,
@@ -265,8 +158,6 @@ export function useDashboard({ products, sales, userId }: UseDashboardProps) {
     totalTransaccionesMes,
     exportingPdf,
     handleExportPDF,
-    handleRegistrarVentaRapida,
-    filteredModalProducts,
     obtenerNombreMesActual
   };
 }
