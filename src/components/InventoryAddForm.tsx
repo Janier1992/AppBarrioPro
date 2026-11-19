@@ -43,7 +43,7 @@ export default function InventoryAddForm({
   setShowAddForm
 }: InventoryAddFormProps) {
   return (
-    <div className="rounded-2xl border border-brand-primary/30 bg-brand-primary/5 p-6 shadow-xs space-y-4 animate-in slide-in-from-top duration-300">
+    <div className="rounded-2xl border border-brand-primary/30 bg-brand-primary/5 p-6 space-y-4 animate-in slide-in-from-top duration-300">
       <h3 className="font-bold text-brand-primary text-sm flex items-center gap-2">
         <Plus size={18} />
         Agregar Nuevo Producto al Catálogo

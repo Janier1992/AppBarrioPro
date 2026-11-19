@@ -74,7 +74,7 @@ export default function DashboardCharts({
       {/* Grid: 2 columns widgets */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="dashboard-widgets-grid">
         {/* Widget 1: Ventas Diarias Graph & Logs */}
-        <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs" id="widget-sales-chart">
+        <div className="rounded-2xl border border-brand-border bg-white p-6 " id="widget-sales-chart">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <TrendingUp className="text-brand-primary" size={20} />
@@ -99,8 +99,8 @@ export default function DashboardCharts({
                   >
                     <defs>
                       <linearGradient id="colorMonto" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4A5A40" stopOpacity={0.25} />
-                        <stop offset="95%" stopColor="#4A5A40" stopOpacity={0.0} />
+                        <stop offset="5%" stopColor="#2F6B4F" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#2F6B4F" stopOpacity={0.0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
@@ -120,7 +120,7 @@ export default function DashboardCharts({
                     <Area 
                       type="monotone" 
                       dataKey="monto" 
-                      stroke="#4A5A40" 
+                      stroke="#2F6B4F" 
                       strokeWidth={2.5} 
                       fillOpacity={1} 
                       fill="url(#colorMonto)" 
@@ -153,7 +153,7 @@ export default function DashboardCharts({
         </div>
 
         {/* Widget 2: Inventario Crítico list */}
-        <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs" id="widget-critical-stock">
+        <div className="rounded-2xl border border-brand-border bg-white p-6 " id="widget-critical-stock">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2 cursor-pointer hover:opacity-85 transition-opacity" onClick={onNavigateToCriticalStock}>
               <AlertCircle className="text-brand-accent" size={20} />
@@ -213,7 +213,7 @@ export default function DashboardCharts({
       </div>
 
       {/* Widget Monthly Sales BarChart */}
-      <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs" id="widget-monthly-bar-chart">
+      <div className="rounded-2xl border border-brand-border bg-white p-6 " id="widget-monthly-bar-chart">
         <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex items-center gap-2">
             <TrendingUp className="text-brand-primary animate-pulse" size={20} />
@@ -260,7 +260,7 @@ export default function DashboardCharts({
                 <Tooltip content={<CustomBarTooltip />} cursor={{ fill: 'rgba(74, 90, 64, 0.05)' }} />
                 <Bar 
                   dataKey="monto" 
-                  fill="#4A5A40" 
+                  fill="#2F6B4F" 
                   radius={[3, 3, 0, 0]}
                 />
               </BarChart>
@@ -270,7 +270,7 @@ export default function DashboardCharts({
       </div>
 
       {/* Widget 3: Popular Products */}
-      <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs" id="widget-popular-items">
+      <div className="rounded-2xl border border-brand-border bg-white p-6 " id="widget-popular-items">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Users className="text-brand-primary" size={20} />

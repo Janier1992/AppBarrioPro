@@ -156,8 +156,8 @@ export default function Checklist({
     <div className="space-y-6" id="checklist-container">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold text-brand-text">Checklist de Tareas Diarias</h2>
-          <p className="text-xs text-brand-muted">Mantén el control diario de tus operaciones y rutinas de abastos.</p>
+          <h2 className="text-[28px] sm:text-3xl font-semibold tracking-tight text-brand-text">Tareas</h2>
+          <p className="text-sm text-brand-muted">Tus rutinas de apertura, operación y cierre.</p>
         </div>
       </div>
 
@@ -196,7 +196,7 @@ export default function Checklist({
       {/* Task Sections */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="checklist-grid">
         {/* Active Tasks Panel */}
-        <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs space-y-4">
+        <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-brand-border pb-3">
             <h3 className="font-bold text-brand-text text-sm">Tareas Pendientes</h3>
             <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-brand-accent border border-amber-100">
@@ -258,7 +258,7 @@ export default function Checklist({
         </div>
 
         {/* Completed Tasks Panel */}
-        <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs space-y-4">
+        <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-brand-border pb-3">
             <h3 className="font-bold text-brand-text text-sm">Tareas Finalizadas</h3>
             <span className="rounded-full bg-brand-primary/10 px-2.5 py-0.5 text-xs font-semibold text-brand-primary border border-brand-primary/20">

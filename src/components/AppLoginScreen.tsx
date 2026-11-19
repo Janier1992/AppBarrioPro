@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { LayoutDashboard, Download } from "lucide-react";
+import { Store, Download } from "lucide-react";
 import { APP_NAME } from "../lib/brand";
 import PasswordInput from "./PasswordInput";
 import ForgotPasswordForm from "./ForgotPasswordForm";
@@ -58,17 +58,17 @@ export default function AppLoginScreen({
       <motion.div 
         initial={{ opacity: 0, y: 15 }} 
         animate={{ opacity: 1, y: 0 }} 
-        className="w-full max-w-md rounded-3xl bg-white p-8 shadow-sm border border-brand-border flex flex-col items-center space-y-6"
+        className="w-full max-w-md rounded-3xl bg-white p-8 sm:p-10 border border-brand-border flex flex-col space-y-7"
       >
         {/* Logo illustration */}
-        <div className="rounded-2xl bg-brand-primary p-4 shadow-sm text-white flex justify-center items-center">
-          <LayoutDashboard size={40} />
+        <div className="h-12 w-12 rounded-[14px] bg-brand-primary text-white flex justify-center items-center">
+          <Store size={26} strokeWidth={1.8} />
         </div>
 
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-extrabold text-brand-text tracking-tight">{APP_NAME}</h1>
-          <p className="text-brand-muted text-sm max-w-xs leading-relaxed mx-auto">
-            Gestión inteligente de inventario, finanzas y recomendaciones para comercios tradicionales de barrio.
+        <div className="space-y-2">
+          <h1 className="text-[30px] font-semibold text-brand-text tracking-tight">Bienvenido a {APP_NAME}</h1>
+          <p className="text-brand-muted text-[15px] leading-relaxed">
+            Ventas, inventario y deudas de tu tienda, en un solo lugar.
           </p>
         </div>
 
@@ -139,7 +139,7 @@ export default function AppLoginScreen({
                 placeholder="Ej. Abasto San José"
                 value={authName}
                 onChange={(e) => setAuthName(e.target.value)}
-                className="w-full rounded-2xl border border-brand-border px-4 py-3 text-sm bg-brand-bg focus:bg-white focus:border-brand-primary focus:outline-hidden"
+                className="w-full h-[52px] rounded-[14px] border border-[#E2E1DB] px-4 text-[15px] bg-white text-brand-text focus:border-brand-primary focus:outline-hidden"
               />
             </div>
           )}
@@ -152,7 +152,7 @@ export default function AppLoginScreen({
               placeholder="ejemplo@correo.com"
               value={authEmail}
               onChange={(e) => setAuthEmail(e.target.value)}
-              className="w-full rounded-2xl border border-brand-border px-4 py-3 text-sm bg-brand-bg focus:bg-white focus:border-brand-primary focus:outline-hidden"
+              className="w-full h-[52px] rounded-[14px] border border-[#E2E1DB] px-4 text-[15px] bg-white text-brand-text focus:border-brand-primary focus:outline-hidden"
             />
           </div>
 
@@ -184,7 +184,7 @@ export default function AppLoginScreen({
           <button
             type="submit"
             disabled={loadingAuthSubmit}
-            className="w-full rounded-2xl bg-brand-primary hover:bg-brand-primary-dark active:scale-98 py-3.5 text-sm font-bold text-white transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="w-full h-[52px] rounded-[14px] bg-brand-primary hover:bg-brand-primary-dark text-[15px] font-semibold text-white transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             {loadingAuthSubmit ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -213,7 +213,7 @@ export default function AppLoginScreen({
                     setIsPwaInstalled(true);
                   }
                 }}
-                className="w-full rounded-2xl border border-brand-primary/30 bg-brand-primary/5 hover:bg-brand-primary/10 active:scale-98 px-5 py-3.5 text-sm font-bold text-brand-primary transition-all flex items-center justify-center gap-3 cursor-pointer"
+                className="w-full rounded-[14px] border border-[#E2E1DB] bg-white hover:bg-brand-bg h-12 px-5 text-sm font-medium text-brand-text transition-colors flex items-center justify-center gap-3 cursor-pointer"
               >
                 <Download size={18} />
                 Instalar App en este Dispositivo

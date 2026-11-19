@@ -14,9 +14,9 @@ interface ForgotPasswordFormProps {
 type Step = "request" | "confirm";
 
 const inputClass =
-  "w-full rounded-2xl border border-brand-border px-4 py-3 text-sm bg-brand-bg focus:bg-white focus:border-brand-primary focus:outline-hidden";
+  "w-full h-[52px] rounded-[14px] border border-[#E2E1DB] px-4 text-[15px] bg-white text-brand-text focus:border-brand-primary focus:outline-hidden";
 const primaryButtonClass =
-  "w-full rounded-2xl bg-brand-primary hover:bg-brand-primary-dark active:scale-98 py-3.5 text-sm font-bold text-white transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50";
+  "w-full h-[52px] rounded-[14px] bg-brand-primary hover:bg-brand-primary-dark text-[15px] font-semibold text-white transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50";
 
 /**
  * Flujo "Olvidé mi contraseña" en dos pasos:

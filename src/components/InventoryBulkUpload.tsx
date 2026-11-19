@@ -37,7 +37,7 @@ export default function InventoryBulkUpload({
   setShowBulkUpload
 }: InventoryBulkUploadProps) {
   return (
-    <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/5 p-6 shadow-xs space-y-6 animate-in slide-in-from-top duration-300">
+    <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/5 p-6 space-y-6 animate-in slide-in-from-top duration-300">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-brand-border pb-4">
         <div className="space-y-1">
           <h3 className="font-bold text-emerald-700 text-sm flex items-center gap-2">
@@ -50,7 +50,7 @@ export default function InventoryBulkUpload({
         </div>
         <button
           onClick={handleDescargarPlantilla}
-          className="flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-xs font-bold transition-all shadow-xs cursor-pointer"
+          className="flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-xs font-bold transition-all cursor-pointer"
         >
           <Download size={14} />
           Descargar Plantilla de Ejemplo
@@ -124,13 +124,13 @@ export default function InventoryBulkUpload({
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-emerald-50 border border-emerald-100 p-3 rounded-xl">
                   <span className="text-[10px] font-bold text-emerald-800 uppercase block">Válidos para Cargar</span>
-                  <span className="text-lg font-black text-emerald-700 font-mono">
+                  <span className="text-lg font-bold text-emerald-700 font-mono">
                     {bulkProducts.length} productos
                   </span>
                 </div>
                 <div className={`p-3 rounded-xl border ${bulkErrors.length > 0 ? "bg-amber-50 border-amber-100 text-amber-700" : "bg-slate-50 border-brand-border text-brand-muted"}`}>
                   <span className="text-[10px] font-bold uppercase block">Errores de Validación</span>
-                  <span className="text-lg font-black font-mono">
+                  <span className="text-lg font-bold font-mono">
                     {bulkErrors.length} omitidos
                   </span>
                 </div>

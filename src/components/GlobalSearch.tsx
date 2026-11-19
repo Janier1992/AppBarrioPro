@@ -93,7 +93,7 @@ export default function GlobalSearch({ products, tasks, debts, onSelectResult }:
           }}
           onFocus={() => setIsOpen(true)}
           placeholder="Buscar productos, tareas o deudas..."
-          className="w-full pl-10 pr-20 py-2.5 text-xs bg-brand-bg hover:bg-gray-100/75 focus:bg-white rounded-xl border border-brand-border focus:border-brand-primary focus:outline-hidden transition-all text-brand-text placeholder-brand-muted/85 font-medium shadow-2xs"
+          className="w-full pl-10 pr-20 py-2.5 text-xs bg-brand-bg hover:bg-gray-100/75 focus:bg-white rounded-xl border border-brand-border focus:border-brand-primary focus:outline-hidden transition-all text-brand-text placeholder-brand-muted/85 font-medium"
           id="global-search-input"
         />
         
@@ -113,7 +113,7 @@ export default function GlobalSearch({ products, tasks, debts, onSelectResult }:
               <X size={12} />
             </button>
           ) : (
-            <div className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 rounded-md border border-brand-border bg-white text-[10px] text-brand-muted font-mono font-bold shadow-2xs">
+            <div className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 rounded-md border border-brand-border bg-white text-[10px] text-brand-muted font-mono font-bold">
               <Command size={9} />
               <span>K</span>
             </div>
@@ -142,7 +142,7 @@ export default function GlobalSearch({ products, tasks, debts, onSelectResult }:
                 {/* 1. PRODUCTOS */}
                 {results.products.length > 0 && (
                   <div className="space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-[10px] font-extrabold text-brand-primary uppercase tracking-wider px-1">
+                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-brand-primary uppercase tracking-wider px-1">
                       <Boxes size={12} />
                       <span>Productos ({results.products.length})</span>
                     </div>
@@ -167,7 +167,7 @@ export default function GlobalSearch({ products, tasks, debts, onSelectResult }:
                               </div>
                             </div>
                             <div className="text-right space-y-0.5 shrink-0">
-                              <p className="text-xs font-mono font-extrabold text-brand-text">
+                              <p className="text-xs font-mono font-semibold text-brand-text">
                                 ${p.price.toLocaleString("es-CO", { minimumFractionDigits: 0 })}
                               </p>
                               <span
@@ -190,7 +190,7 @@ export default function GlobalSearch({ products, tasks, debts, onSelectResult }:
                 {/* 2. TAREAS */}
                 {results.tasks.length > 0 && (
                   <div className="space-y-1.5 pt-1 border-t border-brand-border/40">
-                    <div className="flex items-center gap-1.5 text-[10px] font-extrabold text-brand-primary uppercase tracking-wider px-1">
+                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-brand-primary uppercase tracking-wider px-1">
                       <CheckSquare size={12} />
                       <span>Tareas de Checklist ({results.tasks.length})</span>
                     </div>
@@ -229,7 +229,7 @@ export default function GlobalSearch({ products, tasks, debts, onSelectResult }:
                 {/* 3. DEUDAS */}
                 {results.debts.length > 0 && (
                   <div className="space-y-1.5 pt-1 border-t border-brand-border/40">
-                    <div className="flex items-center gap-1.5 text-[10px] font-extrabold text-brand-primary uppercase tracking-wider px-1">
+                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-brand-primary uppercase tracking-wider px-1">
                       <DollarSign size={12} />
                       <span>Deudas / Cuentas por Cobrar ({results.debts.length})</span>
                     </div>
@@ -249,7 +249,7 @@ export default function GlobalSearch({ products, tasks, debts, onSelectResult }:
                             </p>
                           </div>
                           <div className="text-right space-y-0.5 shrink-0">
-                            <p className="text-xs font-mono font-extrabold text-rose-600">
+                            <p className="text-xs font-mono font-semibold text-rose-600">
                               ${d.amount.toLocaleString("es-CO", { minimumFractionDigits: 0 })}
                             </p>
                             <span

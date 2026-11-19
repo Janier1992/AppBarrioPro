@@ -21,7 +21,7 @@ export default function SettingsSecurity({
   return (
     <div className="space-y-6">
       {/* Security PIN code config */}
-      <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-xs space-y-4">
+      <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
         <h3 className="font-bold text-brand-text text-sm border-b border-brand-border pb-3 flex items-center gap-2">
           <Shield size={18} className="text-brand-primary" />
           PIN de Acceso Local
@@ -53,7 +53,7 @@ export default function SettingsSecurity({
       </div>
 
       {/* Demo initial seeding */}
-      <div className="rounded-2xl border border-brand-border bg-brand-bg p-6 shadow-xs space-y-3">
+      <div className="rounded-2xl border border-brand-border bg-brand-bg p-6 space-y-3">
         <h3 className="font-bold text-brand-text text-sm">Cargar Datos de Demostración</h3>
         <p className="text-xs text-brand-muted leading-relaxed">
           ¿Es tu primera vez usando Tiendly? Carga al instante un catálogo completo de abarrotes de barrio, checklists preconfigurados, preparaciones del Modo Maleta, historial financiero del mes y un perfil comercial ficticio para ver cómo cobra vida el panel de control.
@@ -63,7 +63,7 @@ export default function SettingsSecurity({
           type="button"
           onClick={handleCargarDatosDeDemostracion}
           disabled={loadingDemo}
-          className="rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white font-semibold text-xs px-5 py-3 transition-all flex items-center gap-2 disabled:opacity-50 shadow-xs cursor-pointer"
+          className="rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white font-semibold text-xs px-5 py-3 transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
         >
           {loadingDemo ? (
             <RefreshCw size={14} className="animate-spin" />

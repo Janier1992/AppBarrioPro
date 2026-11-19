@@ -124,84 +124,49 @@ export default function Inventory({
 
   return (
     <div className="space-y-6" id="inventory-container">
-      {/* Header with Title and Quick Add Button */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-        <div className="space-y-1">
-          <h2 className="text-xl font-bold text-brand-text flex items-center gap-2">
-            <Boxes size={22} className="text-brand-primary" />
-            Catálogo e Inventario de Productos
-          </h2>
-          <p className="text-xs text-brand-muted">Monitorea niveles de stock, costos, precios y categorías de tus mercancías.</p>
+      {/* Encabezado: título y acciones */}
+      <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4">
+        <div className="space-y-1.5">
+          <h2 className="text-[28px] sm:text-3xl font-semibold tracking-tight text-brand-text">Inventario</h2>
+          <p className="text-sm text-brand-muted">{totalProductsCount} productos · {criticalStockCount} con stock crítico</p>
         </div>
-        <div className="flex flex-wrap gap-2 self-start sm:self-auto">
+        <div className="flex flex-wrap gap-2.5 self-start sm:self-auto">
           <button
             onClick={() => {
               setShowBulkUpload(prev => !prev);
               setShowAddForm(false);
             }}
-            className={`flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold transition-all shadow-sm active:scale-95 cursor-pointer ${
-              showBulkUpload 
-                ? "bg-slate-700 hover:bg-slate-800 text-white" 
-                : "bg-emerald-600 hover:bg-emerald-700 text-white"
-            }`}
+            className="flex items-center gap-2 h-11 rounded-xl border border-[#E2E1DB] bg-white text-brand-text hover:bg-brand-bg px-4 text-sm font-medium transition-colors cursor-pointer"
           >
             <FileSpreadsheet size={16} />
-            {showBulkUpload ? "Cerrar Carga" : "Carga Masiva (Excel)"}
+            {showBulkUpload ? "Cerrar carga" : "Importar Excel"}
           </button>
           <button
             onClick={() => {
               setShowAddForm(prev => !prev);
               setShowBulkUpload(false);
             }}
-            className="flex items-center gap-2 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white px-4 py-3 text-xs font-semibold transition-all shadow-sm active:scale-95 cursor-pointer"
+            className="flex items-center gap-2 h-11 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white px-5 text-sm font-medium transition-colors cursor-pointer"
           >
             <Plus size={16} />
-            {showAddForm ? "Cerrar Formulario" : "Nuevo Producto"}
+            {showAddForm ? "Cerrar formulario" : "Agregar producto"}
           </button>
         </div>
       </div>
 
-      {/* Mini metrics bar */}
+      {/* Cifras del inventario */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4" id="inventory-metrics">
-        <div className="rounded-2xl border border-brand-border bg-white p-4 flex items-center gap-3 shadow-2xs">
-          <div className="rounded-xl bg-brand-primary/10 p-2.5 text-brand-primary flex-shrink-0">
-            <Package size={20} />
+        {[
+          { label: "Productos", value: String(totalProductsCount), warn: false },
+          { label: "Con stock bajo", value: String(criticalStockCount), warn: criticalStockCount > 0 },
+          { label: "Valor estimado", value: "$" + totalValuation.toFixed(2), warn: false },
+          { label: "Inversión en stock", value: "$" + totalInvestment.toFixed(2), warn: false },
+        ].map((m) => (
+          <div key={m.label} className="rounded-2xl border border-brand-border bg-white p-5 space-y-2">
+            <p className="text-[13px] text-brand-muted">{m.label}</p>
+            <p className={"text-2xl font-semibold tracking-tight tabular-nums " + (m.warn ? "text-[#A24A16]" : "text-brand-text")}>{m.value}</p>
           </div>
-          <div>
-            <p className="text-[10px] text-brand-muted font-bold uppercase tracking-wider">Productos</p>
-            <p className="text-lg font-bold text-brand-text">{totalProductsCount}</p>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-brand-border bg-white p-4 flex items-center gap-3 shadow-2xs">
-          <div className={`rounded-xl p-2.5 flex-shrink-0 ${criticalStockCount > 0 ? "bg-amber-50 text-brand-accent border border-amber-100" : "bg-brand-primary/10 text-brand-primary"}`}>
-            <AlertCircle size={20} />
-          </div>
-          <div>
-            <p className="text-[10px] text-brand-muted font-bold uppercase tracking-wider">Bajo Stock</p>
-            <p className={`text-lg font-bold ${criticalStockCount > 0 ? "text-brand-accent" : "text-brand-text"}`}>{criticalStockCount}</p>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-brand-border bg-white p-4 flex items-center gap-3 shadow-2xs">
-          <div className="rounded-xl bg-green-50 text-emerald-700 p-2.5 flex-shrink-0 border border-green-100">
-            <DollarSign size={20} />
-          </div>
-          <div>
-            <p className="text-[10px] text-brand-muted font-bold uppercase tracking-wider">Valor Estimado</p>
-            <p className="text-lg font-bold text-brand-text">${totalValuation.toFixed(2)}</p>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-brand-border bg-white p-4 flex items-center gap-3 shadow-2xs">
-          <div className="rounded-xl bg-blue-50 text-blue-700 p-2.5 flex-shrink-0 border border-blue-100">
-            <Boxes size={20} />
-          </div>
-          <div>
-            <p className="text-[10px] text-brand-muted font-bold uppercase tracking-wider">Inversión Stock</p>
-            <p className="text-lg font-bold text-brand-text">${totalInvestment.toFixed(2)}</p>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Add product form */}
@@ -249,42 +214,39 @@ export default function Inventory({
         />
       )}
 
-      {/* Search and Filters Controls */}
-      <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between bg-white p-4 rounded-2xl border border-brand-border shadow-2xs">
-        {/* Search Input & Critical stock filter toggle */}
+      {/* Búsqueda y filtros */}
+      <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center w-full md:max-w-xl">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-3.5 text-brand-muted" size={16} />
+            <Search className="absolute left-4 top-3.5 text-brand-muted" size={18} strokeWidth={1.8} />
+            <label htmlFor="inventory-search" className="sr-only">Buscar en el inventario</label>
             <input
-              type="text"
+              id="inventory-search"
+              type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar por nombre o SKU..."
-              className="w-full rounded-xl border border-brand-border pl-9 pr-4 py-2.5 text-xs focus:border-brand-primary focus:ring-1 focus:ring-brand-primary focus:outline-hidden bg-white text-brand-text placeholder-brand-muted"
+              placeholder="Buscar producto"
+              className="w-full h-11 rounded-xl border border-[#E2E1DB] pl-11 pr-4 text-sm focus:border-brand-primary focus:outline-hidden bg-white text-brand-text placeholder-brand-muted"
             />
           </div>
 
           <button
             type="button"
             onClick={() => setFilterCriticalOnly(prev => !prev)}
-            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all border shrink-0 cursor-pointer ${
-              filterCriticalOnly 
-                ? "bg-amber-600 text-white border-amber-700 shadow-sm" 
-                : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100/50"
-            }`}
+            aria-pressed={filterCriticalOnly}
+            className={"flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl text-[13px] transition-colors border shrink-0 cursor-pointer " + (filterCriticalOnly ? "bg-brand-text text-white border-brand-text font-medium" : "bg-white text-brand-text border-[#E2E1DB] hover:bg-brand-bg")}
           >
-            <AlertTriangle size={14} className={filterCriticalOnly ? "animate-pulse" : ""} />
-            <span>Stock Crítico ({products.filter(isCriticalStock).length})</span>
+            <AlertTriangle size={14} className={filterCriticalOnly ? "" : "text-[#A24A16]"} />
+            <span>Stock crítico · {products.filter(isCriticalStock).length}</span>
           </button>
         </div>
 
-        {/* Categories filters scroll */}
-        <div className="flex gap-1 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none" id="categories-filter-scroll">
+        <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none" id="categories-filter-scroll">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all flex-shrink-0 cursor-pointer ${selectedCategory === cat ? "bg-brand-primary text-white" : "bg-brand-bg text-brand-muted hover:bg-brand-border/30 border border-transparent hover:border-brand-border"}`}
+              className={"h-9 px-4 rounded-full text-[13px] transition-colors flex-shrink-0 cursor-pointer border " + (selectedCategory === cat ? "bg-brand-text border-brand-text text-white font-medium" : "bg-white border-[#E2E1DB] text-brand-text hover:bg-brand-bg")}
             >
               {cat}
             </button>

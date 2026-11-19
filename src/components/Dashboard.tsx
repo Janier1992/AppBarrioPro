@@ -5,7 +5,6 @@ import { Download, PlusCircle, RefreshCw } from "lucide-react";
 import { formatCurrency } from "../lib/format";
 import DashboardCharts from "./DashboardCharts";
 import QuickSaleModal from "./QuickSaleModal";
-import { APP_NAME } from "../lib/brand";
 
 interface DashboardProps {
   products: Product[];
@@ -56,83 +55,83 @@ export default function Dashboard({
 
   return (
     <div className="space-y-6" id="dashboard-container">
-      {/* iOS Weather-app style Hero Header Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-primary to-brand-primary-dark p-8 text-white shadow-sm" id="hero-metrics-card">
-        <div className="absolute top-0 right-0 -mt-8 -mr-8 h-40 w-40 rounded-full bg-white/5 blur-2xl" />
-        <div className="absolute bottom-0 left-0 -mb-8 -ml-8 h-40 w-40 rounded-full bg-white/5 blur-2xl" />
+      {/* Encabezado: título y acciones (una sola acción principal) */}
+      <header className="flex flex-wrap items-end justify-between gap-4" id="hero-metrics-card">
+        <div className="space-y-1.5">
+          <span className="text-[13px] text-brand-muted first-letter:uppercase">
+            {new Date().toLocaleDateString("es", { weekday: "long", day: "numeric", month: "long" })}
+          </span>
+          <h1 className="text-[28px] sm:text-3xl font-semibold tracking-tight text-brand-text">Resumen de hoy</h1>
+        </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-2">
-            <span className="text-xs font-semibold tracking-wider text-white/70 uppercase">Panel de Control</span>
-            <h1 className="text-4xl font-bold tracking-tight">{APP_NAME}</h1>
-            <p className="text-white/90 text-sm">Tus finanzas y stock optimizados al instante</p>
-          </div>
+        <div className="flex flex-wrap gap-2.5">
+          {products.length === 0 && (
+            <button
+              onClick={handleCargarDatosDeDemostracion}
+              disabled={loadingDemo}
+              className="flex items-center gap-2 h-11 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 px-4 text-sm font-medium transition-colors hover:bg-amber-100 cursor-pointer disabled:opacity-50"
+              id="btn-load-demo"
+            >
+              {loadingDemo ? <RefreshCw size={16} className="animate-spin" /> : "Sembrar Datos Demo"}
+            </button>
+          )}
+          <button
+            onClick={handleExportPDF}
+            disabled={exportingPdf}
+            className="flex items-center gap-2 h-11 rounded-xl border border-[#E2E1DB] bg-white text-brand-text px-4 text-sm font-medium transition-colors hover:bg-brand-bg cursor-pointer disabled:opacity-50"
+            id="btn-export-pdf-report"
+          >
+            <Download size={16} className={exportingPdf ? "animate-bounce" : ""} />
+            {exportingPdf ? "Exportando..." : "Exportar reporte"}
+          </button>
+          <button
+            onClick={() => setShowAddSaleModal(true)}
+            className="flex items-center gap-2 h-11 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white px-5 text-sm font-medium transition-colors cursor-pointer"
+            id="btn-add-quick-sale"
+          >
+            <PlusCircle size={16} />
+            Registrar venta
+          </button>
+        </div>
+      </header>
 
-          <div className="flex flex-wrap gap-3">
-            {products.length === 0 && (
-              <button
-                onClick={handleCargarDatosDeDemostracion}
-                disabled={loadingDemo}
-                className="flex items-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white px-4 py-3 text-sm font-semibold transition-all active:scale-95 shadow-xs cursor-pointer disabled:opacity-50"
-                id="btn-load-demo"
-              >
-                {loadingDemo ? <RefreshCw size={18} className="animate-spin" /> : "Sembrar Datos Demo"}
-              </button>
+      {/* Tres cifras: lo primero que el tendero quiere saber */}
+      <section aria-label="Resumen del día" className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="col-span-2 sm:col-span-1 rounded-2xl border border-brand-border bg-white p-5 sm:p-6 space-y-2.5">
+          <p className="text-[13px] text-brand-muted">Ventas de hoy</p>
+          <div className="flex flex-wrap items-baseline gap-2">
+            <span className="text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums">{formatCurrency(todayTotalEarnings)}</span>
+            {growthPercent !== 0 && (
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${growthPercent > 0 ? "bg-[#EAF2ED] text-brand-primary" : "bg-rose-50 text-rose-700"}`}>
+                {growthPercent > 0 ? `+${growthPercent}%` : `${growthPercent}%`}
+              </span>
             )}
-            <button
-              onClick={handleExportPDF}
-              disabled={exportingPdf}
-              className="flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/15 px-4 py-3 text-sm font-semibold transition-all active:scale-95 shadow-xs cursor-pointer disabled:opacity-50"
-              id="btn-export-pdf-report"
-            >
-              <Download size={18} className={exportingPdf ? "animate-bounce" : ""} />
-              {exportingPdf ? "Exportando..." : "Exportar Reporte PDF"}
-            </button>
-            <button
-              onClick={() => setShowAddSaleModal(true)}
-              className="flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-brand-primary hover:bg-brand-bg hover:text-brand-primary-dark transition-all active:scale-95 shadow-xs cursor-pointer"
-              id="btn-add-quick-sale"
-            >
-              <PlusCircle size={18} />
-              Registrar Venta
-            </button>
           </div>
+          <p className="text-[13px] text-brand-muted">Ayer: {formatCurrency(yesterdayTotalEarnings)}</p>
         </div>
 
-        {/* Hero Grid Metrics */}
-        <div className="relative z-10 mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6 border-t border-white/10 pt-6">
-          <div className="space-y-1">
-            <p className="text-white/75 text-xs font-medium">Ventas de Hoy</p>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold">{formatCurrency(todayTotalEarnings)}</span>
-              {growthPercent !== 0 && (
-                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${growthPercent > 0 ? 'bg-white/20 text-white' : 'bg-rose-500/30 text-rose-100'}`}>
-                  {growthPercent > 0 ? `+${growthPercent}%` : `${growthPercent}%`}
-                </span>
-              )}
-            </div>
-            <p className="text-white/60 text-[11px]">Ayer: {formatCurrency(yesterdayTotalEarnings)}</p>
+        <button
+          type="button"
+          onClick={onNavigateToCriticalStock}
+          className="text-left rounded-2xl border border-brand-border bg-white p-5 sm:p-6 space-y-2.5 hover:bg-brand-bg transition-colors cursor-pointer"
+        >
+          <p className="text-[13px] text-brand-muted">Con stock crítico</p>
+          <div className="flex items-baseline gap-2">
+            <span className={`text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums ${criticalProducts.length > 0 ? "text-[#A24A16]" : ""}`}>{criticalProducts.length}</span>
+            <span className="text-sm text-brand-muted">productos</span>
           </div>
+          <p className="text-[13px] text-brand-muted">Toca para ver qué reponer</p>
+        </button>
 
-          <div className="space-y-1">
-            <p className="text-white/75 text-xs font-medium">Inventario Crítico</p>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold" onClick={onNavigateToCriticalStock}>{criticalProducts.length}</span>
-              <span className="text-white/85 text-sm">productos</span>
-            </div>
-            <p className="text-white/60 text-[11px]">Revisar sección de reposición</p>
+        <div className="rounded-2xl border border-brand-border bg-white p-5 sm:p-6 space-y-2.5">
+          <p className="text-[13px] text-brand-muted">Transacciones</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums">{totalSalesCount}</span>
+            <span className="text-sm text-brand-muted">en total</span>
           </div>
-
-          <div className="space-y-1">
-            <p className="text-white/75 text-xs font-medium">Transacciones</p>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold">{totalSalesCount}</span>
-              <span className="text-white/85 text-sm">totales</span>
-            </div>
-            <p className="text-white/60 text-[11px]">{sales.filter(s => s.timestamp.startsWith(todayStr)).length} registradas hoy</p>
-          </div>
+          <p className="text-[13px] text-brand-muted">{sales.filter(s => s.timestamp.startsWith(todayStr)).length} registradas hoy</p>
         </div>
-      </div>
+      </section>
 
       {/* Main Grid: Charts & Widgets */}
       <DashboardCharts

@@ -2,7 +2,7 @@
   <defs>
     <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#2563eb" />
-      <stop offset="100%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#2F6B4F" />
     </linearGradient>
     <linearGradient id="store-grad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#38bdf8" />
@@ -37,7 +37,7 @@
 
   <!-- Sign banner -->
   <rect x="165" y="256" width="182" height="28" rx="5" fill="white" />
-  <text x="256" y="275" font-family="Arial, sans-serif" font-weight="bold" font-size="15" fill="#1e3a8a" text-anchor="middle">MI NEGOCIO</text>
+  <text x="256" y="275" font-family="Arial, sans-serif" font-weight="bold" font-size="15" fill="#2F6B4F" text-anchor="middle">MI NEGOCIO</text>
 
   <!-- Store door -->
   <rect x="222" y="340" width="68" height="90" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
