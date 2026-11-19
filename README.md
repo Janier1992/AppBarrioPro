@@ -70,7 +70,9 @@ El proyecto está organizado de manera predecible, limpia y balanceada, evitando
 ├── /src                           # Código fuente de la aplicación React
 │   ├── /components                # Componentes interactivos modulares y reutilizables
 │   │   ├── Checklist.tsx          # Gestor de tareas, aperturas, cierres y rutinas
-│   │   ├── Dashboard.tsx          # Orquestador del panel y KPIs principales
+│   │   ├── Dashboard.tsx          # Pantalla "Hoy": cifra del día, "Para hoy" y acción principal
+│   │   ├── AppTopNav.tsx          # Barra superior de escritorio (Hoy, Productos, Vender, Fiados)
+│   │   ├── MoreMenuList.tsx       # Menú "Más": Tareas, Ajustes, Asistente IA, tema, cerrar sesión
 │   │   ├── DashboardCharts.tsx    # Gráficos Recharts e historial
 │   │   ├── Inventory.tsx          # Vista de inventario y alertas
 │   │   ├── InventoryTable.tsx     # Tabla de productos con ajuste rápido

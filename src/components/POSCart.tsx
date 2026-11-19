@@ -1,6 +1,7 @@
 import React from "react";
 import { ShoppingCart, Trash2, Minus, Plus, RefreshCw } from "lucide-react";
 import { Product } from "../types";
+import { formatMoney } from "../lib/format";
 
 interface POSCartProps {
   cart: { product: Product; quantity: number }[];
@@ -95,7 +96,7 @@ export default function POSCart({
                 </div>
               </div>
               <span className="text-sm font-semibold tabular-nums shrink-0">
-                ${(item.product.price * item.quantity).toLocaleString("es-CO")}
+                {formatMoney((item.product.price * item.quantity))}
               </span>
             </li>
           ))}
@@ -168,7 +169,7 @@ export default function POSCart({
       <div className="flex items-baseline justify-between">
         <span className="text-sm text-brand-muted">Total</span>
         <span className="text-3xl font-semibold tracking-tight tabular-nums text-brand-text">
-          ${cartTotal.toLocaleString("es-CO")}
+          {formatMoney(cartTotal)}
         </span>
       </div>
 
@@ -179,7 +180,7 @@ export default function POSCart({
         className="w-full h-[52px] rounded-[14px] bg-brand-primary hover:bg-brand-primary-dark text-[15px] font-semibold text-white transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {loading ? <RefreshCw size={16} className="animate-spin" /> : null}
-        Cobrar ${cartTotal.toLocaleString("es-CO")}
+        Cobrar {formatMoney(cartTotal)}
       </button>
     </div>
   );

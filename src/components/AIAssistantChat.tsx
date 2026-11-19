@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Sparkles, X, Send, Trash2, HelpCircle, Loader2 } from "lucide-react";
 import { Product, Sale } from "../types";
 import { insforge } from "../lib/insforge";
+import { OPEN_ASSISTANT_EVENT } from "../lib/assistant";
 
 interface Message {
   id: string;
@@ -20,6 +21,13 @@ interface AIAssistantChatProps {
 
 export default function AIAssistantChat({ products, sales, userId, geminiApiKey }: AIAssistantChatProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Se abre desde fuera (caja "Pregúntale a Tiendly" en Inicio, menú "Más").
+  useEffect(() => {
+    const open = () => setIsOpen(true);
+    window.addEventListener(OPEN_ASSISTANT_EVENT, open);
+    return () => window.removeEventListener(OPEN_ASSISTANT_EVENT, open);
+  }, []);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -196,38 +204,6 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
 
   return (
     <>
-      {/* FLOATING ACTION BUTTON */}
-      <div className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 z-50">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-2 p-3.5 rounded-full text-white shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-white/20 relative group ${
-            isOpen 
-              ? "bg-slate-700 dark:bg-zinc-800" 
-              : "bg-brand-primary dark:bg-brand-primary-dark"
-          }`}
-          title="Asistente Tiendly AI"
-          id="ai-floating-button"
-        >
-          {isOpen ? (
-            <X size={20} className="transition-transform" />
-          ) : (
-            <>
-              <Sparkles size={20} className="animate-pulse" />
-              <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-out text-xs font-bold font-mono tracking-wide whitespace-nowrap">
-                Asistente IA
-              </span>
-            </>
-          )}
-          {/* Subtle notification glowing dot */}
-          {!isOpen && (
-            <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500 border border-white dark:border-zinc-900"></span>
-            </span>
-          )}
-        </button>
-      </div>
-
       {/* CHAT WINDOW INTERFACE */}
       <AnimatePresence>
         {isOpen && (
@@ -236,7 +212,7 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.92 }}
             transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="fixed bottom-[140px] right-4 lg:bottom-[84px] lg:right-6 z-50 w-[92vw] sm:w-[420px] h-[550px] max-h-[70vh] flex flex-col rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl border border-brand-border overflow-hidden"
+            className="fixed bottom-24 right-4 lg:bottom-6 lg:right-6 z-[60] w-[92vw] sm:w-[420px] h-[550px] max-h-[75vh] flex flex-col rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl border border-brand-border overflow-hidden"
             id="ai-chat-window"
           >
             {/* Chat Header */}
