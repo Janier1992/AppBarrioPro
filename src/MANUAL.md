@@ -17,9 +17,9 @@ Al abrir la aplicación, te encontrarás con la pantalla de acceso.
 
 ---
 
-## 2. Panel de Control (Dashboard)
+## 2. Inicio (Dashboard)
 
-Una vez ingreses, verás el **Panel de Control**, que es el corazón de tu negocio.
+Una vez ingreses, verás el **Inicio**, que es el corazón de tu negocio.
 
 Aquí podrás observar de un vistazo:
 *   **Ventas de Hoy**: El total de dinero ingresado en el día.
@@ -44,9 +44,9 @@ En la sección **Inventario** (menú izquierdo), podrás gestionar todo lo que v
 
 ---
 
-## 4. Caja y Ventas
+## 4. Ventas
 
-En **Caja y Ventas** podrás ver el historial completo de todas las transacciones realizadas.
+En **Ventas** podrás ver el historial completo de todas las transacciones realizadas.
 
 *   **Historial**: Muestra la fecha, hora, productos vendidos y el total de cada venta.
 *   **Filtros**: Puedes filtrar por día, semana o mes para ver cuánto vendiste en un periodo específico.
@@ -64,9 +64,9 @@ Sabemos que en las tiendas de barrio el "fiado" es común. La sección **Deudas*
 
 ---
 
-## 6. Ajustes de Negocio
+## 6. Ajustes
 
-En la pestaña **Ajustes de Negocio** puedes personalizar la aplicación:
+En la pestaña **Ajustes** puedes personalizar la aplicación:
 
 *   **Perfil**: Cambia el nombre de tu tienda, dirección y horarios de atención.
 *   **Alertas**: Define a partir de cuántas unidades un producto debe marcarse como "Stock Crítico" (por ejemplo, avisarme cuando queden solo 5 leches).
