@@ -32,12 +32,17 @@ Soporte (cuentas en `admins`) nunca queda bloqueado.
 ## Puesta en marcha (una sola vez)
 
 1. **Aplica la migración.** En el editor SQL de InsForge ejecuta `insforge-migration-suscripciones.sql` completo (es seguro repetirlo). Además corrige una columna del esquema: el PIN se guarda como hash de 60 caracteres y la columna original era de 10, lo que impedía sincronizar el perfil de quien configuraba un PIN.
-2. **Crea tu administrador.** Busca tu id de usuario en InsForge (Authentication → Users) y ejecuta:
-   ```sql
-   INSERT INTO admins ("userId", email) VALUES ('ID-DE-TU-USUARIO', 'tu@correo.com');
-   ```
-   Usa una cuenta propia de soporte con una contraseña larga y única.
-3. **Entra al portal:** `https://TU-DOMINIO/admin` (también hay un enlace "Acceso de soporte" en la pantalla de inicio de sesión).
+2. **Crea tu administrador (cuenta de soporte).** El portal no permite registrarse a sí mismo: una cuenta de soporte es una cuenta normal a la que tú le das permiso en la base de datos. Dos pasos:
+   1. **Crea la cuenta** en la app como cualquier cliente: en la pantalla de inicio toca *Crear Cuenta*, usa el correo de soporte (por ejemplo `soporte@tudominio.com`) y una contraseña larga y única, confirma el correo y **inicia sesión una vez** (así se crea su perfil). Si prefieres, también puedes crearla desde InsForge (Authentication → Users).
+   2. **Dale permiso de soporte** ejecutando esto en el editor SQL de InsForge (cambia el correo por el de esa cuenta):
+      ```sql
+      INSERT INTO admins ("userId", email)
+      SELECT "userId", email FROM profile WHERE email = 'soporte@tudominio.com'
+      ON CONFLICT ("userId") DO NOTHING;
+      ```
+      Debe responder "1 fila insertada". Si responde 0 filas, esa cuenta aún no inició sesión en la app o el correo está escrito distinto.
+   Para **agregar a otra persona de soporte**, repite los dos pasos con su correo. Para **quitar a alguien**: `DELETE FROM admins WHERE email = 'correo@x.com';`.
+3. **Entra al portal:** `https://TU-DOMINIO/admin` (también hay un enlace "Acceso de soporte" en la pantalla de inicio de sesión) con el correo y la contraseña de esa cuenta. Si entras con una cuenta que no está en `admins`, verás "Sin permisos de soporte".
 4. **Cuentas existentes:** al aplicar la migración, cada negocio que ya existía recibe una prueba de 7 días a partir de ese momento. Si algún cliente ya paga, ábrelo en el portal y registra su pago.
 
 ## Uso diario del portal
