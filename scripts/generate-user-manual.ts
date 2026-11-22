@@ -57,7 +57,12 @@ interface Section {
   intro: string;
   steps: string[];
   tip?: string;
+  /** Captura en pantalla de computador (1440x900). */
   image: string;
+  /** Capturas en celular (390x844); más de una cuando el flujo tiene varios pasos. */
+  mobile: string[];
+  /** Qué cambia entre una pantalla y otra (texto corto bajo la captura de computador). */
+  viewNote: string;
 }
 
 const sections: Section[] = [
@@ -78,6 +83,26 @@ const sections: Section[] = [
     ],
     tip: "Guarda bien tu contraseña. Si compartes el dispositivo con empleados o familiares, configura además un PIN de 4 dígitos desde Ajustes para proteger la información de tu caja.",
     image: "00-login.png",
+    mobile: ["m-00-login.png"],
+    viewNote:
+      "En el computador el acceso aparece en una tarjeta centrada; en el celular ocupa todo el ancho. Las opciones son las mismas: ingresar, crear cuenta, ver la contraseña y recuperarla.",
+  },
+  {
+    badge: "PANTALLAS",
+    title: "Computador y celular: cómo cambia la navegación",
+    intro:
+      "Tiendly se adapta al tamaño de tu pantalla. Tiene las mismas funciones en el computador y en el celular, pero los menús se acomodan distinto para que todo quede a la mano. Cuando una pantalla de este manual se vea diferente en tu equipo, revisa la captura que corresponde a tu dispositivo.",
+    steps: [
+      "En el computador (pantalla ancha): los cuatro destinos diarios — Hoy, Productos, Vender y Fiados — están en la barra superior. Arriba a la derecha está el menú de tu tienda, con Tareas, Ajustes, Asistente IA, tema claro/oscuro, bloqueo con PIN y cerrar sesión.",
+      "En el celular (pantalla angosta): los cuatro destinos están en la barra inferior, con “Vender” como botón grande en el centro. El botón “Más” abre el mismo menú del computador: Tareas, Ajustes, Asistente IA, tema, bloqueo y cerrar sesión.",
+      "La barra superior aparece en pantallas de 1024 píxeles de ancho o más (computadores y tabletas horizontales). En pantallas más angostas — celulares y la mayoría de tabletas en vertical — aparece la barra inferior. Si ves la barra superior, sigue las capturas de computador; si ves la inferior, las de celular.",
+      "Mientras vendes en el celular, la barra inferior se oculta para que te concentres en terminar la venta; usa la flecha de la esquina superior izquierda para volver.",
+    ],
+    tip: "Puedes instalar Tiendly como app en tu celular (“Agregar a pantalla de inicio”) y usarla igual que cualquier otra aplicación, sin barra del navegador.",
+    image: "nav-desktop-menu.png",
+    mobile: ["m-01-dashboard.png", "nav-mobile-more.png"],
+    viewNote:
+      "Computador: barra superior y menú de tu tienda abierto (arriba a la derecha). Celular: barra inferior y el menú “Más” abierto.",
   },
   {
     badge: "MÓDULO 1",
@@ -92,6 +117,9 @@ const sections: Section[] = [
       "Si es tu primera vez, usa “Probar con datos de ejemplo” para explorar Tiendly con información ficticia antes de cargar tu inventario real.",
     ],
     image: "01-dashboard.png",
+    mobile: ["m-01-dashboard.png"],
+    viewNote:
+      "En el computador, “Para hoy” se muestra al lado del total del día. En el celular todo va en una sola columna: el total arriba y la lista debajo; la barra inferior te lleva a los demás módulos.",
   },
   {
     badge: "MÓDULO 2",
@@ -108,6 +136,9 @@ const sections: Section[] = [
     ],
     tip: "El código (SKU) es opcional al crear un producto — si lo dejas vacío, Tiendly genera uno automáticamente.",
     image: "02-inventory.png",
+    mobile: ["m-02-inventory.png"],
+    viewNote:
+      "En el computador ves una tabla completa (código, stock, costo, precio) con botones −/+, editar y eliminar. En el celular cada producto es una fila simple con el botón “+ Reponer”, y “Nuevo producto” flota abajo a la derecha.",
   },
   {
     badge: "MÓDULO 3",
@@ -124,6 +155,9 @@ const sections: Section[] = [
     ],
     tip: "Usa las flechas ↑↓ y la tecla Enter en el buscador para agregar productos sin tocar la pantalla — muy útil si usas un lector de código de barras. Si se va la señal, sigue vendiendo: las ventas quedan guardadas en tu dispositivo y se envían solas cuando vuelve la conexión.",
     image: "03-sales.png",
+    mobile: ["m-03-sales.png", "m-03b-checkout.png"],
+    viewNote:
+      "En el computador el carrito está siempre a la derecha, junto a los productos. En el celular eliges los productos, tocas la barra negra “Cobrar” y pasas a una pantalla de cobro con el carrito, la forma de pago y el total.",
   },
   {
     badge: "MÓDULO 4",
@@ -137,6 +171,9 @@ const sections: Section[] = [
       "“Ya cobrados”, al final, guarda el historial y permite reabrir una cuenta si te equivocaste.",
     ],
     image: "05-debts.png",
+    mobile: ["m-05-debts.png"],
+    viewNote:
+      "En el computador la lista de clientes ocupa el ancho de la pantalla. En el celular es una lista de una columna y “Nuevo fiado” queda como botón flotante sobre la barra inferior.",
   },
   {
     badge: "MÓDULO 5",
@@ -151,6 +188,9 @@ const sections: Section[] = [
       "Las tareas pendientes también aparecen en “Para hoy”, en la pantalla Hoy.",
     ],
     image: "04-checklist.png",
+    mobile: ["m-04-checklist.png"],
+    viewNote:
+      "Mismas funciones en ambas pantallas. En el celular se abre desde “Más” → Tareas; en el computador, desde el menú de tu tienda (arriba a la derecha).",
   },
   {
     badge: "MÓDULO 6",
@@ -165,6 +205,9 @@ const sections: Section[] = [
       "En el menú “Más” también cambias entre tema claro y oscuro (con un solo toque), bloqueas la app con tu PIN y cierras sesión.",
     ],
     image: "06-settings.png",
+    mobile: ["m-06-settings.png"],
+    viewNote:
+      "En el computador las secciones de Ajustes están en un menú a la izquierda. En el celular son pestañas en la parte superior que puedes deslizar hacia los lados (Perfil, Catálogo, Seguridad, Notificaciones).",
   },
   {
     badge: "ASISTENTE",
@@ -179,6 +222,9 @@ const sections: Section[] = [
     ],
     tip: "Debes tener la sesión iniciada para usar el asistente — es información real y privada de tu negocio.",
     image: "07-ai-assistant.png",
+    mobile: ["m-07-ai-assistant.png"],
+    viewNote:
+      "El asistente se abre como una ventana sobre la pantalla, tanto en el computador como en el celular, con preguntas sugeridas para empezar.",
   },
 ];
 
@@ -189,6 +235,22 @@ function renderSteps(steps: string[]): string {
 function renderTip(tip?: string): string {
   if (!tip) return "";
   return `<div class="tip"><span class="tip-label">Consejo</span><p>${tip}</p></div>`;
+}
+
+function renderViews(s: Section): string {
+  const phones = s.mobile
+    .map((m) => `<figure class="phone"><img src="${imageDataUrl(m)}" alt="${s.title} en celular" /></figure>`)
+    .join("");
+  return `<div class="views">
+    <div class="col-desktop">
+      <figure class="desktop"><img src="${imageDataUrl(s.image)}" alt="${s.title} en computador" /><figcaption>Vista en computador</figcaption></figure>
+      <div class="view-note"><span class="tip-label">Qué cambia según tu pantalla</span><p>${s.viewNote}</p></div>
+    </div>
+    <div class="col-phones">
+      <div class="phones phones-${s.mobile.length}">${phones}</div>
+      <div class="phone-caption">Vista en celular</div>
+    </div>
+  </div>`;
 }
 
 function buildHtml(): string {
@@ -207,9 +269,7 @@ function buildHtml(): string {
         <h3>¿Cómo usarlo?</h3>
         <ul class="steps">${renderSteps(s.steps)}</ul>
         ${renderTip(s.tip)}
-        <div class="screenshot-frame">
-          <img src="${imageDataUrl(s.image)}" alt="${s.title}" />
-        </div>
+        ${renderViews(s)}
       </div>
       <div class="footer">Tiendly — Manual de Usuario</div>
     </section>`
@@ -259,8 +319,18 @@ function buildHtml(): string {
   .tip { background: #FAFAF8; border: 1px solid #7FBF9C; border-radius: 4px; padding: 8px 12px; margin-bottom: 10px; }
   .tip-label { font-size: 10px; font-weight: 700; color: #2F6B4F; display: block; margin-bottom: 3px; }
   .tip p { font-size: 10px; margin: 0; line-height: 1.5; }
-  .screenshot-frame { border: 1px solid #ddd; border-radius: 4px; overflow: hidden; margin-top: 6px; }
-  .screenshot-frame img { width: 100%; display: block; }
+  .views { display: flex; gap: 6mm; align-items: flex-start; margin-top: 6px; }
+  .col-desktop { flex: 1 1 0; min-width: 0; }
+  .col-phones { flex: 0 0 auto; }
+  figure { margin: 0; }
+  .desktop img { width: 100%; display: block; border: 1px solid #ddd; border-radius: 4px; }
+  figcaption, .phone-caption { font-size: 8.5px; color: #6b7280; margin-top: 3px; text-align: center; font-weight: 600; letter-spacing: .3px; }
+  .view-note { background: #FAFAF8; border: 1px solid #CFE0D6; border-radius: 4px; padding: 7px 10px; margin-top: 8px; }
+  .view-note p { font-size: 9.5px; margin: 0; line-height: 1.5; }
+  .phones { display: flex; gap: 3mm; }
+  .phone img { display: block; border: 1.5px solid #333; border-radius: 9px; }
+  .phones-1 .phone img { width: 58mm; }
+  .phones-2 .phone img { width: 41mm; }
   .footer { position: absolute; bottom: 8mm; left: 15mm; right: 15mm; font-size: 8px; color: #6b7280; display: flex; justify-content: space-between; }
 </style>
 </head>
@@ -277,7 +347,7 @@ function buildHtml(): string {
   <div class="toc-page">
     <h1>Contenido</h1>
     <ul>${tocHtml}</ul>
-    <p class="toc-note">Nota: las capturas de pantalla de este manual usan datos de demostración con fines ilustrativos, no información real de ninguna tienda.</p>
+    <p class="toc-note">Nota: este manual muestra cada pantalla en su versión de computador y de celular. Las capturas usan datos de demostración con fines ilustrativos, no información real de ninguna tienda.</p>
   </div>
 
   ${sectionHtml}

@@ -13,6 +13,8 @@ Este manual te guía para registrar productos, vender y llevar el control de tus
 *   **¿Olvidaste tu contraseña?**: te enviamos un código por correo para crear una nueva.
 *   **Tipo de negocio**: Tiendly sirve para tiendas, panaderías, fruver, ferreterías, papelerías, droguerías y otros negocios de barrio. Elige el tuyo en **Hoy** (o en Ajustes) para recibir sugerencias de categorías y tareas. Es opcional y no limita nada.
 
+**Computador y celular.** Tiendly tiene las mismas funciones en ambas pantallas, pero se ve distinto: en pantallas de 1024 px o más (computadores) la navegación está arriba; en pantallas más angostas (celulares y la mayoría de tabletas en vertical) está abajo. El manual en PDF (`docs/Manual-de-Usuario-Tiendly.pdf`) muestra cada módulo en sus dos versiones.
+
 **Navegación.** Tiendly tiene cuatro destinos para el uso diario: **Hoy, Productos, Vender y Fiados**.
 *   En el **celular** están en la barra inferior (Vender es el botón grande del centro). El botón **Más** abre Tareas, Ajustes y el Asistente IA, además de tema claro/oscuro, bloqueo con PIN y cerrar sesión.
 *   En el **computador** están en la barra superior; el menú de tu tienda (arriba a la derecha) contiene lo mismo que "Más".
