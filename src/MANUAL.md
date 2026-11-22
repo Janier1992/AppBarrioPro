@@ -48,7 +48,7 @@ Responde una pregunta: ¿cómo va el día?
 3.  Ajusta cantidades, elige la **forma de pago** (Efectivo, Tarjeta, Transferencia o **Fiado**) y toca **Cobrar**.
 4.  Con **Fiado** debes indicar el cliente y la fecha de pago; la cuenta aparece sola en Fiados.
 
-El stock se descuenta automáticamente y puedes imprimir el recibo en PDF. **Ver ventas registradas** (al final) permite editar o eliminar ventas y exportar las del mes.
+El stock se descuenta automáticamente y puedes imprimir el recibo en PDF. Si se va la señal, sigue vendiendo: las ventas quedan guardadas en tu dispositivo y se envían solas al volver la conexión. **Ver ventas registradas** (al final) permite editar o eliminar ventas y exportar las del mes.
 
 ---
 
