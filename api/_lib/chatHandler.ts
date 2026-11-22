@@ -17,7 +17,7 @@ import {
   GeminiConfigError,
 } from "./gemini.js";
 
-export const CHAT_MODEL = "gemini-2.5-flash";
+const CHAT_MODEL = "gemini-2.5-flash";
 export const UNAUTHENTICATED_RESPONSE = {
   status: 401,
   body: { error: "Debes iniciar sesión para usar el asistente de IA." },

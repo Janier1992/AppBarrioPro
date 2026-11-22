@@ -43,5 +43,3 @@ export const chatRequestSchema = z.object({
   /** Tipo de negocio elegido por el tendero (texto corto, solo para dar contexto al asistente). */
   businessType: z.string().max(60).optional(),
 });
-
-export type ChatRequestBody = z.infer<typeof chatRequestSchema>;

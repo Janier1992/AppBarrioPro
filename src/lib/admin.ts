@@ -23,7 +23,7 @@ export interface AdminAccount {
   paymentsCount?: number;
 }
 
-export interface AdminPayment {
+interface AdminPayment {
   amountCop: number;
   method?: string | null;
   reference?: string | null;

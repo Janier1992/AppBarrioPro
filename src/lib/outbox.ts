@@ -10,7 +10,7 @@
  */
 import { insforge, isInsForgeConfigured, notifySubscribers } from "./insforge";
 
-export type OutboxTable = "profile" | "products" | "sales" | "tasks" | "debts";
+type OutboxTable = "profile" | "products" | "sales" | "tasks" | "debts";
 
 export type OutboxOp =
   | { id: string; table: OutboxTable; kind: "upsert"; data: Record<string, unknown> }
@@ -141,7 +141,7 @@ export async function writeRemote(userId: string, op: NewOp): Promise<void> {
 }
 
 /** Reintenta todo lo pendiente de cualquier usuario guardado en este dispositivo. */
-export function flushAllOutboxes(): void {
+function flushAllOutboxes(): void {
   try {
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);

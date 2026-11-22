@@ -116,8 +116,8 @@ export function clientIp(
 }
 
 /** Límite por IP, previo a la autenticación: frena el abuso de peticiones sin sesión. */
-export const IP_LIMIT = 60;
-export const IP_WINDOW_MS = 60_000;
+const IP_LIMIT = 60;
+const IP_WINDOW_MS = 60_000;
 export function isIpRateLimited(req: Parameters<typeof clientIp>[0]): Promise<boolean> {
   return checkRateLimit(`ip:${clientIp(req)}`, IP_LIMIT, IP_WINDOW_MS);
 }

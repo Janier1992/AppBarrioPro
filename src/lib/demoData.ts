@@ -1,7 +1,7 @@
 import { db } from "./insforge";
 import { Product, Sale, Task, BusinessProfile } from "../types";
 
-export const DEMO_PRODUCTS: Product[] = [
+const DEMO_PRODUCTS: Product[] = [
   {
     name: "Pan de Molde Blanco",
     sku: "PAN-001",
@@ -154,7 +154,7 @@ export const DEMO_PRODUCTS: Product[] = [
   }
 ];
 
-export const DEMO_SALES = (prodIds: string[]): Sale[] => {
+const DEMO_SALES = (prodIds: string[]): Sale[] => {
   const now = new Date();
   
   // Sales from today
@@ -251,14 +251,14 @@ export const DEMO_SALES = (prodIds: string[]): Sale[] => {
   ];
 };
 
-export const DEMO_TASKS: Task[] = [
+const DEMO_TASKS: Task[] = [
   { text: "Revisar fecha de vencimiento de lácteos", completed: false, createdAt: new Date().toISOString() },
   { text: "Limpiar y ordenar estantería principal", completed: true, completedAt: new Date().toISOString(), createdAt: new Date().toISOString() },
   { text: "Hacer pedido de huevos al proveedor local", completed: false, createdAt: new Date().toISOString() },
   { text: "Revisar caja y cuadrar ventas de la mañana", completed: false, createdAt: new Date().toISOString() }
 ];
 
-export const DEFAULT_PROFILE: BusinessProfile = {
+const DEFAULT_PROFILE: BusinessProfile = {
   businessName: "Abasto San José",
   address: "Calle de las Flores 123, Barrio El Prado",
   hours: "08:00 - 20:00",

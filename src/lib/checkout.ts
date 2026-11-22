@@ -10,7 +10,7 @@
 import { Debt, Product, Sale } from "../types";
 import { db } from "./insforge";
 
-export interface CartLine {
+interface CartLine {
   product: Product;
   quantity: number;
 }

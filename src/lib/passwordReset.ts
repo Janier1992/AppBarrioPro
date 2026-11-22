@@ -4,7 +4,7 @@
 //                  para poder probarlas de forma aislada.
 // ======================================================
 
-export const MIN_PASSWORD_LENGTH = 6;
+const MIN_PASSWORD_LENGTH = 6;
 
 /** InsForge envía por correo un código numérico de 6 dígitos (método "code") o un token largo (método "link"). */
 export function isSixDigitCode(value: string): boolean {

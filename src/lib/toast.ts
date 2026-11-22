@@ -6,7 +6,7 @@
 //                   navegador que se repetían en cada módulo.
 // ======================================================
 
-export type ToastType = "success" | "error" | "info";
+type ToastType = "success" | "error" | "info";
 
 export interface Toast {
   id: string;
@@ -34,7 +34,7 @@ export function dismissToast(id: string): void {
   emit();
 }
 
-export function showToast(message: string, type: ToastType = "info", durationMs = 5000): void {
+function showToast(message: string, type: ToastType = "info", durationMs = 5000): void {
   const id = `toast_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
   toasts = [...toasts, { id, type, message }];
   emit();

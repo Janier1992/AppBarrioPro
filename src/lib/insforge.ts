@@ -40,7 +40,7 @@ export interface MockUser {
   email: string;
 }
 
-export interface InsForgeUser {
+interface InsForgeUser {
   id: string;
   email?: string;
   user_metadata?: {
@@ -49,11 +49,11 @@ export interface InsForgeUser {
   };
 }
 
-export interface InsForgeSession {
+interface InsForgeSession {
   user?: InsForgeUser;
 }
 
-export interface InsForgeAuthResponse {
+interface InsForgeAuthResponse {
   data?: {
     session?: InsForgeSession;
     user?: InsForgeUser;
@@ -304,21 +304,6 @@ export const auth = {
     else window.location.reload();
   }
 };
-
-// Database operation codes for logging
-export enum OperationType {
-  CREATE = 'create',
-  UPDATE = 'update',
-  DELETE = 'delete',
-  LIST = 'list',
-  GET = 'get',
-  WRITE = 'write',
-}
-
-export function handleDatabaseError(error: unknown, op: OperationType, path: string) {
-  console.error(`InsForge Database Error during ${op} on ${path}:`, error);
-  throw new Error(error instanceof Error ? error.message : String(error));
-}
 
 // Reactivity Subscribers
 type Callback = () => void;
