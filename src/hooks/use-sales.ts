@@ -337,10 +337,7 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
             await Promise.all(saleToDelete.items.map(item => {
               const prod = products.find(p => p.id === item.productId || p.name === item.name);
               if (!prod || !prod.id) return Promise.resolve();
-              return db.updateProduct(userId, prod.id, {
-                stock: prod.stock + item.quantity,
-                updatedAt: new Date().toISOString()
-              });
+              return db.adjustStock(userId, prod.id, item.quantity);
             }));
           }
 

@@ -143,12 +143,8 @@ export function useInventory({
 
   const handleAjustarStockRapido = async (product: Product, amount: number) => {
     if (!product.id) return;
-    const newStock = Math.max(0, product.stock + amount);
     try {
-      await db.updateProduct(userId, product.id, {
-        stock: newStock,
-        updatedAt: new Date().toISOString()
-      });
+      await db.adjustStock(userId, product.id, amount);
     } catch (error) {
       console.error("Error adjusting stock:", error);
       showErrorToast("No se pudo ajustar el stock. Verifica tu conexión e inténtalo de nuevo.");

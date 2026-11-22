@@ -70,13 +70,7 @@ export async function registerSale({
   }
 
   await Promise.all(
-    cart.map((item) => {
-      const finalStock = Math.max(0, item.product.stock - item.quantity);
-      return db.updateProduct(userId, item.product.id!, {
-        stock: finalStock,
-        updatedAt: new Date().toISOString(),
-      });
-    })
+    cart.map((item) => db.adjustStock(userId, item.product.id!, -item.quantity))
   );
 
   return { ...newSale, id: saleId };
