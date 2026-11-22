@@ -29,6 +29,6 @@ No hace falta grabar todo: si falta una línea, el video muestra su subtítulo y
 | `12-asistente` | Y si tienes dudas, pregúntale al asistente de inteligencia artificial. Está en el menú Más, o en la caja de preguntas de la pantalla Hoy. |
 | `13-pregunta` | Por ejemplo, pregúntale qué productos debes reponer. Te responde con los datos de tu negocio y te propone qué pedir. |
 | `14-cierre` | Tiendly funciona para tiendas, panaderías, ferreterías, papelerías, droguerías y más. Vende, repón y cobra sin complicarte. |
-| `15-planes` | Todo esto cuesta veinticuatro mil novecientos pesos al mes, y lo pagas mes a mes. Escríbenos por WhatsApp y empieza hoy. |
+| `15-planes` | Pruébalo gratis durante una semana. Después cuesta veintinueve mil novecientos pesos al mes, y lo pagas mes a mes. Escríbenos por WhatsApp y empieza hoy. |
 
 > El texto está en `marketing/narracion.json`. Si quieres cambiar una frase, edítala ahí y los subtítulos se actualizan solos al volver a componer.

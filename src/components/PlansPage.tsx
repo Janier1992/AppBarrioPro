@@ -1,7 +1,7 @@
 import React from "react";
 import { Check, MessageCircle, Play, Store } from "lucide-react";
 import { APP_NAME } from "../lib/brand";
-import { PLAN, parseLead, priceLabel, subscriptionUrl } from "../lib/pricing";
+import { PLAN, parseLead, priceLabel, subscriptionUrl, trialLabel, whatsappDisplay } from "../lib/pricing";
 
 /** Video de demostración alojado en la propia app (public/video/tiendly-demo.mp4). */
 const DEMO_VIDEO = "/video/tiendly-demo.mp4";
@@ -49,12 +49,17 @@ export default function PlansPage() {
 
         <section aria-label="Plan y precio" className="rounded-3xl border border-brand-border bg-white p-6 space-y-5" id="plan-card">
           <div className="space-y-1">
-            <p className="text-sm font-semibold uppercase tracking-wider text-brand-primary">{PLAN.name}</p>
+            <p className="inline-block rounded-full bg-brand-primary/10 px-3 py-1 text-sm font-semibold text-brand-primary" id="plans-trial">
+              Prueba gratis {PLAN.trialDays} días
+            </p>
+            <p className="pt-2 text-sm font-semibold uppercase tracking-wider text-brand-primary">{PLAN.name}</p>
             <p className="flex items-baseline gap-1.5">
               <span className="text-5xl font-semibold tracking-tight tabular-nums">{priceLabel()}</span>
               <span className="text-lg text-brand-muted">al {PLAN.period}</span>
             </p>
-            <p className="text-[15px] text-brand-muted">Pagas mes a mes. {PLAN.tagline}</p>
+            <p className="text-[15px] text-brand-muted">
+              Después de la prueba, pagas mes a mes. {PLAN.tagline}
+            </p>
           </div>
 
           <ul className="space-y-2.5">
@@ -67,24 +72,28 @@ export default function PlansPage() {
           </ul>
           <p className="text-[13px] text-brand-muted">No incluye: {PLAN.notIncluded.join(", ")}.</p>
 
-          {whatsapp ? (
+          <a
+            href="/?registro=1"
+            className="w-full h-[54px] rounded-[14px] bg-brand-primary text-white text-[16px] font-semibold flex items-center justify-center hover:bg-brand-primary-dark transition-colors"
+            id="plans-try"
+          >
+            Empezar mi prueba gratis ({trialLabel()})
+          </a>
+
+          {whatsapp && (
             <a
               href={whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full h-[54px] rounded-[14px] bg-brand-primary text-white text-[16px] font-semibold flex items-center justify-center gap-2 hover:bg-brand-primary-dark transition-colors"
+              className="w-full h-[50px] rounded-[14px] border border-brand-border bg-white text-brand-text text-[15px] font-semibold flex items-center justify-center gap-2 hover:bg-brand-bg transition-colors"
               id="plans-cta"
             >
-              <MessageCircle size={20} aria-hidden="true" /> Solicitar mi suscripción
+              <MessageCircle size={19} aria-hidden="true" /> Hablar con ventas · {whatsappDisplay()}
             </a>
-          ) : (
-            <p className="rounded-xl bg-brand-bg p-3 text-sm text-brand-muted" id="plans-cta-missing">
-              Para activar tu suscripción, escríbenos por WhatsApp y te ayudamos a empezar hoy mismo.
-            </p>
           )}
 
-          <a href="/" className="block text-center text-[15px] font-medium text-brand-primary hover:underline" id="plans-try">
-            Ya tengo cuenta / Probar la aplicación
+          <a href="/" className="block text-center text-[14px] font-medium text-brand-primary hover:underline" id="plans-login">
+            Ya tengo cuenta
           </a>
         </section>
 

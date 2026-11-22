@@ -10,15 +10,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { execFileSync } from "node:child_process";
-import { PLAN, priceLabel, whatsappNumber } from "../src/lib/pricing";
+import { PLAN, priceLabel, trialLabel, whatsappDisplay } from "../src/lib/pricing";
 
 const { chromium } = createRequire(import.meta.url)("playwright");
 const escenasDir = path.resolve(process.argv[2] || "marketing/escenas");
 const duration = Number(process.argv[3] || 7);
 const BAND = 104;
 
-const phone = whatsappNumber();
-const cta = phone ? `WhatsApp +${phone}` : "Escríbenos por WhatsApp";
+const cta = `WhatsApp ${whatsappDisplay()}`;
 const highlights = [
   "Ventas, inventario y fiados en un solo lugar",
   "Asistente con inteligencia artificial",
@@ -29,6 +28,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
   *{box-sizing:border-box} body{margin:0;width:360px;height:640px;background:#2F6B4F;font-family:'Inter','Segoe UI',Arial,sans-serif;color:#212121;overflow:hidden}
   .wrap{padding:${BAND + 8}px 22px 20px;height:100%;display:flex;flex-direction:column;gap:12px}
   .card{background:#fff;border-radius:22px;padding:20px 18px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+  .trial{align-self:flex-start;background:#EAF2ED;color:#2F6B4F;font-size:13px;font-weight:800;border-radius:999px;padding:6px 12px}
   .name{font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#2F6B4F}
   .price{font-size:52px;font-weight:800;letter-spacing:-1.5px;line-height:1}
   .per{font-size:17px;font-weight:500;color:#6b7280;margin-left:4px;letter-spacing:0}
@@ -40,9 +40,10 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
   .note{color:#CFE0D6;font-size:11px;text-align:center}
 </style></head><body><div class="wrap">
   <div class="card">
+    <div class="trial">Prueba ${trialLabel()}</div>
     <div class="name">${PLAN.name}</div>
     <div class="price">${priceLabel().replace(" ", "")}<span class="per">al ${PLAN.period}</span></div>
-    <p class="tag">Pagas mes a mes. Sin cuaderno y sin complicarte.</p>
+    <p class="tag">Después de la prueba, pagas mes a mes. Sin cuaderno y sin complicarte.</p>
     <ul>${highlights.map((h) => `<li>${h}</li>`).join("")}</ul>
   </div>
   <div class="cta">${cta}</div>

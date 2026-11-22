@@ -21,7 +21,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import puppeteer from "puppeteer-core";
-import { PLAN, priceLabel, whatsappNumber } from "../src/lib/pricing";
+import { PLAN, priceLabel, trialLabel, whatsappDisplay } from "../src/lib/pricing";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ASSETS_DIR = path.resolve(__dirname, "../docs/manual-assets");
@@ -289,8 +289,7 @@ function buildHtml(): string {
     .map((title, idx) => `<li><span class="toc-num">${idx + 1}.</span> ${title}</li>`)
     .join("\n");
 
-  const phone = whatsappNumber();
-  const contact = phone ? `WhatsApp +${phone}` : "WhatsApp";
+  const contact = `WhatsApp ${whatsappDisplay()}`;
   const plansHtml = `
     <section class="module-page">
       <div class="module-header">
@@ -298,8 +297,9 @@ function buildHtml(): string {
         <h1>${sections.length + 1}. Plan y suscripción</h1>
       </div>
       <div class="module-body">
-        <p class="intro">Tiendly se paga mes a mes, con un solo plan pensado para tiendas y negocios de barrio.</p>
+        <p class="intro">Empiezas con una <b>prueba gratis de ${PLAN.trialDays} días</b>. Después, Tiendly se paga mes a mes, con un solo plan pensado para tiendas y negocios de barrio.</p>
         <div class="plan-card">
+          <div class="plan-trial">Prueba ${trialLabel()}</div>
           <div class="plan-name">${PLAN.name}</div>
           <div class="plan-price">${priceLabel().replace(" ", "")}<span class="plan-per">al ${PLAN.period}</span></div>
           <p class="plan-tag">${PLAN.tagline}</p>
@@ -308,9 +308,9 @@ function buildHtml(): string {
         </div>
         <h3>¿Cómo suscribirte?</h3>
         <ul class="steps">
-          <li>Escríbenos por ${contact} y dinos el nombre de tu negocio.</li>
-          <li>Te indicamos cómo realizar el pago del primer mes y activamos tu cuenta.</li>
-          <li>Ingresa con tu correo y tu contraseña y empieza a registrar tus ventas y tu inventario.</li>
+          <li>Crea tu cuenta y usa Tiendly gratis durante ${PLAN.trialDays} días, sin compromiso.</li>
+          <li>Si te gusta, escríbenos por ${contact} (ventas) y dinos el nombre de tu negocio.</li>
+          <li>Te indicamos cómo realizar el pago del primer mes y dejamos tu cuenta activa.</li>
         </ul>
         <div class="tip"><span class="tip-label">Consejo</span><p>Antes de suscribirte puedes explorar Tiendly con los datos de ejemplo (en Hoy: “Probar con datos de ejemplo”) para ver cómo funciona con un negocio ficticio.</p></div>
       </div>
@@ -371,6 +371,7 @@ function buildHtml(): string {
   .phones-1 .phone img { width: 58mm; }
   .phones-2 .phone img { width: 41mm; }
   .plan-card { border: 2px solid #2F6B4F; border-radius: 10px; padding: 14px 18px; margin: 10px 0 8px; background: #FAFAF8; }
+  .plan-trial { display: inline-block; background: #EAF2ED; color: #2F6B4F; font-size: 10px; font-weight: 800; border-radius: 99px; padding: 3px 10px; margin-bottom: 4px; }
   .plan-name { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; color: #2F6B4F; text-transform: uppercase; }
   .plan-price { font-size: 40px; font-weight: 800; letter-spacing: -1px; margin: 2px 0; }
   .plan-per { font-size: 14px; font-weight: 500; color: #6b7280; margin-left: 5px; letter-spacing: 0; }

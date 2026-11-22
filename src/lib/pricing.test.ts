@@ -1,10 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { PLAN, parseLead, priceLabel, subscriptionMessage, subscriptionUrl } from "./pricing";
+import { DEFAULT_WHATSAPP, PLAN, parseLead, priceLabel, subscriptionMessage, subscriptionUrl, trialLabel, whatsappDisplay, whatsappNumber } from "./pricing";
 
 describe("plan y precio", () => {
   it("el precio es un entero positivo en pesos y se muestra con separador de miles", () => {
     expect(Number.isInteger(PLAN.priceCop) && PLAN.priceCop > 0).toBe(true);
-    expect(priceLabel()).toBe("$ 24.900");
+    expect(priceLabel()).toBe("$ 29.900");
+  });
+  it("ofrece 7 días de prueba gratis", () => {
+    expect(PLAN.trialDays).toBe(7);
+    expect(trialLabel()).toBe("7 días gratis");
+  });
+  it("el WhatsApp de ventas es +57 304 476 9592 por defecto", () => {
+    expect(DEFAULT_WHATSAPP).toBe("573044769592");
+    expect(whatsappNumber()).toBe("573044769592");
+    expect(whatsappDisplay("573044769592")).toBe("+57 304 476 9592");
   });
 });
 
@@ -29,14 +38,16 @@ describe("mensaje y enlace de WhatsApp", () => {
   it("personaliza el mensaje con nombre, negocio, precio y fuente", () => {
     const m = subscriptionMessage({ name: "Marta", business: "La Esquina", source: "radar" });
     expect(m).toContain("Soy Marta de La Esquina");
-    expect(m).toContain("$ 24.900 al mes");
+    expect(m).toContain("$ 29.900 al mes");
+    expect(m).toContain("después de la prueba gratis");
     expect(m).toContain("radar");
   });
   it("mensaje genérico si no hay datos", () => {
-    expect(subscriptionMessage({ name: "", business: "", source: "" })).toBe("Hola, Quiero suscribirme a Tiendly ($ 24.900 al mes).");
+    expect(subscriptionMessage({ name: "", business: "", source: "" })).toBe("Hola, Quiero suscribirme a Tiendly ($ 29.900 al mes, después de la prueba gratis).");
   });
-  it("sin número configurado no hay enlace; con número, se codifica el texto", () => {
+  it("sin número no hay enlace; con número, se codifica el texto; por defecto usa el de ventas", () => {
     expect(subscriptionUrl({ name: "", business: "", source: "" }, "")).toBeNull();
+    expect(subscriptionUrl({ name: "", business: "", source: "" })!.startsWith("https://wa.me/573044769592?text=")).toBe(true);
     const url = subscriptionUrl({ name: "Marta", business: "", source: "" }, "573001234567")!;
     expect(url.startsWith("https://wa.me/573001234567?text=")).toBe(true);
     expect(decodeURIComponent(url.split("text=")[1])).toContain("Soy Marta");

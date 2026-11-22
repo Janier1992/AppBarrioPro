@@ -9,9 +9,11 @@ import { formatMoney } from "./format";
 export const PLAN = {
   name: "Tiendly Barrio",
   /** Pesos colombianos por mes. Referencia de mercado: ver marketing/radar-clientes.md. */
-  priceCop: 24900,
+  priceCop: 29900,
   period: "mes",
-  tagline: "Todo lo que necesita una tienda de barrio, por menos de lo que cuesta un tinto al día.",
+  /** Días de prueba gratis antes del primer cobro. */
+  trialDays: 7,
+  tagline: "Todo lo que necesita una tienda de barrio, por menos de $1.000 al día.",
   includes: [
     "Ventas con cobro en efectivo, tarjeta, transferencia o fiado",
     "Inventario con alerta de lo que se está acabando",
@@ -24,7 +26,7 @@ export const PLAN = {
   notIncluded: ["Facturación electrónica DIAN"],
 } as const;
 
-/** "$ 24.900" */
+/** "$ 29.900" */
 export function priceLabel(): string {
   return formatMoney(PLAN.priceCop);
 }
@@ -36,9 +38,23 @@ function readEnv(name: string): string {
   return (fromVite ?? fromNode ?? "").trim();
 }
 
-/** Número de WhatsApp para solicitar la suscripción, solo dígitos con indicativo (p. ej. 573001234567). */
+/** WhatsApp de ventas (Colombia +57 304 476 9592). Se puede sobrescribir con VITE_WHATSAPP_NUMBER. */
+export const DEFAULT_WHATSAPP = "573044769592";
+
+/** Número de WhatsApp de ventas, solo dígitos con indicativo. */
 export function whatsappNumber(): string {
-  return readEnv("VITE_WHATSAPP_NUMBER").replace(/\D/g, "");
+  return readEnv("VITE_WHATSAPP_NUMBER").replace(/\D/g, "") || DEFAULT_WHATSAPP;
+}
+
+/** "+57 304 476 9592" para mostrarlo en pantalla, manual y video. */
+export function whatsappDisplay(number: string = whatsappNumber()): string {
+  const m = number.match(/^57(\d{3})(\d{3})(\d{4})$/);
+  return m ? `+57 ${m[1]} ${m[2]} ${m[3]}` : `+${number}`;
+}
+
+/** "7 días gratis" */
+export function trialLabel(): string {
+  return `${PLAN.trialDays} días gratis`;
 }
 
 export interface LeadInfo {
@@ -68,7 +84,7 @@ export function parseLead(search: string): LeadInfo {
 export function subscriptionMessage(lead: LeadInfo): string {
   const who = lead.name ? `Soy ${lead.name}${lead.business ? ` de ${lead.business}` : ""}.` : lead.business ? `Mi negocio es ${lead.business}.` : "";
   const from = lead.source ? ` (Vengo de: ${lead.source})` : "";
-  return `Hola, ${who} Quiero suscribirme a Tiendly (${priceLabel()} al mes).${from}`.replace("Hola,  ", "Hola, ");
+  return `Hola, ${who} Quiero suscribirme a Tiendly (${priceLabel()} al mes, después de la prueba gratis).${from}`.replace("Hola,  ", "Hola, ");
 }
 
 /** Enlace de WhatsApp con el mensaje precargado, o null si aún no hay número configurado. */

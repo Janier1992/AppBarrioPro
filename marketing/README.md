@@ -1,7 +1,7 @@
 # Marketing de Tiendly
 
 - `paquete-redes.md`: ganchos, textos por red, calendario y captación de contactos.
-- `radar-clientes.md`: enlace personalizado `/planes`, **precio propuesto ($24.900/mes)**, mensajes por nicho para Radar Clientes y lista de puesta en marcha.
+- `radar-clientes.md`: enlace personalizado `/planes`, **precio propuesto ($29.900/mes)**, mensajes por nicho para Radar Clientes y lista de puesta en marcha.
 - `escena-precio.ts`: genera la escena final del video con el plan y el precio (sale de `src/lib/pricing.ts`).
 - `narracion.json`: el texto que se narra y se subtitula (una línea por escena).
 - `guion-voz.md`: el mismo texto en formato para **grabar tu propia voz** con el celular.

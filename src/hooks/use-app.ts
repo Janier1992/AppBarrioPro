@@ -62,7 +62,10 @@ export function useApp() {
   const [pinError, setPinError] = useState("");
 
   // Local Auth Form States
-  const [loginMode, setLoginMode] = useState<"signin" | "signup">("signin");
+  // ?registro=1 (enlace de la prueba gratis en /planes) abre directamente "Crear Cuenta".
+  const [loginMode, setLoginMode] = useState<"signin" | "signup">(() =>
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).get("registro") === "1" ? "signup" : "signin"
+  );
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
   const [authName, setAuthName] = useState("");

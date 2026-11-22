@@ -48,7 +48,7 @@ Formato vertical 9:16, **1080×1920**, con **subtítulos grabados en la imagen**
 > #negociodebarrio #tiendadebarrio #emprendedores #pymes #puntodeventa #inventario #fiados #emprendimientolatam
 
 ### Facebook (misma pieza; texto más largo)
-> ¿Llevas las ventas y los fiados en un cuaderno? Tiendly es un sistema simple para negocios de barrio: ves cuánto vendiste hoy, vendes con pocos toques, controlas el inventario y anotas lo que te deben. Sirve para tiendas, panaderías, fruver, ferreterías, papelerías y droguerías. Plan único desde $24.900 al mes, pagado mes a mes. Mira el video y el precio: [TU ENLACE]/planes · o escríbenos: [TU WHATSAPP]
+> ¿Llevas las ventas y los fiados en un cuaderno? Tiendly es un sistema simple para negocios de barrio: ves cuánto vendiste hoy, vendes con pocos toques, controlas el inventario y anotas lo que te deben. Sirve para tiendas, panaderías, fruver, ferreterías, papelerías y droguerías. Prueba gratis 7 días; luego $29.900 al mes, mes a mes. Mira el video y el precio: [TU ENLACE]/planes · o escríbenos: [TU WHATSAPP]
 
 ### TikTok (clips cortos, texto breve en pantalla + este pie)
 > Vendo en 3 toques 🛒 #tiendadebarrio #emprendedor #negociopropio #inventario #fiados
