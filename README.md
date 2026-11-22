@@ -4,9 +4,7 @@
 
 Este proyecto integra un diseño visual moderno y limpio, persistencia en la nube mediante **InsForge (Postgres + Auth + REST, tipo BaaS)**, un backend de analítica predictiva inteligente con **Google Gemini AI** y visualización interactiva de rendimiento financiero mediante **Recharts**.
 
-> Nota: versiones previas de este README describían un backend en Firebase.
-> Eso nunca se implementó — la persistencia real desde el primer commit es
-> InsForge. `firebase` fue eliminado de `package.json` por no tener uso.
+**Modelo de negocio:** suscripción de $29.900 COP/mes con 7 días de prueba gratis; pagos manuales por Nequi, registrados desde el portal de soporte `/admin`. El acceso se controla en el servidor (RLS + `current_has_access()`). Detalle en [`docs/ADMIN-Y-SUSCRIPCIONES.md`](docs/ADMIN-Y-SUSCRIPCIONES.md).
 
 ---
 
@@ -89,6 +87,11 @@ El proyecto está organizado de manera predecible, limpia y balanceada, evitando
 │   │   └── use-settings.ts        # Ajustes de temas y Gemini API
 │   ├── /lib                       # Módulos de utilidades, helpers y configuraciones
 │   │   ├── db.ts                  # Capa de datos offline/online de InsForge
+│   │   ├── outbox.ts              # Cola persistente de escrituras pendientes (reintento sin conexión)
+│   │   ├── subscription.ts        # Estado de la suscripción (prueba, activa, vencida...) calculado por fechas
+│   │   ├── pricing.ts             # Precio, prueba gratis y números de contacto (única fuente)
+│   │   ├── support.ts             # Tickets de soporte del negocio (cliente)
+│   │   ├── spreadsheet.ts / csv.ts# Importación .xlsx/.csv y exportación CSV segura
 │   │   ├── demoData.ts            # Sembrador de datos ficticios
 │   │   ├── insforge.ts            # Inicialización del SDK de InsForge y autenticación
 │   │   ├── monitoring.ts          # Sentry opcional, inactivo sin VITE_SENTRY_DSN
@@ -96,6 +99,7 @@ El proyecto está organizado de manera predecible, limpia y balanceada, evitando
 │   │   ├── pdf.ts                 # Exportador a PDF de reportes y tickets
 │   │   ├── pin.ts                 # Hasheo/verificación del PIN de seguridad
 │   │   └── stock.ts               # Regla única de "stock crítico" (30% del stock mínimo)
+│   ├── /admin                     # Portal de soporte (/admin): cuentas, pagos, auditoría y tickets
 │   ├── App.tsx                    # Orquestador del Layout Global y barra lateral
 │   ├── index.css                  # Estilos globales y variables de tipografía
 │   ├── main.tsx                   # Punto de entrada de React
@@ -111,7 +115,10 @@ El proyecto está organizado de manera predecible, limpia y balanceada, evitando
 ├── .github/workflows/ci.yml       # Pipeline de CI: lint, tests, build, audit
 ├── Dockerfile                     # Build multi-stage para despliegue en contenedor
 ├── insforge-applet-config.json    # Credenciales públicas del cliente InsForge (anonKey)
-├── insforge-rls-policies.sql      # Políticas RLS pendientes de aplicar (ver arriba)
+├── insforge-*.sql                 # Esquema, políticas RLS, migraciones (suscripciones, soporte, stock atómico) y auditoría
+├── /db-tests                      # Pruebas de los scripts SQL contra Postgres real (PGlite)
+├── /qa                            # Scripts de pruebas en navegador (Playwright + axe) — ver qa/README.md
+├── /marketing                     # Mensajes de captación y escenas del video demo
 ├── PRIVACY.md / TERMS.md          # Borradores legales, pendientes de revisión por abogado
 ├── package.json                   # Gestión de dependencias npm y scripts
 ├── server.ts                      # Servidor Express — SOLO desarrollo local (npm run dev)
@@ -127,7 +134,7 @@ A continuación se detallan las principales funciones operativas del sistema con
 | Nombre de la Función | Ubicación | Propósito Técnico |
 | :--- | :--- | :--- |
 | `registerSale` | `checkout.ts` | Registra una venta (descuenta stock, crea la venta y, si es fiado, la deuda). Lo usa el punto de venta (Vender). |
-| `handleCargarDatosDeDemostracion` | `use-dashboard.ts` | Carga stock inicial, checklist y transacciones ficticias para visualización realista. |
+| `cargarDatosDeDemostracion` | `demoData.ts` | Carga stock inicial, checklist y transacciones ficticias para visualización realista. |
 | `handleAddTask` | `Checklist.tsx` | Valida, crea y registra una nueva tarea operativa diaria para el tendero. |
 | `handleToggleComplete` | `Checklist.tsx` | Invierte el estado de completado de una tarea diaria (`completed: true/false`). |
 | `handleDeleteTask` | `Checklist.tsx` | Elimina permanentemente una tarea específica de la base de datos. |

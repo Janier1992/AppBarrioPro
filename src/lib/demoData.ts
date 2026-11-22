@@ -305,7 +305,6 @@ export async function cargarDatosDeDemostracion(userId: string) {
       await db.addTask(userId, task);
     }
 
-    console.log("Demo data loaded successfully to InsForge Database!");
   } catch (error) {
     console.error("Error al cargar los datos de ejemplo:", error);
   }
