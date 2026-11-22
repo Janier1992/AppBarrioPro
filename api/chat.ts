@@ -6,12 +6,17 @@
 // La lógica de negocio vive en _lib/chatHandler.ts (compartida con server.ts).
 // ======================================================
 
+import { isIpRateLimited } from "./_lib/rateLimit.js";
 import { authenticateRequest } from "./_lib/auth.js";
 import { processChatRequest, UNAUTHENTICATED_RESPONSE } from "./_lib/chatHandler.js";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
+  if (await isIpRateLimited(req)) {
+    return res.status(429).json({ error: "Demasiadas solicitudes. Espera un momento." });
   }
 
   const requester = await authenticateRequest(req);

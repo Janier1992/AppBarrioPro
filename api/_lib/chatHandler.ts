@@ -7,7 +7,7 @@
 // La autenticación se resuelve en cada adaptador (necesita el objeto request).
 // ======================================================
 
-import { isRateLimited } from "./rateLimit.js";
+import { checkRateLimit } from "./rateLimit.js";
 import { chatRequestSchema } from "./validation.js";
 import {
   buildChatContents,
@@ -30,7 +30,7 @@ export interface ChatResult {
 
 /** Procesa una petición de chat de un usuario ya autenticado. */
 export async function processChatRequest(userId: string, rawBody: unknown): Promise<ChatResult> {
-  if (isRateLimited(`chat:${userId}`, 20, 60_000)) {
+  if (await checkRateLimit(`chat:${userId}`, 20, 60_000)) {
     return { status: 429, body: { error: "Has enviado demasiados mensajes. Espera un momento antes de continuar." } };
   }
 
