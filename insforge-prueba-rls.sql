@@ -7,6 +7,10 @@
 --   (por defecto isacarmen2). Corre como el rol "authenticated", igual que la app. Al final lanza A PROPÓSITO un
 --   error con el informe: eso DESHACE todo (no queda ningún dato de prueba). Lee el informe en el mensaje de error.
 --
+-- LIMITACIÓN: el editor SQL de InsForge NO permite cambiar el rol de la sesión (SET ROLE / set_config), así que este
+--   script no corre ahí ("Changing SQL session configuration is not allowed"). Úsalo en una base local o de pruebas.
+--   Para InsForge usa insforge-auditoria-rls.sql (solo lectura) y la prueba con dos cuentas en la app.
+--
 -- El informe debe terminar en:  RESULTADO: TODAS LAS PRUEBAS PASARON
 -- Cualquier línea con ✘ significa un hueco de seguridad real: avísame con el informe completo.
 -- ======================================================
