@@ -5,6 +5,7 @@
 // escrituras pasan por funciones SQL que validan y limitan el abuso.
 // ======================================================
 import { insforge, isInsForgeConfigured } from "./insforge";
+import { mensajeDeError } from "./errors";
 
 export type TicketCategory = "problema" | "pago" | "consulta" | "sugerencia";
 export type TicketStatus = "abierto" | "en_proceso" | "resuelto";
@@ -68,7 +69,7 @@ export function validateTicket(subject: string, message: string): string | null 
 
 /** Mensaje claro a partir del error de la base de datos. */
 export function supportErrorMessage(error: unknown): string {
-  const msg = String((error as any)?.message ?? error ?? "");
+  const msg = String(mensajeDeError(error) ?? error ?? "");
   if (/Could not find the function|does not exist/i.test(msg)) return "El soporte por tickets aún no está activo. Escríbenos por WhatsApp.";
   if (/solicitudes abiertas|muchos mensajes|asunto|mensaje debe|Categoría/i.test(msg)) return msg;
   if (/network|fetch/i.test(msg)) return "No se pudo conectar. Revisa tu internet e inténtalo de nuevo.";
@@ -77,7 +78,7 @@ export function supportErrorMessage(error: unknown): string {
 
 function rpcApi(): SupportApi {
   const call = async <T>(fn: string, args?: Record<string, unknown>): Promise<T> => {
-    const { data, error } = await (insforge as any).database.rpc(fn, args);
+    const { data, error } = await insforge!.database.rpc(fn, args);
     if (error) throw new Error(error.message ?? String(error));
     return data as T;
   };

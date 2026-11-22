@@ -12,6 +12,7 @@ import { Product, Sale } from "../types";
 import { insforge } from "../lib/insforge";
 import { OPEN_ASSISTANT_EVENT } from "../lib/assistant";
 import { loadBusinessType } from "../lib/businessTypes";
+import { mensajeDeErrorOPor } from "../lib/errors";
 
 interface Message {
   id: string;
@@ -133,9 +134,9 @@ export default function AIAssistantChat({ products, sales, userId }: AIAssistant
       };
 
       setMessages(prev => [...prev, assistantMsg]);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error en el chat del asistente:", err);
-      setError(err.message || "Ocurrió un error al conectar con el asistente. Intenta de nuevo.");
+      setError(mensajeDeErrorOPor(err, "Ocurrió un error al conectar con el asistente. Intenta de nuevo."));
     } finally {
       setIsLoading(false);
     }

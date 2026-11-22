@@ -21,13 +21,8 @@ import { isEmailNotConfirmed, translateAuthError } from "../lib/authErrors";
 import { decideAccess, fetchSubscription, loadCachedSubscription, saveCachedSubscription, type AccessDecision } from "../lib/subscription";
 import { isCriticalStock } from "../lib/stock";
 import { nextTheme, resolveTheme } from "../lib/theme";
-import { 
-  Product, 
-  Sale, 
-  Task, 
-  BusinessProfile,
-  Debt
-} from "../types";
+import { Product, Sale, Task, BusinessProfile, Debt, EventoInstalacionPwa } from "../types";
+import { mensajeDeError } from "../lib/errors";
 
 export function useApp() {
   const [user, setUser] = useState<MockUser | null>(null);
@@ -37,7 +32,7 @@ export function useApp() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   // PWA Install Prompt
-  const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<any>(null);
+  const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<EventoInstalacionPwa | null>(null);
   const [isPwaInstalled, setIsPwaInstalled] = useState(false);
 
   useEffect(() => {
@@ -46,7 +41,7 @@ export function useApp() {
     }
     const handleBeforeInstall = (e: Event) => {
       e.preventDefault();
-      setDeferredInstallPrompt(e);
+      setDeferredInstallPrompt(e as EventoInstalacionPwa);
     };
     window.addEventListener("beforeinstallprompt", handleBeforeInstall);
     window.addEventListener("appinstalled", () => setIsPwaInstalled(true));
@@ -328,10 +323,10 @@ export function useApp() {
         setLoginMode("signin");
         setAuthPassword("");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error de autenticación:", err);
-      setAuthError(translateAuthError(err?.message));
-      setNeedsVerification(isEmailNotConfirmed(err?.message));
+      setAuthError(translateAuthError(mensajeDeError(err)));
+      setNeedsVerification(isEmailNotConfirmed(mensajeDeError(err)));
     } finally {
       setLoadingAuthSubmit(false);
     }
@@ -348,8 +343,8 @@ export function useApp() {
       await auth.resendVerificationEmail(authEmail.trim());
       setAuthError("");
       setAuthSuccess("Te enviamos un nuevo correo de confirmación. Revisa tu bandeja de entrada (y el spam) y abre el enlace.");
-    } catch (err: any) {
-      setAuthError(translateAuthError(err?.message));
+    } catch (err) {
+      setAuthError(translateAuthError(mensajeDeError(err)));
     } finally {
       setResendingVerification(false);
     }

@@ -24,7 +24,7 @@ export interface AuthenticatedRequester {
 }
 
 function extractBearerToken(req: { headers: Record<string, string | string[] | undefined> }): string | null {
-  const raw = req.headers.authorization || (req.headers as any).Authorization;
+  const raw = req.headers.authorization || req.headers.Authorization;
   const header = Array.isArray(raw) ? raw[0] : raw;
   if (!header || !header.startsWith("Bearer ")) return null;
   const token = header.slice("Bearer ".length).trim();
@@ -55,7 +55,7 @@ export async function authenticateRequest(req: {
 
     let subscriptionActive: boolean | null = null;
     try {
-      const { data: sub, error: subError } = await (client as any).database.rpc("my_subscription");
+      const { data: sub, error: subError } = await client.database.rpc("my_subscription");
       if (!subError && sub && typeof sub.hasAccess === "boolean") subscriptionActive = sub.hasAccess || sub.isAdmin === true;
     } catch {
       /* sin dato: no se bloquea */

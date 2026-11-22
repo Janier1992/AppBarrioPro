@@ -10,6 +10,7 @@ import { auth } from "../lib/insforge";
 import { translateAuthError } from "../lib/authErrors";
 import { readResetTokenFromUrl, validateResetForm } from "../lib/passwordReset";
 import PasswordInput from "./PasswordInput";
+import { mensajeDeError } from "../lib/errors";
 
 interface ForgotPasswordFormProps {
   initialEmail: string;
@@ -56,9 +57,9 @@ export default function ForgotPasswordForm({ initialEmail, onBack }: ForgotPassw
       await auth.sendPasswordReset(email.trim());
       setInfo("Si el correo está registrado, te enviamos un código para cambiar tu contraseña. Revisa también la carpeta de spam.");
       setStep("confirm");
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error al pedir el código de recuperación:", err);
-      setError(translateAuthError(err?.message));
+      setError(translateAuthError(mensajeDeError(err)));
     } finally {
       setLoading(false);
     }
@@ -77,9 +78,9 @@ export default function ForgotPasswordForm({ initialEmail, onBack }: ForgotPassw
     try {
       await auth.confirmPasswordReset(email.trim(), codeOrToken, newPassword);
       onBack("¡Listo! Tu contraseña fue actualizada. Ya puedes iniciar sesión con la nueva clave.");
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error al confirmar la contraseña nueva:", err);
-      setError(translateAuthError(err?.message));
+      setError(translateAuthError(mensajeDeError(err)));
     } finally {
       setLoading(false);
     }

@@ -106,7 +106,7 @@ export async function checkRateLimit(key: string, limit: number, windowMs: numbe
  * TRUST_PROXY=true): si no, cualquiera podría falsearlo para esquivar el límite.
  */
 export function clientIp(
-  req: { headers?: Record<string, any>; socket?: { remoteAddress?: string } },
+  req: { headers?: Record<string, string | string[] | undefined>; socket?: { remoteAddress?: string } },
   env: Record<string, string | undefined> = process.env
 ): string {
   const trusted = Boolean(env.VERCEL) || env.TRUST_PROXY === "true";

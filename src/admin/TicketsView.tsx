@@ -9,6 +9,7 @@ import { ArrowLeft, Send } from "lucide-react";
 import { timeAgo } from "../lib/relativeTime";
 import { STATE_LABEL, type AdminApi, type AdminTicket, type AdminTicketThread } from "../lib/admin";
 import { CATEGORY_LABEL, STATUS_LABEL, SUPPORT_LIMITS, type TicketStatus } from "../lib/support";
+import { mensajeDeErrorOPor } from "../lib/errors";
 
 type Filter = "pendientes" | "resueltos" | "todos";
 const STATUS_TONE = { abierto: "bg-sky-100 text-sky-800", en_proceso: "bg-amber-100 text-amber-900", resuelto: "bg-emerald-100 text-emerald-800" } as const;
@@ -26,8 +27,8 @@ export default function TicketsView({ api, onPendingChange }: { api: AdminApi; o
       setTickets(await api.supportList(null));
       setError("");
       onPendingChange();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      setError(mensajeDeErrorOPor(e, "Ocurrió un error inesperado."));
     }
   }, [api, onPendingChange]);
 
@@ -95,7 +96,7 @@ function TicketPanel({ api, ticketId, onBack }: { api: AdminApi; ticketId: numbe
   const [busy, setBusy] = React.useState(false);
 
   const load = React.useCallback(async () => {
-    try { setThread(await api.supportThread(ticketId)); } catch (e: any) { setError(e.message); }
+    try { setThread(await api.supportThread(ticketId)); } catch (e) { setError(mensajeDeErrorOPor(e, "Ocurrió un error inesperado.")); }
   }, [api, ticketId]);
   React.useEffect(() => {
     load();
@@ -111,15 +112,15 @@ function TicketPanel({ api, ticketId, onBack }: { api: AdminApi; ticketId: numbe
       setReply("");
       setNotice(status === "resuelto" ? "Respuesta enviada y solicitud marcada como resuelta." : "Respuesta enviada al cliente.");
       await load();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      setError(mensajeDeErrorOPor(e, "Ocurrió un error inesperado."));
     } finally {
       setBusy(false);
     }
   };
   const setStatus = async (s: TicketStatus) => {
     setBusy(true); setError(""); setNotice("");
-    try { await api.supportSetStatus(ticketId, s); setNotice("Estado actualizado."); await load(); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
+    try { await api.supportSetStatus(ticketId, s); setNotice("Estado actualizado."); await load(); } catch (e) { setError(mensajeDeErrorOPor(e, "Ocurrió un error inesperado.")); } finally { setBusy(false); }
   };
 
   if (!thread) return <p className="text-sm text-brand-muted">{error || "Cargando…"}</p>;

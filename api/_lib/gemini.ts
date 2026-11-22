@@ -14,6 +14,7 @@
 // ======================================================
 
 import { GoogleGenAI } from "@google/genai";
+import type { GenerateContentConfig, GenerateContentParameters, GenerateContentResponse } from "@google/genai";
 
 const FALLBACK_MODELS = ["gemini-1.5-flash"];
 
@@ -32,9 +33,9 @@ export class GeminiConfigError extends Error {}
 
 export async function generateContentWithRetry(options: {
   model: string;
-  contents: any;
-  config?: any;
-}): Promise<any> {
+  contents: GenerateContentParameters["contents"];
+  config?: GenerateContentConfig;
+}): Promise<GenerateContentResponse> {
   // La clave vive SOLO en el servidor (GEMINI_API_KEY). Nunca se acepta ni se guarda una clave
   // enviada por el navegador: así no queda en la base de datos ni viaja en las peticiones.
   const key = process.env.GEMINI_API_KEY;
@@ -58,14 +59,16 @@ export async function generateContentWithRetry(options: {
           contents: options.contents,
           config: options.config,
         });
-      } catch (error: any) {
-        const errorMsg = error?.message || (typeof error === "string" ? error : JSON.stringify(error)) || "";
+      } catch (error) {
+        const detalle = error as { message?: string; status?: number } | string | null;
+        const errorMsg = (typeof detalle === "object" && detalle?.message) || (typeof detalle === "string" ? detalle : JSON.stringify(detalle)) || "";
         lastErrorMsg = errorMsg;
+        const estado = typeof detalle === "object" ? detalle?.status : undefined;
 
         const isAuthError =
-          error?.status === 400 ||
-          error?.status === 401 ||
-          error?.status === 403 ||
+          estado === 400 ||
+          estado === 401 ||
+          estado === 403 ||
           errorMsg.includes("API key not valid") ||
           errorMsg.includes("API_KEY_INVALID") ||
           errorMsg.includes("PERMISSION_DENIED");
@@ -75,17 +78,17 @@ export async function generateContentWithRetry(options: {
           );
         }
 
-        const isNotFound = error?.status === 404 || errorMsg.includes("NOT_FOUND") || errorMsg.includes("not found");
+        const isNotFound = estado === 404 || errorMsg.includes("NOT_FOUND") || errorMsg.includes("not found");
         if (isNotFound) break; // probar siguiente modelo de la lista
 
         const isQuotaExhausted =
-          error?.status === 429 &&
+          estado === 429 &&
           (errorMsg.includes("Quota") || errorMsg.includes("quota") || errorMsg.includes("RESOURCE_EXHAUSTED"));
         if (isQuotaExhausted) break; // probar siguiente modelo
 
         const isTransient =
-          error?.status === 503 ||
-          error?.status === 429 ||
+          estado === 503 ||
+          estado === 429 ||
           errorMsg.includes("UNAVAILABLE") ||
           errorMsg.includes("high demand") ||
           errorMsg.includes("Resource has been exhausted");
@@ -119,7 +122,15 @@ export function buildChatContents(messages: Array<{ role: string; content?: stri
   return contents;
 }
 
-export function buildStoreContext(products: any[] = [], sales: any[] = [], businessType?: string): string {
+/** Producto tal como llega del navegador (ya validado por zod; aquí solo se leen estos campos). */
+interface ProductoContexto { name?: string; stock?: number | string; minStock?: number | string; price?: number | string; category?: string }
+/** Venta tal como llega del navegador (solo los campos que se leen). */
+interface VentaContexto {
+  items?: Array<{ name?: string; quantity?: number | string; price?: number | string }>;
+  timestamp?: string; total?: number | string; clientName?: string; paymentMethod?: string;
+}
+
+export function buildStoreContext(products: ProductoContexto[] = [], sales: VentaContexto[] = [], businessType?: string): string {
   let storeContext = "";
 
   if (businessType && businessType.trim()) {
@@ -129,7 +140,7 @@ export function buildStoreContext(products: any[] = [], sales: any[] = [], busin
 
   if (Array.isArray(products) && products.length > 0) {
     storeContext += "\n--- INVENTARIO DE LA TIENDA ---\n";
-    products.slice(0, 200).forEach((p: any) => {
+    products.slice(0, 200).forEach((p) => {
       const minStk = p.minStock !== undefined ? p.minStock : 5;
       storeContext += `- ${p.name}: Stock actual: ${p.stock}, Stock mínimo sugerido: ${minStk}, Precio de venta: $${p.price}, Categoría: ${p.category || "General"}\n`;
     });
@@ -139,8 +150,8 @@ export function buildStoreContext(products: any[] = [], sales: any[] = [], busin
 
   if (Array.isArray(sales) && sales.length > 0) {
     storeContext += "\n--- HISTORIAL DE VENTAS RECIENTES ---\n";
-    sales.slice(-15).forEach((s: any, idx: number) => {
-      const itemsStr = s.items?.map((it: any) => `${it.name} (Cant: ${it.quantity}, Precio: $${it.price})`).join(", ") || "";
+    sales.slice(-15).forEach((s, idx) => {
+      const itemsStr = s.items?.map((it) => `${it.name} (Cant: ${it.quantity}, Precio: $${it.price})`).join(", ") || "";
       const formattedDate = s.timestamp ? String(s.timestamp).substring(0, 10) : "N/A";
       storeContext += `- Venta #${idx + 1} (${formattedDate}): Total: $${s.total}, Cliente: ${s.clientName || "Consumidor Final"}, Productos: [${itemsStr}], Método de pago: ${s.paymentMethod || "Efectivo"}\n`;
     });

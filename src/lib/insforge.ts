@@ -67,6 +67,15 @@ interface InsForgeAuthResponse {
 // Lista de suscriptores para notificar cambios en el estado de autenticación (Patrón Observer)
 const authListeners = new Set<(user: MockUser | null) => void>();
 
+/**
+ * Métodos de autenticación que usa la app pero que no aparecen en los tipos de la versión instalada del SDK.
+ * Se declaran aquí (en vez de usar `any`) para que el resto de las llamadas sigan verificadas.
+ */
+interface AuthConExtras {
+  onAuthStateChange: (callback: (evento: string, session: InsForgeSession | null) => void) => unknown;
+  signInWithOAuth: (proveedor: string) => Promise<unknown>;
+}
+
 // Control de suscripción activa a eventos en tiempo real
 let isAuthSubscribed = false;
 
@@ -75,7 +84,7 @@ function setupAuthSubscription(): void {
   if (isAuthSubscribed || !insforge || !isInsForgeConfigured()) return;
   isAuthSubscribed = true;
   try {
-    (insforge.auth as any).onAuthStateChange((_event: string, session: InsForgeSession | null) => {
+    (insforge.auth as unknown as AuthConExtras).onAuthStateChange((_event: string, session: InsForgeSession | null) => {
       const user = session?.user;
       if (user) {
         const userObj: MockUser = {
@@ -172,7 +181,7 @@ export const auth = {
     localStorage.removeItem("barriopro_explicit_signout");
     if (insforge) {
       try {
-        await (insforge.auth as any).signInWithOAuth("google");
+        await (insforge.auth as unknown as AuthConExtras).signInWithOAuth("google");
         return;
       } catch (e) {
         console.error("Falló el inicio de sesión con Google en InsForge; se usa el acceso local", e);
@@ -199,7 +208,9 @@ export const auth = {
       });
       if (error) throw error;
 
-      const user = (data as any)?.session?.user || data?.user;
+      // Según la versión del SDK, el usuario llega dentro de `session` o directamente en `user`.
+      const respuesta = data as { session?: { user?: InsForgeUser }; user?: InsForgeUser } | null;
+      const user = respuesta?.session?.user || respuesta?.user;
       if (user) {
         const userObj: MockUser = {
           uid: user.id,

@@ -4,7 +4,7 @@
 //   notificaciones.
 // ======================================================
 
-import { Product, BusinessProfile } from "../types";
+import { Product, BusinessProfile, EventoInstalacionPwa } from "../types";
 import { useSettings } from "../hooks/use-settings";
 import { Download } from "lucide-react";
 import SettingsProfile from "./SettingsProfile";
@@ -19,8 +19,8 @@ interface SettingsProps {
   userId: string;
   handleToggleTheme: () => void;
   isPwaInstalled: boolean;
-  deferredInstallPrompt: any;
-  setDeferredInstallPrompt: (val: any) => void;
+  deferredInstallPrompt: EventoInstalacionPwa | null;
+  setDeferredInstallPrompt: (val: EventoInstalacionPwa | null) => void;
   setIsPwaInstalled: (val: boolean) => void;
 }
 

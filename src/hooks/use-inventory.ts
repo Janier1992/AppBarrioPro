@@ -38,7 +38,7 @@ export function useInventory({
   const [showAddForm, setShowAddForm] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [bulkFile, setBulkFile] = useState<File | null>(null);
-  const [bulkProducts, setBulkProducts] = useState<any[]>([]);
+  const [bulkProducts, setBulkProducts] = useState<Product[]>([]);
   const [bulkErrors, setBulkErrors] = useState<string[]>([]);
   const [isProcessingBulk, setIsProcessingBulk] = useState(false);
   const [bulkProgress, setBulkProgress] = useState(0);
@@ -205,14 +205,14 @@ export function useInventory({
 
     try {
       {
-        let rows: any[] = await readSpreadsheetRows(file);
+        let rows = await readSpreadsheetRows(file);
 
         if (rows.length === 0) {
           setBulkErrors(["El archivo está vacío o no contiene filas con datos."]);
           return;
         }
 
-        const mappedRows: any[] = [];
+        const mappedRows: Product[] = [];
         const errors: string[] = [];
 
         if (rows.length > MAX_BULK_ROWS) {
@@ -223,7 +223,7 @@ export function useInventory({
         rows.forEach((row, index) => {
           const rowNum = index + 2;
 
-          const getVal = (keywords: string[], defaultVal: any = "") => {
+          const getVal = (keywords: string[], defaultVal: unknown = "") => {
             const foundKey = Object.keys(row).find(k => 
               keywords.some(keyword => k.toLowerCase().trim().includes(keyword.toLowerCase()))
             );
@@ -243,16 +243,16 @@ export function useInventory({
             return;
           }
 
-          const parsedStock = parseInt(rawStock);
+          const parsedStock = parseInt(String(rawStock));
           const stockVal = isNaN(parsedStock) ? 0 : Math.max(0, parsedStock);
 
-          const parsedMinStock = parseInt(rawMinStock);
+          const parsedMinStock = parseInt(String(rawMinStock));
           const minStockVal = isNaN(parsedMinStock) ? 5 : Math.max(0, parsedMinStock);
 
-          const parsedPrice = parseFloat(rawPrice);
+          const parsedPrice = parseFloat(String(rawPrice));
           const priceVal = isNaN(parsedPrice) ? 0.0 : Math.max(0, parsedPrice);
 
-          const parsedCost = parseFloat(rawCost);
+          const parsedCost = parseFloat(String(rawCost));
           const costVal = isNaN(parsedCost) ? 0.0 : Math.max(0, parsedCost);
 
           const catVal = normalizeCategory(rawCategory, formCategories);

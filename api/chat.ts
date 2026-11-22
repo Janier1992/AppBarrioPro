@@ -10,7 +10,19 @@ import { isIpRateLimited } from "./_lib/rateLimit.js";
 import { authenticateRequest } from "./_lib/auth.js";
 import { processChatRequest, SUBSCRIPTION_REQUIRED_RESPONSE, UNAUTHENTICATED_RESPONSE } from "./_lib/chatHandler.js";
 
-export default async function handler(req: any, res: any) {
+/** Petición de Vercel: solo los campos que usa esta función. */
+interface PeticionVercel {
+  method?: string;
+  body?: unknown;
+  headers: Record<string, string | string[] | undefined>;
+  socket?: { remoteAddress?: string };
+}
+/** Respuesta de Vercel: solo `status(...).json(...)`. */
+interface RespuestaVercel {
+  status: (codigo: number) => { json: (cuerpo: unknown) => unknown };
+}
+
+export default async function handler(req: PeticionVercel, res: RespuestaVercel) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }

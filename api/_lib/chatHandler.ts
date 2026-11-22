@@ -52,9 +52,10 @@ export async function processChatRequest(userId: string, rawBody: unknown): Prom
       config: { systemInstruction: CHAT_SYSTEM_INSTRUCTION_PREFIX + buildStoreContext(products, sales, businessType) },
     });
     return { status: 200, body: { text: response.text } };
-  } catch (error: any) {
-    console.error(`[chat] userId=${userId} error:`, error?.message || error);
+  } catch (error) {
+    const mensaje = error instanceof Error ? error.message : undefined;
+    console.error(`[chat] userId=${userId} error:`, mensaje || error);
     const status = error instanceof GeminiConfigError ? 400 : 500;
-    return { status, body: { error: error?.message || "Error al procesar el chat con el asistente de IA." } };
+    return { status, body: { error: mensaje || "Error al procesar el chat con el asistente de IA." } };
   }
 }

@@ -50,26 +50,30 @@ export function pendingCount(userId: string): number {
 let seq = 0;
 const newOpId = () => `op_${Date.now().toString(36)}_${(seq++).toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
 
+/** Forma mínima de los errores que devuelve InsForge/PostgREST (solo los campos que se leen). */
+interface ErrorDeServidor { status?: number; statusCode?: number; code?: string; message?: string; details?: string }
+
 /** Errores del servidor que no se arreglan reintentando (datos rechazados): se descartan para no bloquear la cola. */
 function isPermanent(error: unknown): boolean {
-  const status = Number((error as any)?.status ?? (error as any)?.statusCode ?? 0);
+  const e = error as ErrorDeServidor | null;
+  const status = Number(e?.status ?? e?.statusCode ?? 0);
   // 401/403: sesión vencida o cuenta sin suscripción vigente. No se descartan: esperan a que se renueve el acceso.
   return status >= 400 && status < 500 && status !== 408 && status !== 429 && status !== 401 && status !== 403;
 }
 
 /** ¿El error indica que la función adjust_stock aún no existe en el servidor? */
 function isMissingFunction(error: unknown): boolean {
-  const e = error as any;
+  const e = error as ErrorDeServidor | null;
   const text = `${e?.message ?? ""} ${e?.code ?? ""} ${e?.details ?? ""}`.toLowerCase();
   return Number(e?.status ?? e?.statusCode) === 404 || e?.code === "PGRST202" || /could not find the function|function .* does not exist/.test(text);
 }
 
 /** Respaldo mientras no se haya ejecutado la migración: leer y escribir (correcto, pero no atómico). */
 async function adjustStockFallback(userId: string, productId: string, delta: number): Promise<void> {
-  const read: any = await insforge!.database.from("products").select("stock").eq("id", productId).eq("userId", userId).single();
+  const read = await insforge!.database.from("products").select("stock").eq("id", productId).eq("userId", userId).single();
   if (read?.error) throw read.error;
   const next = Math.max(0, Number(read?.data?.stock ?? 0) + delta);
-  const write: any = await insforge!.database
+  const write = await insforge!.database
     .from("products")
     .update({ stock: next, updatedAt: new Date().toISOString() })
     .eq("id", productId)
@@ -79,7 +83,7 @@ async function adjustStockFallback(userId: string, productId: string, delta: num
 
 async function execute(userId: string, op: OutboxOp): Promise<void> {
   if (op.kind === "adjust") {
-    const res: any = await insforge!.database.rpc("adjust_stock", { p_op_id: op.id, p_product_id: op.rowId, p_delta: op.delta });
+    const res = await insforge!.database.rpc("adjust_stock", { p_op_id: op.id, p_product_id: op.rowId, p_delta: op.delta });
     if (res?.error) {
       if (isMissingFunction(res.error)) return adjustStockFallback(userId, op.rowId, op.delta);
       throw res.error;

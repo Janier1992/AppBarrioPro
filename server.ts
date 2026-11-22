@@ -87,7 +87,7 @@ async function startServer() {
   }
 
   // Errores no controlados (p. ej. JSON malformado en el body): respuesta JSON sin filtrar trazas.
-  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  app.use((err: { status?: number; message?: string }, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     const status = err?.status && err.status >= 400 && err.status < 500 ? err.status : 500;
     if (status === 500) console.error("[server] error no controlado:", err?.message || err);
     res.status(status).json({ error: status === 500 ? "Error interno del servidor." : "Solicitud inválida." });
