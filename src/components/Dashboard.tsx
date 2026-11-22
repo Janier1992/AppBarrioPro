@@ -164,7 +164,6 @@ export default function Dashboard({ products, sales, debts, tasks, userId, onNav
           </button>
           <DashboardCharts
             sales={sales}
-            products={products}
             criticalProducts={criticalProducts}
             chartData={chartData}
             mensualData={mensualData}

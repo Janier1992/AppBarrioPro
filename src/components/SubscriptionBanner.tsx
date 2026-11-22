@@ -1,4 +1,3 @@
-import React from "react";
 import { subscriptionUrl } from "../lib/pricing";
 import { bannerFor, type SubscriptionInfo } from "../lib/subscription";
 

@@ -1,13 +1,9 @@
-import React from "react";
 import { Package, ArrowUpDown, AlertCircle, MinusCircle, PlusCircle, Edit2, Trash2 } from "lucide-react";
 import { Product } from "../types";
 import { isCriticalStock, criticalStockThreshold } from "../lib/stock";
 
 interface InventoryTableProps {
   sortedProducts: Product[];
-  umbralCritico: number;
-  sortBy: "name" | "stock" | "price";
-  sortOrder: "asc" | "desc";
   handleAlternarOrdenamiento: (field: "name" | "stock" | "price") => void;
   handleAjustarStockRapido: (p: Product, amount: number) => void;
   handleCargarDatosEdicion: (p: Product) => void;
@@ -16,9 +12,6 @@ interface InventoryTableProps {
 
 export default function InventoryTable({
   sortedProducts,
-  umbralCritico,
-  sortBy,
-  sortOrder,
   handleAlternarOrdenamiento,
   handleAjustarStockRapido,
   handleCargarDatosEdicion,

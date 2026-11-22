@@ -1,4 +1,3 @@
-import React from "react";
 import { LifeBuoy, ListChecks, SlidersHorizontal, Sparkles, Moon, Sun, Lock, LogOut } from "lucide-react";
 import { BusinessProfile } from "../types";
 import { openAssistant } from "../lib/assistant";

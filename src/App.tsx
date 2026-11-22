@@ -163,7 +163,6 @@ export default function App() {
         setPinInput={setPinInput}
         pinError={pinError}
         setPinError={setPinError}
-        setIsLocked={setIsLocked}
         handleDesbloquearConPin={handleDesbloquearConPin}
       />
     );

@@ -1,4 +1,3 @@
-import React from "react";
 import { TrendingUp, ClipboardList, BarChart3, Edit3, Trash2 } from "lucide-react";
 import { Sale } from "../types";
 import {
@@ -13,7 +12,6 @@ import {
 } from "recharts";
 
 interface SalesHistoryProps {
-  sales: Sale[];
   todaySalesData: { total: number; count: number };
   lastTenSales: Sale[];
   currentWeekSalesData: any[];
@@ -23,7 +21,6 @@ interface SalesHistoryProps {
 }
 
 export default function SalesHistory({
-  sales,
   todaySalesData,
   lastTenSales,
   currentWeekSalesData,

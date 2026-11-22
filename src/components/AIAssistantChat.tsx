@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Sparkles, X, Send, Trash2, HelpCircle, Loader2 } from "lucide-react";
 import { Product, Sale } from "../types";

@@ -1,4 +1,3 @@
-import React from "react";
 import { Trash2, CheckCircle2, AlertCircle } from "lucide-react";
 import { ConfirmDialogState, AlertDialogState } from "../hooks/use-dialogs";
 

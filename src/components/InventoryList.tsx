@@ -1,4 +1,3 @@
-import React from "react";
 import { Product } from "../types";
 import { isCriticalStock } from "../lib/stock";
 import { formatMoney } from "../lib/format";

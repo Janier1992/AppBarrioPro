@@ -1,4 +1,3 @@
-import React from "react";
 import { ShoppingCart, Trash2, Minus, Plus, RefreshCw } from "lucide-react";
 import { Product } from "../types";
 import { formatMoney } from "../lib/format";

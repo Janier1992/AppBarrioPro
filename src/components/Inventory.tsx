@@ -1,4 +1,3 @@
-import React from "react";
 import { Product, BusinessProfile } from "../types";
 import { useInventory } from "../hooks/use-inventory";
 import { isCriticalStock } from "../lib/stock";
@@ -32,7 +31,6 @@ export default function Inventory({
     setSearchQuery,
     selectedCategory,
     setSelectedCategory,
-    sortBy,
     showAddForm,
     setShowAddForm,
     showBulkUpload,
@@ -86,7 +84,6 @@ export default function Inventory({
     setAlertDialog,
     categories,
     formCategories,
-    umbralCritico,
     handleRegistrarNuevoProducto,
     handleEliminarProductoDeInventario,
     handleAjustarStockRapido,
@@ -102,8 +99,7 @@ export default function Inventory({
     totalProductsCount,
     criticalStockCount,
     totalValuation,
-    totalInvestment,
-    sortOrder
+    totalInvestment
   } = useInventory({
     products,
     profile,
@@ -210,7 +206,6 @@ export default function Inventory({
           handleFileChange={handleFileChange}
           handleDescargarPlantilla={handleDescargarPlantilla}
           handleIniciarCargaMasiva={handleIniciarCargaMasiva}
-          setShowBulkUpload={setShowBulkUpload}
         />
       )}
 
@@ -274,9 +269,6 @@ export default function Inventory({
       <div className="hidden md:block">
         <InventoryTable
           sortedProducts={sortedProducts}
-          umbralCritico={umbralCritico}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
           handleAlternarOrdenamiento={handleAlternarOrdenamiento}
           handleAjustarStockRapido={handleAjustarStockRapido}
           handleCargarDatosEdicion={handleCargarDatosEdicion}

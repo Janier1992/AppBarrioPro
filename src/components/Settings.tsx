@@ -1,4 +1,3 @@
-import React from "react";
 import { Product, BusinessProfile } from "../types";
 import { useSettings } from "../hooks/use-settings";
 import { Download } from "lucide-react";

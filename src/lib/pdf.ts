@@ -121,7 +121,7 @@ export const exportSalesPDF = (
 
     let pageCount = 1;
 
-    const drawHeader = (pageNum: number) => {
+    const drawHeader = () => {
       doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
       doc.rect(0, 0, 210, 35, "F");
 
@@ -144,7 +144,7 @@ export const exportSalesPDF = (
       doc.text("Documento Oficial de Control de Caja", 195, 287, { align: "right" });
     };
 
-    drawHeader(pageCount);
+    drawHeader();
 
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.setFont("helvetica", "bold");
@@ -228,7 +228,7 @@ export const exportSalesPDF = (
           drawFooter(pageCount);
           doc.addPage();
           pageCount++;
-          drawHeader(pageCount);
+          drawHeader();
           
           doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
           doc.rect(15, 45, 180, 8, "F");

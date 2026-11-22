@@ -9,7 +9,6 @@ interface AppLockScreenProps {
   setPinInput: (val: string) => void;
   pinError: string;
   setPinError: (val: string) => void;
-  setIsLocked: (val: boolean) => void;
   handleDesbloquearConPin: (e: React.FormEvent) => void;
 }
 
@@ -19,7 +18,6 @@ export default function AppLockScreen({
   setPinInput,
   pinError,
   setPinError,
-  setIsLocked,
   handleDesbloquearConPin
 }: AppLockScreenProps) {
   if (!profile || !profile.securityPin) return null;

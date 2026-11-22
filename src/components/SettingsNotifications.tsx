@@ -1,4 +1,3 @@
-import React from "react";
 import { Bell, AlertTriangle, CheckSquare } from "lucide-react";
 import { NotificationPreference } from "../lib/notifications";
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { TrendingUp, ShoppingBag, AlertCircle, CheckCircle2, Users } from "lucide-react";
 import { Sale, Product } from "../types";
 import {
@@ -45,7 +44,6 @@ const CustomBarTooltip = ({ active, payload, label }: any) => {
 
 interface DashboardChartsProps {
   sales: Sale[];
-  products: Product[];
   criticalProducts: Product[];
   chartData: any[];
   mensualData: any[];
@@ -58,7 +56,6 @@ interface DashboardChartsProps {
 
 export default function DashboardCharts({
   sales,
-  products,
   criticalProducts,
   chartData,
   mensualData,

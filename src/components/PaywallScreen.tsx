@@ -1,6 +1,5 @@
 import React from "react";
 import { Check, Copy, LogOut, MessageCircle, RefreshCw, Store } from "lucide-react";
-import { APP_NAME } from "../lib/brand";
 import { PLAN, nequiDisplay, nequiNumber, paidUrl, paymentReference, priceLabel, subscriptionUrl } from "../lib/pricing";
 import { paywallCopy, type SubscriptionInfo } from "../lib/subscription";
 

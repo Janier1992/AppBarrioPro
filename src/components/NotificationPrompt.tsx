@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Bell, X } from "lucide-react";
 import { verifyNotificationSupport, requestNotificationPermission } from "../lib/notifications";
 import { showErrorToast, showSuccessToast } from "../lib/toast";

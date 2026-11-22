@@ -16,7 +16,6 @@ interface InventoryBulkUploadProps {
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDescargarPlantilla: () => void;
   handleIniciarCargaMasiva: () => void;
-  setShowBulkUpload: (val: boolean) => void;
 }
 
 export default function InventoryBulkUpload({
@@ -34,7 +33,6 @@ export default function InventoryBulkUpload({
   handleFileChange,
   handleDescargarPlantilla,
   handleIniciarCargaMasiva,
-  setShowBulkUpload
 }: InventoryBulkUploadProps) {
   return (
     <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/5 p-6 space-y-6 animate-in slide-in-from-top duration-300">

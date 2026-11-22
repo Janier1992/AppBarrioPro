@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Boxes, Home, LifeBuoy, ListChecks, LogOut, Lock, Moon, PanelLeftClose, PanelLeftOpen,
   Plus, SlidersHorizontal, Sparkles, Store, Sun, Wallet,

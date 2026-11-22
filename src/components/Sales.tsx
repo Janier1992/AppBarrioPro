@@ -207,7 +207,6 @@ export default function Sales({ products, sales, userId, onBack }: SalesProps) {
             )}
           </button>
           <SalesHistory
-            sales={sales}
             todaySalesData={todaySalesData}
             lastTenSales={lastTenSales}
             currentWeekSalesData={currentWeekSalesData}
