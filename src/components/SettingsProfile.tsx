@@ -109,8 +109,9 @@ export default function SettingsProfile({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-brand-muted mb-1">Nombre Comercial del Negocio</label>
+            <label htmlFor="profile-business-name" className="block text-xs font-medium text-brand-muted mb-1">Nombre Comercial del Negocio</label>
             <input
+              id="profile-business-name"
               type="text"
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
@@ -119,8 +120,9 @@ export default function SettingsProfile({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-brand-muted mb-1">Horario de Atención</label>
+            <label htmlFor="profile-hours" className="block text-xs font-medium text-brand-muted mb-1">Horario de Atención</label>
             <input
+              id="profile-hours"
               type="text"
               value={hours}
               onChange={(e) => setHours(e.target.value)}
@@ -165,8 +167,9 @@ export default function SettingsProfile({
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-brand-muted mb-1">Umbral de Stock Bajo General (Alerta)</label>
+          <label htmlFor="profile-low-stock" className="block text-xs font-medium text-brand-muted mb-1">Umbral de Stock Bajo General (Alerta)</label>
           <input
+            id="profile-low-stock"
             type="number"
             value={lowStockThreshold}
             onChange={(e) => setLowStockThreshold(parseInt(e.target.value) || 5)}
@@ -196,6 +199,9 @@ export default function SettingsProfile({
               </span>
               <button
                 type="button"
+                role="switch"
+                aria-checked={theme === "dark"}
+                aria-label="Modo oscuro"
                 onClick={handleToggleTheme}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${theme === "dark" ? "bg-brand-primary" : "bg-gray-200"}`}
               >

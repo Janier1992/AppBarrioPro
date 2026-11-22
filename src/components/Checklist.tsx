@@ -234,7 +234,7 @@ export default function Checklist({
         <div className="rounded-2xl border border-brand-border bg-white p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-brand-border pb-3">
             <h3 className="font-bold text-brand-text text-sm">Tareas Pendientes</h3>
-            <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-brand-accent border border-amber-100">
+            <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-800 border border-amber-100">
               {filteredActiveTasks.length} activas
             </span>
           </div>
@@ -252,6 +252,7 @@ export default function Checklist({
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <button
                       onClick={() => handleAlternarEstadoTarea(task)}
+                      aria-label={`Marcar como completada: ${task.text}`}
                       className="text-brand-muted hover:text-brand-primary transition-colors flex-shrink-0 cursor-pointer"
                     >
                       <Circle size={18} />
@@ -272,15 +273,17 @@ export default function Checklist({
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleIniciarEdicionTarea(task)}
+                      aria-label={`Editar tarea: ${task.text}`}
                       className="text-brand-muted hover:text-blue-600 p-1 rounded-lg hover:bg-white transition-colors cursor-pointer"
                     >
                       <Edit2 size={14} />
                     </button>
                     <button
                       onClick={() => handleEliminarTarea(task.id!)}
+                      aria-label={`Eliminar tarea: ${task.text}`}
                       className="text-brand-muted hover:text-rose-600 p-1 rounded-lg hover:bg-white transition-colors cursor-pointer"
                     >
                       <Trash2 size={14} />
@@ -313,6 +316,7 @@ export default function Checklist({
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <button
                       onClick={() => handleAlternarEstadoTarea(task)}
+                      aria-label={`Marcar como pendiente: ${task.text}`}
                       className="text-brand-primary hover:text-brand-muted transition-colors flex-shrink-0 cursor-pointer"
                     >
                       <CheckCircle2 size={18} />
@@ -322,7 +326,8 @@ export default function Checklist({
 
                   <button
                     onClick={() => handleEliminarTarea(task.id!)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity text-brand-muted hover:text-rose-600 p-1 rounded-lg hover:bg-white transition-colors cursor-pointer"
+                    aria-label={`Eliminar tarea: ${task.text}`}
+                    className="opacity-0 group-hover:opacity-100 focus:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity text-brand-muted hover:text-rose-600 p-1 rounded-lg hover:bg-white transition-colors cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
