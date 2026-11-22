@@ -324,6 +324,7 @@ const OVERLAY_JS = (bandPx) => {
   });
 
   await scene("14-soporte", async () => {
+    await tap('button[title="Cerrar chat"]', { before: 300 }); // la ventana del asistente (escena 13) taparía el menú
     await tap("#mobile-nav-more");
     await tap("#more-menu-support", { before: 350 });
     await wait(900);
