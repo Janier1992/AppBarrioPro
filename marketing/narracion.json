@@ -1,16 +1,62 @@
 [
-  { "id": "01-intro", "texto": "Hola, te presento Tiendly: el sistema más simple para llevar tu negocio de barrio desde el celular o el computador. Vamos a recorrerlo paso a paso." },
-  { "id": "02-hoy", "texto": "Esta es la pantalla Hoy. Apenas entras, ves cuánto has vendido en el día, cuántas ventas llevas y cómo vas frente a ayer." },
-  { "id": "03-para-hoy", "texto": "Más abajo está la lista Para hoy. Ahí Tiendly junta lo que no debes olvidar: los fiados por cobrar, los productos que se están acabando y tus tareas pendientes." },
-  { "id": "04-vender", "texto": "Para vender, toca el botón verde del centro. Tus productos aparecen en fichas grandes: toca cada uno para sumarlo a la venta." },
-  { "id": "05-cobrar", "texto": "Abajo ves el total y el botón Cobrar. Elige cómo paga el cliente: efectivo, tarjeta, transferencia o fiado, y confirma. El inventario se descuenta solo." },
-  { "id": "06-se-acaban", "texto": "Ahora, el inventario. En Productos, el filtro Se acaban te muestra en naranja lo que casi se termina, con cuántas unidades quedan." },
-  { "id": "07-reponer", "texto": "Toca Reponer en el producto, escribe la nueva cantidad de stock y guarda. Así siempre sabes qué tienes." },
-  { "id": "08-fiado", "texto": "¿Un cliente quiere fiado? Haz la venta normal, elige Fiado, escribe su nombre y la fecha en que te pagará." },
-  { "id": "09-fiados", "texto": "La deuda queda registrada sola en la pantalla Fiados, donde ves cuánto te deben en total y a quién cobrarle primero. Cuando paguen, tocas Cobrar." },
-  { "id": "10-tarea", "texto": "Para no olvidar nada, usa Tareas, dentro del menú Más. Escribe un pendiente, por ejemplo pedir pan para mañana, y añádelo." },
-  { "id": "11-tachar", "texto": "Cuando lo hagas, tócalo para tacharlo. Los pendientes también aparecen en Para hoy." },
-  { "id": "12-asistente", "texto": "Y si tienes dudas, pregúntale al asistente de inteligencia artificial. Está en el menú Más, o en la caja de preguntas de la pantalla Hoy." },
-  { "id": "13-pregunta", "texto": "Por ejemplo, pregúntale qué productos debes reponer. Te responde con los datos de tu negocio y te propone qué pedir." },
-  { "id": "14-cierre", "texto": "Tiendly funciona para tiendas, panaderías, ferreterías, papelerías, droguerías y más. Vende, repón y cobra sin complicarte. Escríbenos y pruébalo." }
+  {
+    "id": "01-intro",
+    "texto": "Hola, te presento Tiendly: el sistema más simple para llevar tu negocio de barrio desde el celular o el computador. Vamos a recorrerlo paso a paso."
+  },
+  {
+    "id": "02-hoy",
+    "texto": "Esta es la pantalla Hoy. Apenas entras, ves cuánto has vendido en el día, cuántas ventas llevas y cómo vas frente a ayer."
+  },
+  {
+    "id": "03-para-hoy",
+    "texto": "Más abajo está la lista Para hoy. Ahí Tiendly junta lo que no debes olvidar: los fiados por cobrar, los productos que se están acabando y tus tareas pendientes."
+  },
+  {
+    "id": "04-vender",
+    "texto": "Para vender, toca el botón verde del centro. Tus productos aparecen en fichas grandes: toca cada uno para sumarlo a la venta."
+  },
+  {
+    "id": "05-cobrar",
+    "texto": "Abajo ves el total y el botón Cobrar. Elige cómo paga el cliente: efectivo, tarjeta, transferencia o fiado, y confirma. El inventario se descuenta solo."
+  },
+  {
+    "id": "06-se-acaban",
+    "texto": "Ahora, el inventario. En Productos, el filtro Se acaban te muestra en naranja lo que casi se termina, con cuántas unidades quedan."
+  },
+  {
+    "id": "07-reponer",
+    "texto": "Toca Reponer en el producto, escribe la nueva cantidad de stock y guarda. Así siempre sabes qué tienes."
+  },
+  {
+    "id": "08-fiado",
+    "texto": "¿Un cliente quiere fiado? Haz la venta normal, elige Fiado, escribe su nombre y la fecha en que te pagará."
+  },
+  {
+    "id": "09-fiados",
+    "texto": "La deuda queda registrada sola en la pantalla Fiados, donde ves cuánto te deben en total y a quién cobrarle primero. Cuando paguen, tocas Cobrar."
+  },
+  {
+    "id": "10-tarea",
+    "texto": "Para no olvidar nada, usa Tareas, dentro del menú Más. Escribe un pendiente, por ejemplo pedir pan para mañana, y añádelo."
+  },
+  {
+    "id": "11-tachar",
+    "texto": "Cuando lo hagas, tócalo para tacharlo. Los pendientes también aparecen en Para hoy."
+  },
+  {
+    "id": "12-asistente",
+    "texto": "Y si tienes dudas, pregúntale al asistente de inteligencia artificial. Está en el menú Más, o en la caja de preguntas de la pantalla Hoy."
+  },
+  {
+    "id": "13-pregunta",
+    "texto": "Por ejemplo, pregúntale qué productos debes reponer. Te responde con los datos de tu negocio y te propone qué pedir."
+  },
+  {
+    "id": "14-cierre",
+    "texto": "Tiendly funciona para tiendas, panaderías, ferreterías, papelerías, droguerías y más. Vende, repón y cobra sin complicarte."
+  },
+  {
+    "id": "15-planes",
+    "texto": "Todo esto cuesta veinticuatro mil novecientos pesos al mes, y lo pagas mes a mes. Escríbenos por WhatsApp y empieza hoy."
+  }
 ]
