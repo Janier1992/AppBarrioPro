@@ -45,6 +45,7 @@ beforeAll(async () => {
   // InsForge concede permisos de tabla a "authenticated"; lo que cierra el paso es RLS.
   await db.exec("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO authenticated; GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO authenticated");
   await db.exec(`INSERT INTO admins ("userId", email) VALUES ('${ADMIN}', 'soporte@tiendly.co')`);
+  await db.exec(`INSERT INTO profile (id, "userId", "businessName", email) VALUES ('prof_admin', '${ADMIN}', 'Cuenta de soporte', 'soporte@tiendly.co')`);
   // Negocios de ejemplo con su perfil
   for (const [uid, name] of [[ANA, "Tienda de Ana"], [LUIS, "Panadería de Luis"]]) {
     await db.exec(`INSERT INTO profile (id, "userId", "businessName", email) VALUES ('prof_${uid}', '${uid}', '${name}', '${name.split(" ").pop()}@correo.com')`);
@@ -119,6 +120,8 @@ describe("portal de soporte: pagos y suspensión", () => {
     const list = await as(ADMIN, async () => (await rows("SELECT admin_list_accounts() AS l"))[0].l);
     const byName = Object.fromEntries(list.map((a: any) => [a.businessName, a.state]));
     expect(byName["Tienda de Ana"]).toBe("trial_expired");
+    // La cuenta de soporte no aparece entre los negocios, aunque tenga perfil y suscripción.
+    expect(list.some((a: any) => a.userId === ADMIN)).toBe(false);
     expect(byName["Panadería de Luis"]).toBe("trial");
   });
 
