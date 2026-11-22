@@ -11,6 +11,7 @@ import { PLAN, paymentReference } from "../lib/pricing";
 import { formatMoney } from "../lib/format";
 import { accessEndsAt, type AdminAccount, type AdminApi, type AdminSummary } from "../lib/admin";
 import { StateBadge } from "./AccountsView";
+import { mensajeDeErrorOPor } from "../lib/errors";
 
 const METHODS = ["Efectivo", "Nequi", "Daviplata", "Transferencia", "PSE / Wompi", "Otro"];
 const fmt = (d?: string | null) => (d ? new Date(d).toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" }) : "—");
@@ -33,7 +34,7 @@ export default function AccountPanel({ api, account, onClose, onChanged }: { api
     setSummary(await api.summary(account.userId));
     await onChanged();
   }, [api, account.userId, onChanged]);
-  React.useEffect(() => { api.summary(account.userId).then(setSummary).catch((e) => setMessage({ kind: "error", text: e.message })); }, [api, account.userId]);
+  React.useEffect(() => { api.summary(account.userId).then(setSummary).catch((e) => setMessage({ kind: "error", text: mensajeDeErrorOPor(e, "Ocurrió un error inesperado.") })); }, [api, account.userId]);
   React.useEffect(() => setAmount(PLAN.priceCop * months), [months]);
 
   const run = async (okText: string, fn: () => Promise<unknown>) => {
@@ -43,8 +44,8 @@ export default function AccountPanel({ api, account, onClose, onChanged }: { api
       await fn();
       await reload();
       setMessage({ kind: "ok", text: okText });
-    } catch (e: any) {
-      setMessage({ kind: "error", text: e.message });
+    } catch (e) {
+      setMessage({ kind: "error", text: mensajeDeErrorOPor(e, "Ocurrió un error inesperado.") });
     } finally {
       setBusy(false);
       setConfirm(null);

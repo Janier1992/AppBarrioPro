@@ -5,7 +5,7 @@
 // ======================================================
 
 import { TrendingUp, ClipboardList, BarChart3, Edit3, Trash2 } from "lucide-react";
-import { Sale } from "../types";
+import { Sale, PuntoVentasSemana } from "../types";
 import {
   ResponsiveContainer,
   BarChart,
@@ -20,7 +20,7 @@ import {
 interface SalesHistoryProps {
   todaySalesData: { total: number; count: number };
   lastTenSales: Sale[];
-  currentWeekSalesData: any[];
+  currentWeekSalesData: PuntoVentasSemana[];
   totalWeeklySales: number;
   handleStartEditSale: (sale: Sale) => void;
   handleDeleteSale: (saleId: string) => void;

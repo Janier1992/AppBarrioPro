@@ -247,7 +247,7 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
   const handleStartEditSale = (sale: Sale) => {
     setEditingSale(sale);
     setEditClientName(sale.clientName || "");
-    setEditPaymentMethod((sale.paymentMethod as any) || "Efectivo");
+    setEditPaymentMethod(sale.paymentMethod || "Efectivo");
     setEditTotal(sale.total);
   };
 

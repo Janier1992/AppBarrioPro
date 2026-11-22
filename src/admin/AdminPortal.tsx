@@ -15,6 +15,7 @@ import ForgotPasswordForm from "../components/ForgotPasswordForm";
 import AccountsView from "./AccountsView";
 import AuditView from "./AuditView";
 import TicketsView from "./TicketsView";
+import { mensajeDeError } from "../lib/errors";
 
 type Gate = "loading" | "signedOut" | "denied" | "ok";
 
@@ -174,9 +175,9 @@ function AdminLogin() {
     setBusy(true);
     try {
       await auth.signInWithPassword(email.trim(), password);
-    } catch (err: any) {
-      setError(translateAuthError(err?.message));
-      setNeedsVerification(isEmailNotConfirmed(err?.message));
+    } catch (err) {
+      setError(translateAuthError(mensajeDeError(err)));
+      setNeedsVerification(isEmailNotConfirmed(mensajeDeError(err)));
       setBusy(false);
     }
   };
@@ -190,8 +191,8 @@ function AdminLogin() {
       await auth.resendVerificationEmail(email.trim());
       setError("");
       setNotice("Te enviamos un nuevo correo de confirmación. Revisa tu bandeja y el spam.");
-    } catch (err: any) {
-      setError(translateAuthError(err?.message));
+    } catch (err) {
+      setError(translateAuthError(mensajeDeError(err)));
     }
   };
 

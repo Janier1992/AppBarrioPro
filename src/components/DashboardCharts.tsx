@@ -5,7 +5,7 @@
 // ======================================================
 
 import { TrendingUp, ShoppingBag, AlertCircle, CheckCircle2, Users } from "lucide-react";
-import { Sale, Product } from "../types";
+import { Sale, Product, PuntoVentasDia, PuntoVentasMes, ProductoPopular } from "../types";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -18,7 +18,14 @@ import {
   Bar
 } from "recharts";
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+/** Datos que Recharts entrega al tooltip personalizado (solo lo que se lee). */
+interface PropsTooltipGrafico {
+  active?: boolean;
+  payload?: Array<{ value: number; payload: { ventas?: number } }>;
+  label?: string | number;
+}
+
+const CustomTooltip = ({ active, payload, label }: PropsTooltipGrafico) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-brand-text text-white p-3 rounded-xl border border-brand-border shadow-md text-xs font-sans">
@@ -33,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const CustomBarTooltip = ({ active, payload, label }: any) => {
+const CustomBarTooltip = ({ active, payload, label }: PropsTooltipGrafico) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-brand-text text-white p-3 rounded-xl border border-brand-border shadow-md text-xs font-sans">
@@ -51,11 +58,11 @@ const CustomBarTooltip = ({ active, payload, label }: any) => {
 interface DashboardChartsProps {
   sales: Sale[];
   criticalProducts: Product[];
-  chartData: any[];
-  mensualData: any[];
+  chartData: PuntoVentasDia[];
+  mensualData: PuntoVentasMes[];
   totalVentasMes: number;
   totalTransaccionesMes: number;
-  popularItems: any[];
+  popularItems: ProductoPopular[];
   onNavigateToCriticalStock?: () => void;
   obtenerNombreMesActual: () => string;
 }

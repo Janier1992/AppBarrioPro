@@ -11,6 +11,7 @@ import { APP_NAME } from "../lib/brand";
 import PasswordInput from "./PasswordInput";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import { readResetTokenFromUrl } from "../lib/passwordReset";
+import type { EventoInstalacionPwa } from "../types";
 
 interface AppLoginScreenProps {
   loginMode: "signin" | "signup";
@@ -27,8 +28,8 @@ interface AppLoginScreenProps {
   setAuthSuccess: (val: string) => void;
   loadingAuthSubmit: boolean;
   isPwaInstalled: boolean;
-  deferredInstallPrompt: any;
-  setDeferredInstallPrompt: (val: any) => void;
+  deferredInstallPrompt: EventoInstalacionPwa | null;
+  setDeferredInstallPrompt: (val: EventoInstalacionPwa | null) => void;
   setIsPwaInstalled: (val: boolean) => void;
   handleAuthSubmit: (e: React.FormEvent) => void;
   needsVerification?: boolean;

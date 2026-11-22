@@ -23,7 +23,10 @@ const saleSchema = z
     timestamp: z.string().optional(),
     clientName: z.string().max(200).optional(),
     paymentMethod: z.string().max(100).optional(),
-    items: z.array(z.any()).max(100).optional(),
+    items: z
+      .array(z.object({ name: z.string().optional(), quantity: z.union([z.number(), z.string()]).optional(), price: z.union([z.number(), z.string()]).optional() }).passthrough())
+      .max(100)
+      .optional(),
   })
   .passthrough();
 

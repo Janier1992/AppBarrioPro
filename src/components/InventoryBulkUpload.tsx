@@ -6,12 +6,13 @@
 
 import React from "react";
 import { FileSpreadsheet, Download, Upload, AlertTriangle, RefreshCw, CheckCircle2 } from "lucide-react";
+import type { Product } from "../types";
 
 interface InventoryBulkUploadProps {
   bulkFile: File | null;
   setBulkFile: (file: File | null) => void;
-  bulkProducts: any[];
-  setBulkProducts: (products: any[]) => void;
+  bulkProducts: Product[];
+  setBulkProducts: (products: Product[]) => void;
   bulkErrors: string[];
   setBulkErrors: (errors: string[]) => void;
   isProcessingBulk: boolean;

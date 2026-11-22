@@ -11,6 +11,7 @@ import { formatMoney } from "../lib/format";
 import { STATE_LABEL, BLOCKED_STATES, accessEndsAt, computeKpis, daysUntil, type AdminAccount, type AdminApi } from "../lib/admin";
 import type { SubscriptionState } from "../lib/subscription";
 import AccountPanel from "./AccountPanel";
+import { mensajeDeErrorOPor } from "../lib/errors";
 
 type Filter = "all" | "trial" | "active" | "expiring" | "blocked";
 
@@ -41,8 +42,8 @@ export default function AccountsView({ api }: { api: AdminApi }) {
     try {
       setAccounts(await api.listAccounts());
       setError("");
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      setError(mensajeDeErrorOPor(e, "Ocurrió un error inesperado."));
     }
   }, [api]);
   React.useEffect(() => { load(); }, [load]);

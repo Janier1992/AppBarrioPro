@@ -7,6 +7,7 @@
 import { insforge, isInsForgeConfigured } from "./insforge";
 import type { SubscriptionInfo, SubscriptionState } from "./subscription";
 import type { TicketCategory, TicketStatus, ThreadMessage } from "./support";
+import { mensajeDeError } from "./errors";
 
 export interface AdminAccount {
   userId: string;
@@ -95,7 +96,7 @@ export interface AdminApi {
 
 /** Convierte el error de la base de datos en un mensaje comprensible para soporte. */
 export function adminErrorMessage(error: unknown): string {
-  const msg = String((error as any)?.message ?? error ?? "");
+  const msg = String(mensajeDeError(error) ?? error ?? "");
   if (/Acceso solo para soporte|42501/.test(msg)) return "Esta cuenta no tiene permisos de soporte.";
   if (/Could not find the function|does not exist/i.test(msg)) return "Falta aplicar la migración de suscripciones en la base de datos (insforge-migration-suscripciones.sql).";
   return msg || "No se pudo completar la operación.";
@@ -103,7 +104,7 @@ export function adminErrorMessage(error: unknown): string {
 
 function rpcApi(): AdminApi {
   const call = async <T>(fn: string, args?: Record<string, unknown>): Promise<T> => {
-    const { data, error } = await (insforge as any).database.rpc(fn, args);
+    const { data, error } = await insforge!.database.rpc(fn, args);
     if (error) throw new Error(adminErrorMessage(error));
     return data as T;
   };

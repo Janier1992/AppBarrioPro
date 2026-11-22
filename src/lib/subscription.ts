@@ -86,7 +86,7 @@ export function decideAccess(fresh: SubscriptionInfo | null, cached: Subscriptio
 export async function fetchSubscription(): Promise<SubscriptionInfo | null> {
   if (!isInsForgeConfigured()) return null;
   try {
-    const { data, error } = await (insforge as any).database.rpc("ensure_subscription");
+    const { data, error } = await insforge!.database.rpc("ensure_subscription");
     if (error || !data) return null;
     return data as SubscriptionInfo;
   } catch {

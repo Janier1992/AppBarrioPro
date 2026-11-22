@@ -68,3 +68,38 @@ export interface Debt {
 }
 
 
+
+// ---- Tipos de apoyo para pantallas (gráficos y PWA) ----
+
+/** Un día en el gráfico de ventas de los últimos 7 días (pantalla "Hoy"). */
+export interface PuntoVentasDia {
+  date: string;
+  monto: number;
+  ventas: number;
+}
+
+/** Un día del mes en el gráfico mensual. */
+export interface PuntoVentasMes {
+  day: number;
+  monto: number;
+  ventas: number;
+}
+
+/** Producto más vendido (nombre y unidades). */
+export interface ProductoPopular {
+  name: string;
+  count: number;
+}
+
+/** Un día de la semana en el historial de ventas. */
+export interface PuntoVentasSemana {
+  name: string;
+  "Total Ventas": number;
+  Transacciones: number;
+}
+
+/** Evento `beforeinstallprompt` del navegador (aún no está en los tipos estándar de TypeScript). */
+export interface EventoInstalacionPwa extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform?: string }>;
+}
