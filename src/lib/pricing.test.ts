@@ -53,3 +53,28 @@ describe("mensaje y enlace de WhatsApp", () => {
     expect(decodeURIComponent(url.split("text=")[1])).toContain("Soy Marta");
   });
 });
+
+import { nequiDisplay, nequiNumber, paidMessage, paidUrl, paymentReference } from "./pricing";
+
+describe("pago por Nequi", () => {
+  it("sin la variable de entorno no hay número de Nequi (la sección no aparece)", () => {
+    expect(nequiNumber()).toBe("");
+  });
+  it("da formato legible al número", () => {
+    expect(nequiDisplay("3001234567")).toBe("300 123 4567");
+  });
+  it("la referencia es corta, estable y única por cuenta", () => {
+    const a = paymentReference("a1b2c3d4-0000-0000-0000-000000000001");
+    expect(a).toBe("TDLY-A1B2C3");
+    expect(paymentReference("a1b2c3d4-0000-0000-0000-000000000001")).toBe(a);
+    expect(paymentReference("ffffffff-0000-0000-0000-000000000002")).not.toBe(a);
+    expect(paymentReference("ab")).toBe("TDLY-AB0000");
+  });
+  it("el mensaje de 'ya pagué' lleva precio, negocio y referencia, y apunta al WhatsApp de ventas", () => {
+    const m = paidMessage("a1b2c3d4-0000", "Tienda de Ana");
+    expect(m).toContain("$ 29.900");
+    expect(m).toContain("Tienda de Ana");
+    expect(m).toContain("TDLY-A1B2C3");
+    expect(paidUrl("a1b2c3d4-0000", "Tienda de Ana")!.startsWith("https://wa.me/573044769592?text=")).toBe(true);
+  });
+});

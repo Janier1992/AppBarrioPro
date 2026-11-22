@@ -50,11 +50,21 @@ Soporte (cuentas en `admins`) nunca queda bloqueado.
 - **Resumen del negocio** (solo lectura): productos, ventas de 30 días, fiados abiertos, última venta, pagos. Sirve para diagnosticar fallas sin ver filas sueltas ni el PIN.
 - **Bitácora:** quién hizo qué y cuándo (pagos, suspensiones…). Solo se agrega, nunca se edita.
 
-### Flujo de cobro recomendado
-1. El cliente toca "Activar mi suscripción" y te escribe por WhatsApp (+57 304 476 9592).
-2. Le indicas cómo pagar $29.900 (Nequi, transferencia…).
-3. Recibes el pago → abres su cuenta en `/admin` → **Registrar pago y activar**.
-4. El cliente toca "Ya pagué, verificar" y entra. (Si no lo toca, entra solo al volver a la app.)
+### Pago por Nequi (mientras no haya pasarela de pagos)
+Se configura **una sola variable**: `VITE_NEQUI_NUMBER` con el número de Nequi que recibe los pagos (10 dígitos, ej. `3001234567`). En Vercel: *Settings → Environment Variables → `VITE_NEQUI_NUMBER`* y **vuelve a desplegar** (las variables `VITE_` se incorporan al compilar). Es un dato público (el cliente lo ve), no un secreto. Sin esa variable la sección de Nequi no aparece y queda solo el botón de WhatsApp.
+
+Lo que ve el cliente cuando su prueba o mes vencen:
+1. **Envía $29.900 al Nequi** `300 123 4567` (con botón "Copiar").
+2. **Escribe en el mensaje del pago su referencia única** (por ejemplo `TDLY-A1B2C3`, con botón "Copiar"): es lo que te permite saber de qué negocio es cada pago.
+3. Toca **"Ya pagué: enviar comprobante"**: se abre tu WhatsApp con un mensaje listo (negocio, valor, referencia).
+
+Lo que haces tú:
+1. Recibes el pago en Nequi y el comprobante por WhatsApp.
+2. En `/admin` buscas por la **referencia** (`TDLY-…`), el nombre o el correo, y abres la cuenta. La referencia también aparece en el encabezado de cada cuenta.
+3. **Registrar pago y activar** (medio: Nequi; referencia: el código o el número de aprobación de Nequi).
+4. El cliente toca "Verificar si ya estoy activo" y entra (o entra solo al volver a la app).
+
+**Antes de recibir pagos de clientes:** revisa con tu contador cómo declarar estos ingresos mientras la empresa no esté constituida, y los límites de tu cuenta Nequi. Cuando tengas la empresa y el RUT, el paso natural es una pasarela (Wompi, ePayco…): la base ya guarda pagos y fechas, así que solo habría que automatizar el registro del pago.
 
 ## Seguridad
 
@@ -65,7 +75,7 @@ Soporte (cuentas en `admins`) nunca queda bloqueado.
 
 ## Límites conocidos
 
-- **Pago manual.** No hay pasarela (Wompi, ePayco…): tú cobras y registras. Integrarla sería el siguiente paso (la base ya guarda pagos y fechas).
+- **Pago manual.** No hay pasarela: el cliente transfiere por Nequi y tú confirmas y registras el pago. No se verifica el pago automáticamente.
 - **Sin doble factor** en el portal: usa contraseñas largas y únicas, y limita quién está en `admins`.
 - **Nueva prueba con otro correo:** quien borre su cuenta y se registre con otro correo obtiene otra prueba. Es un riesgo comercial aceptado en esta etapa.
 - **Sin conexión:** la app deja trabajar según la última fecha conocida; si esa fecha ya pasó, bloquea. El servidor igual rechaza los datos sin acceso.

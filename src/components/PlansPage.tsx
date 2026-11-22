@@ -1,7 +1,7 @@
 import React from "react";
 import { Check, MessageCircle, Play, Store } from "lucide-react";
 import { APP_NAME } from "../lib/brand";
-import { PLAN, parseLead, priceLabel, subscriptionUrl, trialLabel, whatsappDisplay } from "../lib/pricing";
+import { PLAN, nequiNumber, parseLead, priceLabel, subscriptionUrl, trialLabel, whatsappDisplay } from "../lib/pricing";
 
 /** Video de demostración alojado en la propia app (public/video/tiendly-demo.mp4). */
 const DEMO_VIDEO = "/video/tiendly-demo.mp4";
@@ -58,7 +58,7 @@ export default function PlansPage() {
               <span className="text-lg text-brand-muted">al {PLAN.period}</span>
             </p>
             <p className="text-[15px] text-brand-muted">
-              Después de la prueba, pagas mes a mes. {PLAN.tagline}
+              Después de la prueba, pagas mes a mes{nequiNumber() ? " por Nequi" : ""}. {PLAN.tagline}
             </p>
           </div>
 

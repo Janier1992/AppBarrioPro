@@ -134,6 +134,7 @@ export default function App() {
   if (!access.hasAccess) {
     return (
       <PaywallScreen
+        userId={user.uid}
         info={access.info}
         businessName={user.displayName || undefined}
         email={user.email || undefined}
