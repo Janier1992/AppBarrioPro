@@ -11,7 +11,7 @@ import {
   auditAndAlertUnfinishedTasks
 } from "../lib/notifications";
 import { verifyPin, isHashedPin, hashPin, markSessionUnlocked, clearSessionUnlocked, isSessionUnlocked } from "../lib/pin";
-import { translateAuthError } from "../lib/authErrors";
+import { isEmailNotConfirmed, translateAuthError } from "../lib/authErrors";
 import { decideAccess, fetchSubscription, loadCachedSubscription, saveCachedSubscription, type AccessDecision } from "../lib/subscription";
 import { isCriticalStock } from "../lib/stock";
 import { nextTheme, resolveTheme } from "../lib/theme";
@@ -73,6 +73,8 @@ export function useApp() {
   const [authName, setAuthName] = useState("");
   const [authError, setAuthError] = useState("");
   const [authSuccess, setAuthSuccess] = useState("");
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [resendingVerification, setResendingVerification] = useState(false);
   const [loadingAuthSubmit, setLoadingAuthSubmit] = useState(false);
 
   // Onboarding state
@@ -305,6 +307,7 @@ export function useApp() {
     e.preventDefault();
     setAuthError("");
     setAuthSuccess("");
+    setNeedsVerification(false);
     setLoadingAuthSubmit(true);
 
     try {
@@ -322,8 +325,27 @@ export function useApp() {
     } catch (err: any) {
       console.error("Authentication error:", err);
       setAuthError(translateAuthError(err?.message));
+      setNeedsVerification(isEmailNotConfirmed(err?.message));
     } finally {
       setLoadingAuthSubmit(false);
+    }
+  };
+
+  /** Reenvía el correo de confirmación al correo escrito en el formulario. */
+  const handleResendVerification = async () => {
+    if (!authEmail.trim()) {
+      setAuthError("Escribe tu correo electrónico para reenviarte la confirmación.");
+      return;
+    }
+    setResendingVerification(true);
+    try {
+      await auth.resendVerificationEmail(authEmail.trim());
+      setAuthError("");
+      setAuthSuccess("Te enviamos un nuevo correo de confirmación. Revisa tu bandeja de entrada (y el spam) y abre el enlace.");
+    } catch (err: any) {
+      setAuthError(translateAuthError(err?.message));
+    } finally {
+      setResendingVerification(false);
     }
   };
 
@@ -335,6 +357,9 @@ export function useApp() {
     authLoading,
     access,
     refreshSubscription,
+    needsVerification,
+    resendingVerification,
+    handleResendVerification,
     activeTab,
     setActiveTab,
     isMobileMoreOpen,

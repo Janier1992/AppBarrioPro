@@ -25,6 +25,9 @@ interface AppLoginScreenProps {
   setDeferredInstallPrompt: (val: any) => void;
   setIsPwaInstalled: (val: boolean) => void;
   handleAuthSubmit: (e: React.FormEvent) => void;
+  needsVerification?: boolean;
+  resendingVerification?: boolean;
+  onResendVerification?: () => void;
 }
 
 export default function AppLoginScreen({
@@ -45,7 +48,10 @@ export default function AppLoginScreen({
   deferredInstallPrompt,
   setDeferredInstallPrompt,
   setIsPwaInstalled,
-  handleAuthSubmit
+  handleAuthSubmit,
+  needsVerification,
+  resendingVerification,
+  onResendVerification
 }: AppLoginScreenProps) {
   // Vista "Olvidé mi contraseña" (formulario independiente del login/registro).
   // Si el usuario llega desde el enlace del correo (token en la URL) se abre directamente.
@@ -125,6 +131,17 @@ export default function AppLoginScreen({
         {authError && (
           <div className="w-full p-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-800 text-xs font-medium leading-relaxed">
             {authError}
+            {needsVerification && onResendVerification && (
+              <button
+                type="button"
+                onClick={onResendVerification}
+                disabled={resendingVerification}
+                className="mt-2 block font-semibold underline cursor-pointer disabled:opacity-60"
+                id="resend-verification"
+              >
+                {resendingVerification ? "Enviando…" : "Reenviar correo de confirmación"}
+              </button>
+            )}
           </div>
         )}
 

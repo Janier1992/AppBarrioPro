@@ -40,6 +40,9 @@ export default function App() {
     authLoading,
     access,
     refreshSubscription,
+    needsVerification,
+    resendingVerification,
+    handleResendVerification,
     activeTab,
     setActiveTab,
     isMobileMoreOpen,
@@ -118,6 +121,9 @@ export default function App() {
         setDeferredInstallPrompt={setDeferredInstallPrompt}
         setIsPwaInstalled={setIsPwaInstalled}
         handleAuthSubmit={handleAuthSubmit}
+        needsVerification={needsVerification}
+        resendingVerification={resendingVerification}
+        onResendVerification={handleResendVerification}
       />
     );
   }

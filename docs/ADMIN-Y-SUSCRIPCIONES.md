@@ -42,6 +42,7 @@ Soporte (cuentas en `admins`) nunca queda bloqueado.
       ```
       Debe responder "1 fila insertada". Si responde 0 filas, esa cuenta aún no inició sesión en la app o el correo está escrito distinto.
    Para **agregar a otra persona de soporte**, repite los dos pasos con su correo. Para **quitar a alguien**: `DELETE FROM admins WHERE email = 'correo@x.com';`.
+   **Si el correo de la cuenta de soporte aparece "sin verificar"** y no te deja entrar ("Debes confirmar tu correo electrónico"): en la pantalla de inicio de sesión de la app, tras ese mensaje, toca **Reenviar correo de confirmación** y abre el enlace del correo que llegue (revisa también el spam).
 3. **Entra al portal:** `https://TU-DOMINIO/admin` (también hay un enlace "Acceso de soporte" en la pantalla de inicio de sesión) con el correo y la contraseña de esa cuenta. Si entras con una cuenta que no está en `admins`, verás "Sin permisos de soporte".
 4. **Cuentas existentes:** al aplicar la migración, cada negocio que ya existía recibe una prueba de 7 días a partir de ese momento. Si algún cliente ya paga, ábrelo en el portal y registra su pago.
 

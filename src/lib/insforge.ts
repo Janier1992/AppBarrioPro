@@ -247,6 +247,13 @@ export const auth = {
     window.location.reload();
   },
 
+  /** Reenvía el correo de confirmación de cuenta (para quien nunca lo recibió o ya venció). */
+  resendVerificationEmail: async (email: string) => {
+    if (!insforge || !isInsForgeConfigured()) throw new Error("InsForge no está configurado.");
+    const { error } = await insforge.auth.resendVerificationEmail({ email });
+    if (error) throw error;
+  },
+
   /** Paso 1 de "Olvidé mi contraseña": InsForge envía un correo con un código (o enlace) de recuperación. */
   sendPasswordReset: async (email: string) => {
     if (!insforge) {
