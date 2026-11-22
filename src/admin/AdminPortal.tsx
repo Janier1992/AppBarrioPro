@@ -3,6 +3,8 @@ import { LogOut, ScrollText, ShieldCheck, Store, Users } from "lucide-react";
 import { APP_NAME } from "../lib/brand";
 import { auth, type MockUser } from "../lib/insforge";
 import { getAdminApi, isDemoAdmin, type AdminApi } from "../lib/admin";
+import { translateAuthError, isEmailNotConfirmed } from "../lib/authErrors";
+import ForgotPasswordForm from "../components/ForgotPasswordForm";
 import AccountsView from "./AccountsView";
 import AuditView from "./AuditView";
 
@@ -132,19 +134,57 @@ function AdminLogin() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
+  const [notice, setNotice] = React.useState("");
   const [busy, setBusy] = React.useState(false);
+  const [needsVerification, setNeedsVerification] = React.useState(false);
+  const [showForgot, setShowForgot] = React.useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setNotice("");
+    setNeedsVerification(false);
     setBusy(true);
     try {
       await auth.signInWithPassword(email.trim(), password);
     } catch (err: any) {
-      setError("Correo o contraseña incorrectos.");
+      setError(translateAuthError(err?.message));
+      setNeedsVerification(isEmailNotConfirmed(err?.message));
       setBusy(false);
     }
   };
+
+  const resend = async () => {
+    if (!email.trim()) {
+      setError("Escribe tu correo para reenviarte la confirmación.");
+      return;
+    }
+    try {
+      await auth.resendVerificationEmail(email.trim());
+      setError("");
+      setNotice("Te enviamos un nuevo correo de confirmación. Revisa tu bandeja y el spam.");
+    } catch (err: any) {
+      setError(translateAuthError(err?.message));
+    }
+  };
+
+  if (showForgot) {
+    return (
+      <Shell>
+        <div className="max-w-sm mx-auto mt-14 rounded-2xl border border-brand-border bg-white p-7" id="admin-forgot">
+          <ForgotPasswordForm
+            initialEmail={email}
+            onBack={(successMessage) => {
+              setShowForgot(false);
+              setError("");
+              setNotice(successMessage ?? "");
+              setPassword("");
+            }}
+          />
+        </div>
+      </Shell>
+    );
+  }
 
   return (
     <Shell>
@@ -161,8 +201,21 @@ function AdminLogin() {
         <div>
           <label htmlFor="admin-password" className="block text-xs font-medium text-brand-muted mb-1">Contraseña</label>
           <input id="admin-password" type="password" required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-brand-border px-3 py-2.5 text-sm bg-white" />
+          <button type="button" onClick={() => setShowForgot(true)} className="mt-1.5 text-xs font-medium text-brand-primary hover:underline cursor-pointer" id="admin-forgot-link">
+            ¿Olvidaste tu contraseña?
+          </button>
         </div>
-        {error && <p role="alert" className="text-sm text-rose-700">{error}</p>}
+        {notice && <p role="status" className="text-sm text-emerald-800 bg-emerald-50 rounded-xl px-3 py-2" id="admin-notice">{notice}</p>}
+        {error && (
+          <p role="alert" className="text-sm text-rose-700" id="admin-error">
+            {error}
+            {needsVerification && (
+              <button type="button" onClick={resend} className="mt-1 block font-semibold underline cursor-pointer" id="admin-resend">
+                Reenviar correo de confirmación
+              </button>
+            )}
+          </p>
+        )}
         <button disabled={busy} className="w-full h-11 rounded-xl bg-brand-primary text-white font-semibold text-sm cursor-pointer disabled:opacity-60" id="admin-login-submit">
           {busy ? "Entrando…" : "Entrar"}
         </button>
