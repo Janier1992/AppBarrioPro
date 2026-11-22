@@ -1,10 +1,14 @@
 import { Product, Sale, Task, Debt, BusinessProfile } from "../types";
 import { insforge, isInsForgeConfigured, notifySubscribers } from "./insforge";
+import { flushOutbox, pendingCount, writeRemote } from "./outbox";
 
 export const db = {
   // 1. PROFILE
   getProfile: async (userId: string): Promise<BusinessProfile | null> => {
-    if (isInsForgeConfigured()) {
+    // Antes de leer del servidor se envía lo pendiente; si algo sigue sin enviarse, se usa lo
+    // local (que sí lo tiene) para que la lectura remota no "borre" ventas aún no confirmadas.
+    await flushOutbox(userId);
+    if (isInsForgeConfigured() && pendingCount(userId) === 0) {
       try {
         const { data, error } = await insforge!.database
           .from("profile")
@@ -31,16 +35,7 @@ export const db = {
     };
 
     localStorage.setItem(`barriopro_profile_${userId}`, JSON.stringify(profileWithId));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("profile")
-          .upsert({ ...profileWithId, geminiApiKey: null });
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to save profile to InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "profile", kind: "upsert", data: { ...profileWithId, geminiApiKey: null } });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -49,7 +44,10 @@ export const db = {
 
   // 2. PRODUCTS
   getProducts: async (userId: string): Promise<Product[]> => {
-    if (isInsForgeConfigured()) {
+    // Antes de leer del servidor se envía lo pendiente; si algo sigue sin enviarse, se usa lo
+    // local (que sí lo tiene) para que la lectura remota no "borre" ventas aún no confirmadas.
+    await flushOutbox(userId);
+    if (isInsForgeConfigured() && pendingCount(userId) === 0) {
       try {
         const { data, error } = await insforge!.database
           .from("products")
@@ -72,16 +70,7 @@ export const db = {
     const list: Product[] = local ? JSON.parse(local) : [];
     list.push(newProduct);
     localStorage.setItem(`barriopro_products_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("products")
-          .insert({ ...newProduct, userId });
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to add product to InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "products", kind: "upsert", data: { ...newProduct } });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -94,18 +83,7 @@ export const db = {
     let list: Product[] = local ? JSON.parse(local) : [];
     list = list.map(p => p.id === productId ? { ...p, ...updates } : p);
     localStorage.setItem(`barriopro_products_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("products")
-          .update(updates)
-          .eq("id", productId)
-          .eq("userId", userId);
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to update product in InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "products", kind: "update", rowId: productId, data: updates });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -117,18 +95,7 @@ export const db = {
     let list: Product[] = local ? JSON.parse(local) : [];
     list = list.filter(p => p.id !== productId);
     localStorage.setItem(`barriopro_products_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("products")
-          .delete()
-          .eq("id", productId)
-          .eq("userId", userId);
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to delete product from InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "products", kind: "delete", rowId: productId });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -137,7 +104,10 @@ export const db = {
 
   // 3. SALES
   getSales: async (userId: string): Promise<Sale[]> => {
-    if (isInsForgeConfigured()) {
+    // Antes de leer del servidor se envía lo pendiente; si algo sigue sin enviarse, se usa lo
+    // local (que sí lo tiene) para que la lectura remota no "borre" ventas aún no confirmadas.
+    await flushOutbox(userId);
+    if (isInsForgeConfigured() && pendingCount(userId) === 0) {
       try {
         const { data, error } = await insforge!.database
           .from("sales")
@@ -160,16 +130,7 @@ export const db = {
     const list: Sale[] = local ? JSON.parse(local) : [];
     list.push(newSale);
     localStorage.setItem(`barriopro_sales_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("sales")
-          .insert({ ...newSale, userId });
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to add sale to InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "sales", kind: "upsert", data: { ...newSale } });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -182,18 +143,7 @@ export const db = {
     const list: Sale[] = local ? JSON.parse(local) : [];
     const filtered = list.filter(s => s.id !== id);
     localStorage.setItem(`barriopro_sales_${userId}`, JSON.stringify(filtered));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("sales")
-          .delete()
-          .eq("id", id)
-          .eq("userId", userId);
-        if (error) throw error;
-      } catch (error) {
-        console.error("Error al eliminar la venta de InsForge:", error);
-      }
-    }
+    await writeRemote(userId, { table: "sales", kind: "delete", rowId: id });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -205,18 +155,7 @@ export const db = {
     const list: Sale[] = local ? JSON.parse(local) : [];
     const updated = list.map(s => s.id === id ? { ...s, ...sale } : s);
     localStorage.setItem(`barriopro_sales_${userId}`, JSON.stringify(updated));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("sales")
-          .update(sale)
-          .eq("id", id)
-          .eq("userId", userId);
-        if (error) throw error;
-      } catch (error) {
-        console.error("Error al actualizar la venta en InsForge:", error);
-      }
-    }
+    await writeRemote(userId, { table: "sales", kind: "update", rowId: id, data: sale });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -225,7 +164,10 @@ export const db = {
 
   // 4. TASKS (CHECKLIST)
   getTasks: async (userId: string): Promise<Task[]> => {
-    if (isInsForgeConfigured()) {
+    // Antes de leer del servidor se envía lo pendiente; si algo sigue sin enviarse, se usa lo
+    // local (que sí lo tiene) para que la lectura remota no "borre" ventas aún no confirmadas.
+    await flushOutbox(userId);
+    if (isInsForgeConfigured() && pendingCount(userId) === 0) {
       try {
         const { data, error } = await insforge!.database
           .from("tasks")
@@ -248,16 +190,7 @@ export const db = {
     const list: Task[] = local ? JSON.parse(local) : [];
     list.push(newTask);
     localStorage.setItem(`barriopro_tasks_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("tasks")
-          .insert({ ...newTask, userId });
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to add task to InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "tasks", kind: "upsert", data: { ...newTask } });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -270,18 +203,7 @@ export const db = {
     let list: Task[] = local ? JSON.parse(local) : [];
     list = list.map(t => t.id === taskId ? { ...t, ...updates } : t);
     localStorage.setItem(`barriopro_tasks_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("tasks")
-          .update(updates)
-          .eq("id", taskId)
-          .eq("userId", userId);
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to update task in InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "tasks", kind: "update", rowId: taskId, data: updates });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -293,18 +215,7 @@ export const db = {
     let list: Task[] = local ? JSON.parse(local) : [];
     list = list.filter(t => t.id !== taskId);
     localStorage.setItem(`barriopro_tasks_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("tasks")
-          .delete()
-          .eq("id", taskId)
-          .eq("userId", userId);
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to delete task from InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "tasks", kind: "delete", rowId: taskId });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -313,7 +224,10 @@ export const db = {
 
   // 5. DEBTS
   getDebts: async (userId: string): Promise<Debt[]> => {
-    if (isInsForgeConfigured()) {
+    // Antes de leer del servidor se envía lo pendiente; si algo sigue sin enviarse, se usa lo
+    // local (que sí lo tiene) para que la lectura remota no "borre" ventas aún no confirmadas.
+    await flushOutbox(userId);
+    if (isInsForgeConfigured() && pendingCount(userId) === 0) {
       try {
         const { data, error } = await insforge!.database
           .from("debts")
@@ -336,16 +250,7 @@ export const db = {
     const list: Debt[] = local ? JSON.parse(local) : [];
     list.push(newDebt);
     localStorage.setItem(`barriopro_debts_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("debts")
-          .insert({ ...newDebt, userId });
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to add debt to InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "debts", kind: "upsert", data: { ...newDebt } });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -358,18 +263,7 @@ export const db = {
     let list: Debt[] = local ? JSON.parse(local) : [];
     list = list.map(d => d.id === debtId ? { ...d, ...updates } : d);
     localStorage.setItem(`barriopro_debts_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("debts")
-          .update(updates)
-          .eq("id", debtId)
-          .eq("userId", userId);
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to update debt in InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "debts", kind: "update", rowId: debtId, data: updates });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
@@ -381,18 +275,7 @@ export const db = {
     let list: Debt[] = local ? JSON.parse(local) : [];
     list = list.filter(d => d.id !== debtId);
     localStorage.setItem(`barriopro_debts_${userId}`, JSON.stringify(list));
-    if (isInsForgeConfigured()) {
-      try {
-        const { error } = await insforge!.database
-          .from("debts")
-          .delete()
-          .eq("id", debtId)
-          .eq("userId", userId);
-        if (error) throw error;
-      } catch (e) {
-        console.error("Failed to delete debt from InsForge:", e);
-      }
-    }
+    await writeRemote(userId, { table: "debts", kind: "delete", rowId: debtId });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
