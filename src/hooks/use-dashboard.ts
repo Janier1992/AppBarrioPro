@@ -1,6 +1,12 @@
+// ======================================================
+// Archivo: src/hooks/use-dashboard.ts
+// Responsabilidad: Lógica de la pantalla "Hoy": totales y gráficos, exportación del reporte en PDF y carga de datos
+//   de ejemplo.
+// ======================================================
+
 import { useState, useMemo } from "react";
 import { Product, Sale } from "../types";
-import { loadDemoDataToFirestore } from "../lib/demoData";
+import { cargarDatosDeDemostracion } from "../lib/demoData";
 import { isCriticalStock } from "../lib/stock";
 import { showErrorToast, showSuccessToast } from "../lib/toast";
 import { generateDashboardReportPDF } from "../lib/pdf";
@@ -19,12 +25,12 @@ export function useDashboard({ products, sales, userId }: UseDashboardProps) {
     if (!window.confirm("¿Deseas cargar productos de muestra y ventas ficticias? Esto agregará stock inicial, checklists y ventas de los últimos días para ver el panel en acción.")) return;
     setLoadingDemo(true);
     try {
-      await loadDemoDataToFirestore(userId);
+      await cargarDatosDeDemostracion(userId);
       // Ya no se recarga la página: el guardado ya notifica a la app para
       // refrescar los datos automáticamente (ver subscribeToData en insforge.ts).
       showSuccessToast("¡Datos de muestra y ventas ficticias cargados exitosamente!");
     } catch (error) {
-      console.error("Error al poblar datos de muestra en Firestore:", error);
+      console.error("Error al cargar los datos de ejemplo:", error);
       showErrorToast("No se pudieron cargar los datos de muestra. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoadingDemo(false);
@@ -137,7 +143,7 @@ export function useDashboard({ products, sales, userId }: UseDashboardProps) {
     try {
       generateDashboardReportPDF(products, mensualData, totalVentasMes, totalTransaccionesMes, obtenerNombreMesActual());
     } catch (err) {
-      console.error("Error generating PDF:", err);
+      console.error("Error al generar el PDF:", err);
       showErrorToast("No se pudo generar el reporte en PDF. Por favor reintenta.");
     } finally {
       setExportingPdf(false);

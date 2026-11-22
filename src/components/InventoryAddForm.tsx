@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/InventoryAddForm.tsx
+// Responsabilidad: Formulario para agregar un producto nuevo al inventario.
+// ======================================================
+
 import React from "react";
 import { Plus, RefreshCw } from "lucide-react";
 import CategoryInput from "./CategoryInput";

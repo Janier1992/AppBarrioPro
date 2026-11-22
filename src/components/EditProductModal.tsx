@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/EditProductModal.tsx
+// Responsabilidad: Ventana para editar un producto: nombre, categoría, precios y stock.
+// ======================================================
+
 import React from "react";
 import { Edit2, RefreshCw, CheckCircle2 } from "lucide-react";
 import { Product } from "../types";

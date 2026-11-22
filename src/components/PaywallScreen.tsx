@@ -1,6 +1,12 @@
+// ======================================================
+// Archivo: src/components/PaywallScreen.tsx
+// Responsabilidad: Pantalla que reemplaza la app cuando la prueba terminó o la suscripción no está vigente: motivo,
+//   precio, pago por Nequi con referencia, WhatsApp y verificación. Los datos del cliente no se
+//   borran.
+// ======================================================
+
 import React from "react";
 import { Check, Copy, LogOut, MessageCircle, RefreshCw, Store } from "lucide-react";
-import { APP_NAME } from "../lib/brand";
 import { PLAN, nequiDisplay, nequiNumber, paidUrl, paymentReference, priceLabel, subscriptionUrl } from "../lib/pricing";
 import { paywallCopy, type SubscriptionInfo } from "../lib/subscription";
 

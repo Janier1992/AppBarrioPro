@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+// ======================================================
+// Archivo: src/components/AppSidebar.tsx
+// Responsabilidad: Menú lateral de escritorio (pantallas de 1024 px o más), plegable a solo iconos. En celular no
+//   se muestra: ahí la navegación es la barra inferior de App.tsx.
+// ======================================================
+
+import { useState } from "react";
 import {
   Boxes, Home, LifeBuoy, ListChecks, LogOut, Lock, Moon, PanelLeftClose, PanelLeftOpen,
   Plus, SlidersHorizontal, Sparkles, Store, Sun, Wallet,

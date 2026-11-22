@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/main.tsx
+// Responsabilidad: Punto de entrada del navegador. Monta React y decide, según la ruta, si muestra la página
+//   pública /planes, el portal de soporte /admin o la aplicación del negocio.
+// ======================================================
+
 import {StrictMode, lazy, Suspense} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';

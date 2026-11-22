@@ -17,7 +17,7 @@ export const db = {
           .single();
         if (!error && data) return data as BusinessProfile;
       } catch (e) {
-        console.warn("Profile fetch failed, using local profile:", e);
+        console.warn("No se pudo leer el perfil del servidor; se usa la copia local:", e);
       }
     }
     const local = localStorage.getItem(`barriopro_profile_${userId}`);
@@ -56,7 +56,7 @@ export const db = {
           .eq("userId", userId);
         if (!error && data) return data as Product[];
       } catch (e) {
-        console.warn("Products fetch failed, using local products:", e);
+        console.warn("No se pudieron leer los productos del servidor; se usa la copia local:", e);
       }
     }
     const local = localStorage.getItem(`barriopro_products_${userId}`);
@@ -133,7 +133,7 @@ export const db = {
           .eq("userId", userId);
         if (!error && data) return data as Sale[];
       } catch (e) {
-        console.warn("Sales fetch failed, using local sales:", e);
+        console.warn("No se pudieron leer las ventas del servidor; se usa la copia local:", e);
       }
     }
     const local = localStorage.getItem(`barriopro_sales_${userId}`);
@@ -193,7 +193,7 @@ export const db = {
           .eq("userId", userId);
         if (!error && data) return data as Task[];
       } catch (e) {
-        console.warn("Tasks fetch failed, using local tasks:", e);
+        console.warn("No se pudieron leer las tareas del servidor; se usa la copia local:", e);
       }
     }
     const local = localStorage.getItem(`barriopro_tasks_${userId}`);
@@ -253,7 +253,7 @@ export const db = {
           .eq("userId", userId);
         if (!error && data) return data as Debt[];
       } catch (e) {
-        console.warn("Debts fetch failed, using local debts:", e);
+        console.warn("No se pudieron leer los fiados del servidor; se usa la copia local:", e);
       }
     }
     const local = localStorage.getItem(`barriopro_debts_${userId}`);

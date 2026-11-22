@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/AppLockScreen.tsx
+// Responsabilidad: Pantalla de bloqueo por PIN: tapa la app hasta que se ingresa el PIN de seguridad del negocio.
+// ======================================================
+
 import React from "react";
 import { motion } from "motion/react";
 import { Lock } from "lucide-react";
@@ -9,7 +14,6 @@ interface AppLockScreenProps {
   setPinInput: (val: string) => void;
   pinError: string;
   setPinError: (val: string) => void;
-  setIsLocked: (val: boolean) => void;
   handleDesbloquearConPin: (e: React.FormEvent) => void;
 }
 
@@ -19,7 +23,6 @@ export default function AppLockScreen({
   setPinInput,
   pinError,
   setPinError,
-  setIsLocked,
   handleDesbloquearConPin
 }: AppLockScreenProps) {
   if (!profile || !profile.securityPin) return null;

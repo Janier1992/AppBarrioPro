@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/SettingsProfile.tsx
+// Responsabilidad: Ajustes > Perfil del negocio: tipo de negocio, datos de contacto, logo, umbral de stock bajo y
+//   tema.
+// ======================================================
+
 import React from "react";
 import { Trash2, ShoppingBag, Plus, Sun, Moon, RefreshCw } from "lucide-react";
 import BusinessTypePicker from "./BusinessTypePicker";

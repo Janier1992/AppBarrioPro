@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/hooks/use-sales.ts
+// Responsabilidad: Lógica de "Vender": carrito, cobro (incluido el fiado), historial, edición y borrado de ventas y
+//   exportación.
+// ======================================================
+
 import React, { useState, useMemo } from "react";
 import { Product, Sale } from "../types";
 import { db } from "../lib/insforge";
@@ -306,7 +312,7 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
       setEditingSale(null);
       showSuccessToast("Venta actualizada correctamente.");
     } catch (err) {
-      console.error("Error editing sale:", err);
+      console.error("Error al editar la venta:", err);
       showErrorToast("Error al intentar guardar los cambios de la venta.");
     }
   };
@@ -394,7 +400,7 @@ export function useSales({ products, sales, userId }: UseSalesProps) {
       setDueDate("");
       setPaymentMethod("Efectivo");
     } catch (error) {
-      console.error("Error completing sale checkout:", error);
+      console.error("Error al registrar la venta:", error);
       showErrorToast("No se pudo registrar la venta. Verifica tu conexión e inténtalo de nuevo — el stock y la caja no se modificaron.");
     } finally {
       setLoading(false);

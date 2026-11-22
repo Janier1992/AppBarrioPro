@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/hooks/use-inventory.ts
+// Responsabilidad: Lógica de "Productos": filtros, orden, formulario de alta, edición, ajuste de stock y carga
+//   masiva.
+// ======================================================
+
 import React, { useState, useEffect, useMemo } from "react";
 import { readSpreadsheetRows, SpreadsheetFormatError } from "../lib/spreadsheet";
 import { toCsv } from "../lib/csv";
@@ -117,7 +123,7 @@ export function useInventory({
       setCost(0.6);
       setShowAddForm(false);
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error al agregar el producto:", error);
       showErrorToast("No se pudo guardar el producto. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoadingProduct(false);
@@ -135,7 +141,7 @@ export function useInventory({
           await db.deleteProduct(userId, id);
           showAlertDialog("Producto Eliminado", "El artículo ha sido eliminado del inventario con éxito.", "success");
         } catch (error) {
-          console.error("Error deleting product:", error);
+          console.error("Error al eliminar el producto:", error);
           showErrorToast("No se pudo eliminar el producto. Verifica tu conexión e inténtalo de nuevo.");
         }
       }
@@ -147,7 +153,7 @@ export function useInventory({
     try {
       await db.adjustStock(userId, product.id, amount);
     } catch (error) {
-      console.error("Error adjusting stock:", error);
+      console.error("Error al ajustar el stock:", error);
       showErrorToast("No se pudo ajustar el stock. Verifica tu conexión e inténtalo de nuevo.");
     }
   };
@@ -381,7 +387,7 @@ export function useInventory({
       });
       setEditingProduct(null);
     } catch (error) {
-      console.error("Error updating product:", error);
+      console.error("Error al actualizar el producto:", error);
       showErrorToast("No se pudieron guardar los cambios del producto. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setSavingEdit(false);

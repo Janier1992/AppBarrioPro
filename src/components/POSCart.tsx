@@ -1,4 +1,9 @@
-import React from "react";
+// ======================================================
+// Archivo: src/components/POSCart.tsx
+// Responsabilidad: Carrito del punto de venta: cantidades, cliente, forma de pago (con fecha cuando es fiado) y
+//   botón Cobrar.
+// ======================================================
+
 import { ShoppingCart, Trash2, Minus, Plus, RefreshCw } from "lucide-react";
 import { Product } from "../types";
 import { formatMoney } from "../lib/format";

@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/types.ts
+// Responsabilidad: Modelos de datos del negocio (producto, venta, tarea, fiado y perfil) compartidos por toda la
+//   app.
+// ======================================================
+
 export interface Product {
   id?: string;
   name: string;
@@ -25,24 +31,6 @@ export interface Sale {
   clientId?: string;
   clientName?: string;
   paymentMethod?: "Efectivo" | "Tarjeta" | "Transferencia" | "Fiado";
-}
-
-export interface Client {
-  id?: string;
-  name: string;
-  phone: string;
-  email: string;
-  createdAt: string;
-}
-
-export interface CierreCaja {
-  id?: string;
-  fecha: string; // "YYYY-MM-DD"
-  total_esperado: number;
-  total_real: number;
-  diferencia: number;
-  nota: string;
-  timestamp: string;
 }
 
 export interface Task {

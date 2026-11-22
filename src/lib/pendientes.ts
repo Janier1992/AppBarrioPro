@@ -9,7 +9,7 @@ import { Debt, Product, Task } from "../types";
 import { isCriticalStock } from "./stock";
 import { formatMoney } from "./format";
 
-export type PendienteKind = "debt" | "stock" | "task";
+type PendienteKind = "debt" | "stock" | "task";
 
 export interface Pendiente {
   /** Identificador estable para usar como `key` y para actuar sobre el elemento original. */

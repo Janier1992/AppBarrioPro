@@ -1,4 +1,9 @@
-import React from "react";
+// ======================================================
+// Archivo: src/components/SalesHistory.tsx
+// Responsabilidad: Historial de ventas de "Vender": ventas recientes, resumen semanal, editar o eliminar una venta
+//   y exportar el mes.
+// ======================================================
+
 import { TrendingUp, ClipboardList, BarChart3, Edit3, Trash2 } from "lucide-react";
 import { Sale } from "../types";
 import {
@@ -13,7 +18,6 @@ import {
 } from "recharts";
 
 interface SalesHistoryProps {
-  sales: Sale[];
   todaySalesData: { total: number; count: number };
   lastTenSales: Sale[];
   currentWeekSalesData: any[];
@@ -23,7 +27,6 @@ interface SalesHistoryProps {
 }
 
 export default function SalesHistory({
-  sales,
   todaySalesData,
   lastTenSales,
   currentWeekSalesData,

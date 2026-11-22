@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/InventoryBulkUpload.tsx
+// Responsabilidad: Carga masiva de productos: elegir o arrastrar un archivo .xlsx/.csv, revisar la vista previa y
+//   los errores, e importar.
+// ======================================================
+
 import React from "react";
 import { FileSpreadsheet, Download, Upload, AlertTriangle, RefreshCw, CheckCircle2 } from "lucide-react";
 
@@ -16,7 +22,6 @@ interface InventoryBulkUploadProps {
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDescargarPlantilla: () => void;
   handleIniciarCargaMasiva: () => void;
-  setShowBulkUpload: (val: boolean) => void;
 }
 
 export default function InventoryBulkUpload({
@@ -34,7 +39,6 @@ export default function InventoryBulkUpload({
   handleFileChange,
   handleDescargarPlantilla,
   handleIniciarCargaMasiva,
-  setShowBulkUpload
 }: InventoryBulkUploadProps) {
   return (
     <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/5 p-6 space-y-6 animate-in slide-in-from-top duration-300">

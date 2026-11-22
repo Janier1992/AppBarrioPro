@@ -1,4 +1,9 @@
-import React from "react";
+// ======================================================
+// Archivo: src/components/Inventory.tsx
+// Responsabilidad: Pantalla "Productos": filtros y búsqueda, lista (celular) o tabla (escritorio), alta de
+//   productos, carga masiva desde Excel/CSV y cifras del inventario.
+// ======================================================
+
 import { Product, BusinessProfile } from "../types";
 import { useInventory } from "../hooks/use-inventory";
 import { isCriticalStock } from "../lib/stock";
@@ -32,7 +37,6 @@ export default function Inventory({
     setSearchQuery,
     selectedCategory,
     setSelectedCategory,
-    sortBy,
     showAddForm,
     setShowAddForm,
     showBulkUpload,
@@ -86,7 +90,6 @@ export default function Inventory({
     setAlertDialog,
     categories,
     formCategories,
-    umbralCritico,
     handleRegistrarNuevoProducto,
     handleEliminarProductoDeInventario,
     handleAjustarStockRapido,
@@ -102,8 +105,7 @@ export default function Inventory({
     totalProductsCount,
     criticalStockCount,
     totalValuation,
-    totalInvestment,
-    sortOrder
+    totalInvestment
   } = useInventory({
     products,
     profile,
@@ -210,7 +212,6 @@ export default function Inventory({
           handleFileChange={handleFileChange}
           handleDescargarPlantilla={handleDescargarPlantilla}
           handleIniciarCargaMasiva={handleIniciarCargaMasiva}
-          setShowBulkUpload={setShowBulkUpload}
         />
       )}
 
@@ -274,9 +275,6 @@ export default function Inventory({
       <div className="hidden md:block">
         <InventoryTable
           sortedProducts={sortedProducts}
-          umbralCritico={umbralCritico}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
           handleAlternarOrdenamiento={handleAlternarOrdenamiento}
           handleAjustarStockRapido={handleAjustarStockRapido}
           handleCargarDatosEdicion={handleCargarDatosEdicion}

@@ -17,7 +17,7 @@ import { GoogleGenAI } from "@google/genai";
 
 const FALLBACK_MODELS = ["gemini-1.5-flash"];
 
-export function getGeminiClient(apiKey: string): GoogleGenAI {
+function getGeminiClient(apiKey: string): GoogleGenAI {
   return new GoogleGenAI({
     apiKey,
     httpOptions: {

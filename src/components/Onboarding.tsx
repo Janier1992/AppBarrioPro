@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+// ======================================================
+// Archivo: src/components/Onboarding.tsx
+// Responsabilidad: Tutorial inicial de bienvenida, por pasos, que se muestra la primera vez que el negocio entra a
+//   la app.
+// ======================================================
+
+import { useState } from "react";
 import { motion } from "motion/react";
 import { 
   Sparkles, 

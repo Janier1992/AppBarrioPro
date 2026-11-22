@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/ForgotPasswordForm.tsx
+// Responsabilidad: Flujo "Olvidé mi contraseña" en dos pasos: pedir el código por correo y crear la contraseña
+//   nueva.
+// ======================================================
+
 import React, { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { auth } from "../lib/insforge";
@@ -51,7 +57,7 @@ export default function ForgotPasswordForm({ initialEmail, onBack }: ForgotPassw
       setInfo("Si el correo está registrado, te enviamos un código para cambiar tu contraseña. Revisa también la carpeta de spam.");
       setStep("confirm");
     } catch (err: any) {
-      console.error("Password reset request error:", err);
+      console.error("Error al pedir el código de recuperación:", err);
       setError(translateAuthError(err?.message));
     } finally {
       setLoading(false);
@@ -72,7 +78,7 @@ export default function ForgotPasswordForm({ initialEmail, onBack }: ForgotPassw
       await auth.confirmPasswordReset(email.trim(), codeOrToken, newPassword);
       onBack("¡Listo! Tu contraseña fue actualizada. Ya puedes iniciar sesión con la nueva clave.");
     } catch (err: any) {
-      console.error("Password reset confirm error:", err);
+      console.error("Error al confirmar la contraseña nueva:", err);
       setError(translateAuthError(err?.message));
     } finally {
       setLoading(false);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { BUSINESS_TYPES, loadBusinessType, saveBusinessType } from "../lib/businessTypes";
 
 interface BusinessTypePickerProps {

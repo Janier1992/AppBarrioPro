@@ -10,11 +10,6 @@ export function formatCurrency(amount: number): string {
   return `$${(amount || 0).toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export function formatDate(value: string | Date, options: Intl.DateTimeFormatOptions = { dateStyle: "medium" }): string {
-  const date = typeof value === "string" ? new Date(value) : value;
-  return date.toLocaleDateString("es-CO", options);
-}
-
 /**
  * Moneda con separador de miles por punto, sin decimales cuando el monto es entero: "$ 184.500".
  * Se agrupa a mano porque `toLocaleString("es-CO")` no agrupa los números de 4 cifras ("3800"),

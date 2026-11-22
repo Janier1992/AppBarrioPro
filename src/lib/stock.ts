@@ -1,7 +1,7 @@
 import { Product } from "../types";
 
 /** Fracción del stock mínimo por debajo de la cual un producto se considera en stock crítico ("regla del 30%"). */
-export const CRITICAL_STOCK_RATIO = 0.3;
+const CRITICAL_STOCK_RATIO = 0.3;
 
 export function criticalStockThreshold(minStock: number): number {
   return minStock * CRITICAL_STOCK_RATIO;

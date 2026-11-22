@@ -1,4 +1,8 @@
-import React from "react";
+// ======================================================
+// Archivo: src/components/InventoryList.tsx
+// Responsabilidad: Lista de productos para celular (ver el detalle en el comentario del componente).
+// ======================================================
+
 import { Product } from "../types";
 import { isCriticalStock } from "../lib/stock";
 import { formatMoney } from "../lib/format";

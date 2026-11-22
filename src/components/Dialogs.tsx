@@ -1,4 +1,9 @@
-import React from "react";
+// ======================================================
+// Archivo: src/components/Dialogs.tsx
+// Responsabilidad: Diálogos de confirmación y de aviso propios de la app (reemplazan a window.confirm y alert). Su
+//   estado vive en hooks/use-dialogs.ts.
+// ======================================================
+
 import { Trash2, CheckCircle2, AlertCircle } from "lucide-react";
 import { ConfirmDialogState, AlertDialogState } from "../hooks/use-dialogs";
 

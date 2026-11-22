@@ -1,4 +1,9 @@
-import React from "react";
+// ======================================================
+// Archivo: src/components/Settings.tsx
+// Responsabilidad: Pantalla "Ajustes": contenedor con las secciones de perfil, catálogo, seguridad y
+//   notificaciones.
+// ======================================================
+
 import { Product, BusinessProfile } from "../types";
 import { useSettings } from "../hooks/use-settings";
 import { Download } from "lucide-react";

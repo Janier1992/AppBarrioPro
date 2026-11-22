@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/Dashboard.tsx
+// Responsabilidad: Pantalla "Hoy": total vendido en el día frente a ayer, lista "Para hoy" (fiados, productos por
+//   agotarse y tareas), pregunta al asistente y acceso a los gráficos.
+// ======================================================
+
 import React, { useMemo } from "react";
 import { Debt, Product, Sale, Task } from "../types";
 import { useDashboard } from "../hooks/use-dashboard";
@@ -164,7 +170,6 @@ export default function Dashboard({ products, sales, debts, tasks, userId, onNav
           </button>
           <DashboardCharts
             sales={sales}
-            products={products}
             criticalProducts={criticalProducts}
             chartData={chartData}
             mensualData={mensualData}

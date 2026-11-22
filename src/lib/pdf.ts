@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/lib/pdf.ts
+// Responsabilidad: Generación de PDF en el navegador (jsPDF): recibo de venta, reporte de ventas del mes y reporte
+//   del tablero.
+// ======================================================
+
 import { jsPDF } from "jspdf";
 import { Sale, Product } from "../types";
 import { isCriticalStock } from "./stock";
@@ -121,7 +127,7 @@ export const exportSalesPDF = (
 
     let pageCount = 1;
 
-    const drawHeader = (pageNum: number) => {
+    const drawHeader = () => {
       doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
       doc.rect(0, 0, 210, 35, "F");
 
@@ -144,7 +150,7 @@ export const exportSalesPDF = (
       doc.text("Documento Oficial de Control de Caja", 195, 287, { align: "right" });
     };
 
-    drawHeader(pageCount);
+    drawHeader();
 
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.setFont("helvetica", "bold");
@@ -228,7 +234,7 @@ export const exportSalesPDF = (
           drawFooter(pageCount);
           doc.addPage();
           pageCount++;
-          drawHeader(pageCount);
+          drawHeader();
           
           doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
           doc.rect(15, 45, 180, 8, "F");
@@ -291,7 +297,7 @@ export const exportSalesPDF = (
     drawFooter(pageCount);
     doc.save(`tiendly_ventas_${currentMonthName.toLowerCase()}_${currentYear}.pdf`);
   } catch (error) {
-    console.error("Error generating sales PDF report:", error);
+    console.error("Error al generar el reporte de ventas en PDF:", error);
     alert("Ocurrió un error inesperado al intentar generar el PDF. Por favor, intente de nuevo.");
   }
 };

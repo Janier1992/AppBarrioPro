@@ -6,7 +6,7 @@ let serverStock = 10;
 
 vi.mock("./insforge", () => {
   const selectChain = { eq: () => ({ eq: () => ({ single: async () => ({ data: { stock: serverStock }, error: null }) }) }) };
-  const from = (table: string) => ({
+  const from = (_table: string) => ({
     upsert: async () => ({ error: null }),
     select: () => selectChain,
     update: (d: any) => ({ eq: () => ({ eq: async () => { calls.push({ fallbackWrite: d.stock }); serverStock = d.stock; return { error: null }; } }) }),

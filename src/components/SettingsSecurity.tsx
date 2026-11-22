@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/SettingsSecurity.tsx
+// Responsabilidad: Ajustes > Seguridad: PIN de bloqueo local y carga de datos de demostración.
+// ======================================================
+
 import React from "react";
 import { Shield, RefreshCw } from "lucide-react";
 

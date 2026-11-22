@@ -25,6 +25,8 @@
     "noEmit": true,
     "types": [
       "vite/client"
-    ]
+    ],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   }
 }

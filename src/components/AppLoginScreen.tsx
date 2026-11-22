@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/AppLoginScreen.tsx
+// Responsabilidad: Pantalla de acceso: iniciar sesión, crear cuenta, recuperar la contraseña y reenviar el correo
+//   de confirmación. Incluye el enlace al acceso de soporte.
+// ======================================================
+
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Store, Download } from "lucide-react";

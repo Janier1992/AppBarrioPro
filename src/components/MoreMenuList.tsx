@@ -1,4 +1,9 @@
-import React from "react";
+// ======================================================
+// Archivo: src/components/MoreMenuList.tsx
+// Responsabilidad: Contenido del menú "Más" del celular: Tareas, Ajustes, Soporte, Asistente IA, tema, bloqueo con
+//   PIN y cerrar sesión.
+// ======================================================
+
 import { LifeBuoy, ListChecks, SlidersHorizontal, Sparkles, Moon, Sun, Lock, LogOut } from "lucide-react";
 import { BusinessProfile } from "../types";
 import { openAssistant } from "../lib/assistant";

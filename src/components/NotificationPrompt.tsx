@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from "react";
+// ======================================================
+// Archivo: src/components/NotificationPrompt.tsx
+// Responsabilidad: Aviso que ofrece activar las notificaciones de stock bajo la primera vez que se usa la app.
+// ======================================================
+
+import { useEffect, useState } from "react";
 import { Bell, X } from "lucide-react";
 import { verifyNotificationSupport, requestNotificationPermission } from "../lib/notifications";
 import { showErrorToast, showSuccessToast } from "../lib/toast";

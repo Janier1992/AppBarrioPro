@@ -1,9 +1,7 @@
-/**
- * @file Checklist.tsx
- * @description Operational Checklist component for daily neighborhood business routines.
- * @design Part of the User Interface and Business Logic layers. Leverages real-time data binding 
- * with Firestore collections for robust persistence. Uses defensive try-catch statements to prevent crashes.
- */
+// ======================================================
+// Archivo: src/components/Checklist.tsx
+// Responsabilidad: Pantalla "Tareas": rutinas de apertura, operación y cierre del negocio. Si no hay tareas, ofrece las sugeridas según el tipo de negocio.
+// ======================================================
 
 import React, { useState } from "react";
 import { Task } from "../types";
@@ -59,7 +57,7 @@ export default function Checklist({
    * @description Valida, procesa y anexa un nuevo elemento de acción al listado diario.
    * Paso 1: Sanitizar espacios en blanco y verificar texto.
    * Paso 2: Ensamblar la entidad de tipo Task con marca de tiempo.
-   * Paso 3: Disparar la inserción en la colección de tareas en Firestore.
+   * Paso 3: guardar la tarea en la base de datos.
    */
   const handleRegistrarNuevaTarea = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +74,7 @@ export default function Checklist({
       await db.addTask(userId, newTask);
       setTaskText("");
     } catch (error) {
-      console.error("Error adding task:", error);
+      console.error("Error al agregar la tarea:", error);
       showErrorToast("No se pudo agregar la tarea. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoading(false);
@@ -97,7 +95,7 @@ export default function Checklist({
         completedAt: !task.completed ? new Date().toISOString() : undefined
       });
     } catch (error) {
-      console.error("Error updating task status:", error);
+      console.error("Error al cambiar el estado de la tarea:", error);
       showErrorToast("No se pudo actualizar la tarea. Verifica tu conexión e inténtalo de nuevo.");
     }
   };
@@ -114,7 +112,7 @@ export default function Checklist({
         try {
           await db.deleteTask(userId, id);
         } catch (error) {
-          console.error("Error deleting task:", error);
+          console.error("Error al eliminar la tarea:", error);
           showErrorToast("No se pudo eliminar la tarea. Verifica tu conexión e inténtalo de nuevo.");
         }
       }
@@ -148,7 +146,7 @@ export default function Checklist({
       });
       setEditingTaskId(null);
     } catch (error) {
-      console.error("Error saving task edit:", error);
+      console.error("Error al guardar la edición de la tarea:", error);
       showErrorToast("No se pudo guardar la edición de la tarea. Verifica tu conexión e inténtalo de nuevo.");
     }
   };
