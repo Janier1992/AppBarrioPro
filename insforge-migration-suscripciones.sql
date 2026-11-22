@@ -198,7 +198,7 @@ LANGUAGE sql SECURITY DEFINER SET search_path = public, pg_temp AS $$
   VALUES (auth.uid()::text, p_action, p_target, COALESCE(p_details, '{}'::jsonb))
 $$;
 
--- Todas las cuentas (con y sin suscripción) y su estado.
+-- Todas las cuentas de NEGOCIOS (con y sin suscripción) y su estado. Las cuentas de soporte no se listan.
 CREATE OR REPLACE FUNCTION admin_list_accounts() RETURNS JSON
 LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
 BEGIN
@@ -215,6 +215,7 @@ BEGIN
       FROM (SELECT "userId" AS uid FROM subscriptions UNION SELECT "userId" FROM profile) u
       LEFT JOIN profile p ON p."userId" = u.uid
       LEFT JOIN subscriptions s ON s."userId" = u.uid
+      WHERE u.uid NOT IN (SELECT "userId" FROM admins)
     ) r
   ), '[]'::json);
 END;
