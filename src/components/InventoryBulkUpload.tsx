@@ -77,7 +77,7 @@ export default function InventoryBulkUpload({
               <input
                 id="bulk-file-input"
                 type="file"
-                accept=".xlsx,.xls,.csv"
+                accept=".xlsx,.csv"
                 className="hidden"
                 onChange={handleFileChange}
                 disabled={isProcessingBulk}
@@ -100,7 +100,7 @@ export default function InventoryBulkUpload({
                     Arrastra tu archivo aquí o haz clic para buscar
                   </p>
                   <p className="text-[10px] text-brand-muted">
-                    Formatos soportados: .xlsx, .xls, .csv
+                    Formatos soportados: .xlsx, .csv
                   </p>
                 </div>
               )}

@@ -33,7 +33,7 @@ Responde una pregunta: ¿cómo va el día?
 
 ## 3. Productos
 
-*   **Nuevo producto** agrega un artículo; **Importar Excel** carga muchos de una vez.
+*   **Nuevo producto** agrega un artículo; **Importar Excel** carga muchos de una vez (archivos .xlsx o .csv; si tienes un .xls antiguo, guárdalo como .xlsx desde Excel). La plantilla de ejemplo se descarga en CSV.
 *   La **categoría** se elige de las sugerencias de tu tipo de negocio o la escribes tú; al importar desde Excel se conserva la que pusiste.
 *   El filtro **Se acaban** muestra los productos con 30 % o menos de su stock mínimo (se marcan "Quedan N" en naranja).
 *   En el celular, **+ Reponer** abre la edición del producto para actualizar su stock. En el computador, la tabla permite ajustar el stock con −/+, editar y eliminar.
