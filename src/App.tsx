@@ -40,6 +40,9 @@ export default function App() {
     authLoading,
     access,
     refreshSubscription,
+    needsVerification,
+    resendingVerification,
+    handleResendVerification,
     activeTab,
     setActiveTab,
     isMobileMoreOpen,
@@ -118,6 +121,9 @@ export default function App() {
         setDeferredInstallPrompt={setDeferredInstallPrompt}
         setIsPwaInstalled={setIsPwaInstalled}
         handleAuthSubmit={handleAuthSubmit}
+        needsVerification={needsVerification}
+        resendingVerification={resendingVerification}
+        onResendVerification={handleResendVerification}
       />
     );
   }
@@ -134,6 +140,7 @@ export default function App() {
   if (!access.hasAccess) {
     return (
       <PaywallScreen
+        userId={user.uid}
         info={access.info}
         businessName={user.displayName || undefined}
         email={user.email || undefined}

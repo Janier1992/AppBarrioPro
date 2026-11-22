@@ -105,5 +105,5 @@ Reglas: cortos, por su nombre, una sola idea y **un solo enlace**. No promete na
 ## 6. Lo que todavía NO hace el sistema
 
 - **No cobra solo.** No hay pasarela de pagos: el cliente solicita por WhatsApp, tú cobras (Nequi, transferencia…) y registras el pago en `/admin`.
-- **El cobro es manual.** Cada cuenta tiene su prueba de 7 días y su fecha de vencimiento (se controlan solas: al terminar, el acceso se bloquea). Cuando un cliente paga, tú registras el pago en el portal de soporte (`/admin`) y su cuenta queda activa por el mes. Ver `docs/ADMIN-Y-SUSCRIPCIONES.md`.
+- **El cobro es manual.** Cada cuenta tiene su prueba de 7 días y su fecha de vencimiento (se controlan solas: al terminar, el acceso se bloquea). Cuando un cliente paga por Nequi (la app le muestra tu número y su referencia), tú registras el pago en el portal de soporte (`/admin`) y su cuenta queda activa por el mes. Ver `docs/ADMIN-Y-SUSCRIPCIONES.md`.
 - **No mide visitas a `/planes`.** Solo ves las solicitudes que llegan por WhatsApp.

@@ -32,12 +32,18 @@ Soporte (cuentas en `admins`) nunca queda bloqueado.
 ## Puesta en marcha (una sola vez)
 
 1. **Aplica la migración.** En el editor SQL de InsForge ejecuta `insforge-migration-suscripciones.sql` completo (es seguro repetirlo). Además corrige una columna del esquema: el PIN se guarda como hash de 60 caracteres y la columna original era de 10, lo que impedía sincronizar el perfil de quien configuraba un PIN.
-2. **Crea tu administrador.** Busca tu id de usuario en InsForge (Authentication → Users) y ejecuta:
-   ```sql
-   INSERT INTO admins ("userId", email) VALUES ('ID-DE-TU-USUARIO', 'tu@correo.com');
-   ```
-   Usa una cuenta propia de soporte con una contraseña larga y única.
-3. **Entra al portal:** `https://TU-DOMINIO/admin` (también hay un enlace "Acceso de soporte" en la pantalla de inicio de sesión).
+2. **Crea tu administrador (cuenta de soporte).** El portal no permite registrarse a sí mismo: una cuenta de soporte es una cuenta normal a la que tú le das permiso en la base de datos. Dos pasos:
+   1. **Crea la cuenta** en la app como cualquier cliente: en la pantalla de inicio toca *Crear Cuenta*, usa el correo de soporte (por ejemplo `soporte@tudominio.com`) y una contraseña larga y única, confirma el correo y **inicia sesión una vez** (así se crea su perfil). Si prefieres, también puedes crearla desde InsForge (Authentication → Users).
+   2. **Dale permiso de soporte** ejecutando esto en el editor SQL de InsForge (cambia el correo por el de esa cuenta):
+      ```sql
+      INSERT INTO admins ("userId", email)
+      SELECT "userId", email FROM profile WHERE email = 'soporte@tudominio.com'
+      ON CONFLICT ("userId") DO NOTHING;
+      ```
+      Debe responder "1 fila insertada". Si responde 0 filas, esa cuenta aún no inició sesión en la app o el correo está escrito distinto.
+   Para **agregar a otra persona de soporte**, repite los dos pasos con su correo. Para **quitar a alguien**: `DELETE FROM admins WHERE email = 'correo@x.com';`.
+   **Si el correo de la cuenta de soporte aparece "sin verificar"** y no te deja entrar ("Debes confirmar tu correo electrónico"): en la pantalla de inicio de sesión de la app, tras ese mensaje, toca **Reenviar correo de confirmación** y abre el enlace del correo que llegue (revisa también el spam).
+3. **Entra al portal:** `https://TU-DOMINIO/admin` (también hay un enlace "Acceso de soporte" en la pantalla de inicio de sesión) con el correo y la contraseña de esa cuenta. Si entras con una cuenta que no está en `admins`, verás "Sin permisos de soporte".
 4. **Cuentas existentes:** al aplicar la migración, cada negocio que ya existía recibe una prueba de 7 días a partir de ese momento. Si algún cliente ya paga, ábrelo en el portal y registra su pago.
 
 ## Uso diario del portal
@@ -50,11 +56,21 @@ Soporte (cuentas en `admins`) nunca queda bloqueado.
 - **Resumen del negocio** (solo lectura): productos, ventas de 30 días, fiados abiertos, última venta, pagos. Sirve para diagnosticar fallas sin ver filas sueltas ni el PIN.
 - **Bitácora:** quién hizo qué y cuándo (pagos, suspensiones…). Solo se agrega, nunca se edita.
 
-### Flujo de cobro recomendado
-1. El cliente toca "Activar mi suscripción" y te escribe por WhatsApp (+57 304 476 9592).
-2. Le indicas cómo pagar $29.900 (Nequi, transferencia…).
-3. Recibes el pago → abres su cuenta en `/admin` → **Registrar pago y activar**.
-4. El cliente toca "Ya pagué, verificar" y entra. (Si no lo toca, entra solo al volver a la app.)
+### Pago por Nequi (mientras no haya pasarela de pagos)
+Se configura **una sola variable**: `VITE_NEQUI_NUMBER` con el número de Nequi que recibe los pagos (10 dígitos, ej. `3001234567`). En Vercel: *Settings → Environment Variables → `VITE_NEQUI_NUMBER`* y **vuelve a desplegar** (las variables `VITE_` se incorporan al compilar). Es un dato público (el cliente lo ve), no un secreto. Sin esa variable la sección de Nequi no aparece y queda solo el botón de WhatsApp.
+
+Lo que ve el cliente cuando su prueba o mes vencen:
+1. **Envía $29.900 al Nequi** `300 123 4567` (con botón "Copiar").
+2. **Escribe en el mensaje del pago su referencia única** (por ejemplo `TDLY-A1B2C3`, con botón "Copiar"): es lo que te permite saber de qué negocio es cada pago.
+3. Toca **"Ya pagué: enviar comprobante"**: se abre tu WhatsApp con un mensaje listo (negocio, valor, referencia).
+
+Lo que haces tú:
+1. Recibes el pago en Nequi y el comprobante por WhatsApp.
+2. En `/admin` buscas por la **referencia** (`TDLY-…`), el nombre o el correo, y abres la cuenta. La referencia también aparece en el encabezado de cada cuenta.
+3. **Registrar pago y activar** (medio: Nequi; referencia: el código o el número de aprobación de Nequi).
+4. El cliente toca "Verificar si ya estoy activo" y entra (o entra solo al volver a la app).
+
+**Antes de recibir pagos de clientes:** revisa con tu contador cómo declarar estos ingresos mientras la empresa no esté constituida, y los límites de tu cuenta Nequi. Cuando tengas la empresa y el RUT, el paso natural es una pasarela (Wompi, ePayco…): la base ya guarda pagos y fechas, así que solo habría que automatizar el registro del pago.
 
 ## Seguridad
 
@@ -65,7 +81,7 @@ Soporte (cuentas en `admins`) nunca queda bloqueado.
 
 ## Límites conocidos
 
-- **Pago manual.** No hay pasarela (Wompi, ePayco…): tú cobras y registras. Integrarla sería el siguiente paso (la base ya guarda pagos y fechas).
+- **Pago manual.** No hay pasarela: el cliente transfiere por Nequi y tú confirmas y registras el pago. No se verifica el pago automáticamente.
 - **Sin doble factor** en el portal: usa contraseñas largas y únicas, y limita quién está en `admins`.
 - **Nueva prueba con otro correo:** quien borre su cuenta y se registre con otro correo obtiene otra prueba. Es un riesgo comercial aceptado en esta etapa.
 - **Sin conexión:** la app deja trabajar según la última fecha conocida; si esa fecha ya pasó, bloquea. El servidor igual rechaza los datos sin acceso.

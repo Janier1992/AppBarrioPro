@@ -1,6 +1,6 @@
 import React from "react";
 import { X } from "lucide-react";
-import { PLAN } from "../lib/pricing";
+import { PLAN, paymentReference } from "../lib/pricing";
 import { formatMoney } from "../lib/format";
 import { accessEndsAt, type AdminAccount, type AdminApi, type AdminSummary } from "../lib/admin";
 import { StateBadge } from "./AccountsView";
@@ -54,6 +54,7 @@ export default function AccountPanel({ api, account, onClose, onChanged }: { api
           <div>
             <h2 className="text-xl font-semibold">{account.businessName || "Sin nombre"}</h2>
             <p className="text-sm text-brand-muted">{account.email || account.userId}</p>
+            <p className="text-xs text-brand-muted">Referencia de pago: <strong id="account-reference" className="tracking-wider text-brand-text">{paymentReference(account.userId)}</strong></p>
             <div className="mt-2 flex items-center gap-2"><StateBadge state={account.state} /><span className="text-sm text-brand-muted">hasta {fmt(accessEndsAt(account))}</span></div>
           </div>
           <button onClick={onClose} aria-label="Cerrar" className="h-9 w-9 rounded-xl hover:bg-brand-bg flex items-center justify-center cursor-pointer" id="account-close"><X size={18} /></button>

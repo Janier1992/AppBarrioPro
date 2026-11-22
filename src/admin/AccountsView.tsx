@@ -1,6 +1,6 @@
 import React from "react";
 import { Search } from "lucide-react";
-import { PLAN } from "../lib/pricing";
+import { PLAN, paymentReference } from "../lib/pricing";
 import { formatMoney } from "../lib/format";
 import { STATE_LABEL, BLOCKED_STATES, accessEndsAt, computeKpis, daysUntil, type AdminAccount, type AdminApi } from "../lib/admin";
 import type { SubscriptionState } from "../lib/subscription";
@@ -53,7 +53,7 @@ export default function AccountsView({ api }: { api: AdminApi }) {
   const shown = accounts
     .filter((a) =>
       filter === "all" ? true : filter === "blocked" ? BLOCKED_STATES.includes(a.state) : filter === "expiring" ? expiring(a) : a.state === filter)
-    .filter((a) => !q || [a.businessName, a.email, a.phone, a.userId].some((v) => v?.toLowerCase().includes(q)));
+    .filter((a) => !q || [a.businessName, a.email, a.phone, a.userId, paymentReference(a.userId)].some((v) => v?.toLowerCase().includes(q)));
 
   const cards: Array<[string, string | number, Filter | null]> = [
     ["Cuentas", kpis.total, "all"],
@@ -88,7 +88,7 @@ export default function AccountsView({ api }: { api: AdminApi }) {
           id="admin-search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar por negocio, correo o teléfono"
+          placeholder="Buscar por negocio, correo, teléfono o referencia (TDLY-…)"
           className="w-full h-11 rounded-xl border border-brand-border bg-white pl-9 pr-3 text-sm"
         />
       </div>
