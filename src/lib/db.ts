@@ -26,7 +26,8 @@ export const db = {
 
   saveProfile: async (userId: string, profile: BusinessProfile): Promise<void> => {
     // geminiApiKey se elimina siempre: la clave ya no se guarda por tienda (solo en el servidor).
-    // Al guardar, también se borra el valor que haya quedado en perfiles anteriores.
+    // No se envía ni como null: en bases nuevas la columna no existe y el servidor rechazaría el guardado.
+    // Las claves antiguas, si las hubiera, se borran con insforge-migration-quitar-clave-gemini.sql.
     const { geminiApiKey: _legacyKey, ...cleanProfile } = profile as BusinessProfile & { geminiApiKey?: unknown };
     const profileWithId = {
       ...cleanProfile,
@@ -35,7 +36,7 @@ export const db = {
     };
 
     localStorage.setItem(`barriopro_profile_${userId}`, JSON.stringify(profileWithId));
-    await writeRemote(userId, { table: "profile", kind: "upsert", data: { ...profileWithId, geminiApiKey: null } });
+    await writeRemote(userId, { table: "profile", kind: "upsert", data: { ...profileWithId } });
 
     // Se avisa DESPUÉS de escribir en el servidor: si se avisara antes, la recarga leería
     // el dato viejo del servidor y pisaría el cambio (p. ej. el tema volvía al anterior).
