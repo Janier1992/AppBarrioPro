@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/SupportView.tsx
+// Responsabilidad: Soporte para el negocio: crear una solicitud, ver la conversación con el equipo y responder. Se
+//   actualiza sola cada 15–30 segundos.
+// ======================================================
+
 import React from "react";
 import { ArrowLeft, LifeBuoy, MessageCircle, Plus, Send } from "lucide-react";
 import { whatsappDisplay, whatsappNumber } from "../lib/pricing";

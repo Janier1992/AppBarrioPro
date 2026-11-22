@@ -1,3 +1,10 @@
+// ======================================================
+// Archivo: server.ts
+// Responsabilidad: Servidor Express. En desarrollo sirve la app con Vite; en producción sirve el build estático con
+//   cabeceras de seguridad (helmet + CSP). Expone /healthz y /api/chat (asistente de IA: exige
+//   sesión, suscripción vigente y respeta el límite de peticiones).
+// ======================================================
+
 import express from "express";
 import path from "path";
 import helmet from "helmet";

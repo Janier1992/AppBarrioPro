@@ -1,3 +1,10 @@
+// ======================================================
+// Archivo: src/admin/AdminPortal.tsx
+// Responsabilidad: Portal de soporte (/admin): acceso, comprobación de permisos, pestañas Cuentas / Tickets /
+//   Bitácora y cierre de sesión que vuelve al login principal. La seguridad real está en el servidor
+//   (cada función SQL verifica is_admin()); aquí solo se decide qué pantalla mostrar.
+// ======================================================
+
 import React from "react";
 import { LifeBuoy, LogOut, ScrollText, ShieldCheck, Store, Users } from "lucide-react";
 import { APP_NAME } from "../lib/brand";

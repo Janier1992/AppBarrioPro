@@ -1,9 +1,7 @@
-/**
- * @file Deudas.tsx
- * @description Operational Debts management component for neighbor customers.
- * @design Part of the User Interface and Business Logic layers. Leverages real-time data binding
- * with Firestore collections for robust persistence. Uses defensive try-catch statements to prevent crashes.
- */
+// ======================================================
+// Archivo: src/components/Deudas.tsx
+// Responsabilidad: Pantalla "Fiados": lo que los clientes le deben al negocio, ordenado para cobrar primero lo vencido; registrar, cobrar y reabrir cuentas.
+// ======================================================
 
 import React, { useState, useMemo } from "react";
 import { Debt } from "../types";
@@ -44,7 +42,7 @@ export default function Deudas({
     }
   }, [searchQueryParam]);
 
-  // Filter and metrics computations
+  // Filtros y cifras de la pantalla
   const pendingDebts = useMemo(() => debts.filter(d => !d.paid), [debts]);
   const paidDebts = useMemo(() => debts.filter(d => d.paid), [debts]);
 
@@ -72,7 +70,7 @@ export default function Deudas({
 
   /**
    * @function handleRegistrarNuevaDeuda
-   * @description Registra un nuevo compromiso de crédito o cuenta "fiada" en Firestore.
+   * @description Registra una cuenta "fiada" nueva.
    */
   const handleRegistrarNuevaDeuda = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,7 +101,7 @@ export default function Deudas({
       setDueDate("");
       setShowAddForm(false);
     } catch (error) {
-      console.error("Error registering debt:", error);
+      console.error("Error al registrar el fiado:", error);
       showErrorToast("No se pudo registrar la cuenta fiada. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoading(false);
@@ -123,7 +121,7 @@ export default function Deudas({
           paidAt: !debt.paid ? new Date().toISOString() : undefined
         });
       } catch (error) {
-        console.error("Error updating debt payment status:", error);
+        console.error("Error al cambiar el estado de pago del fiado:", error);
         showErrorToast("No se pudo actualizar el estado de la deuda. Verifica tu conexión e inténtalo de nuevo.");
       }
     };
@@ -152,7 +150,7 @@ export default function Deudas({
         try {
           await db.deleteDebt(userId, debt.id!);
         } catch (error) {
-          console.error("Error deleting debt:", error);
+          console.error("Error al eliminar el fiado:", error);
           showErrorToast("No se pudo eliminar la deuda. Verifica tu conexión e inténtalo de nuevo.");
         }
       }

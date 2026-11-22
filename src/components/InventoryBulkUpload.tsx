@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/InventoryBulkUpload.tsx
+// Responsabilidad: Carga masiva de productos: elegir o arrastrar un archivo .xlsx/.csv, revisar la vista previa y
+//   los errores, e importar.
+// ======================================================
+
 import React from "react";
 import { FileSpreadsheet, Download, Upload, AlertTriangle, RefreshCw, CheckCircle2 } from "lucide-react";
 

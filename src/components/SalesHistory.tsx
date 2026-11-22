@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/SalesHistory.tsx
+// Responsabilidad: Historial de ventas de "Vender": ventas recientes, resumen semanal, editar o eliminar una venta
+//   y exportar el mes.
+// ======================================================
+
 import { TrendingUp, ClipboardList, BarChart3, Edit3, Trash2 } from "lucide-react";
 import { Sale } from "../types";
 import {

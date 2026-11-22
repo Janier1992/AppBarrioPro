@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/PasswordInput.tsx
+// Responsabilidad: Campo de contraseña con botón de ojo para mostrar u ocultar lo escrito.
+// ======================================================
+
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 

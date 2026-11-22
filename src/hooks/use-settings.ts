@@ -1,8 +1,14 @@
+// ======================================================
+// Archivo: src/hooks/use-settings.ts
+// Responsabilidad: Lógica de "Ajustes": perfil del negocio, catálogo, PIN, notificaciones y exportación del
+//   inventario.
+// ======================================================
+
 import React, { useState, useEffect } from "react";
 import { toCsv } from "../lib/csv";
 import { Product, BusinessProfile } from "../types";
 import { db } from "../lib/insforge";
-import { loadDemoDataToFirestore } from "../lib/demoData";
+import { cargarDatosDeDemostracion } from "../lib/demoData";
 import { hashPin, markSessionUnlocked } from "../lib/pin";
 import {
   retrieveStoredPreferences,
@@ -62,7 +68,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
   // Demo loading state
   const [loadingDemo, setLoadingDemo] = useState(false);
 
-  // Sync state with profile prop
+  // Mantiene el formulario sincronizado con el perfil que llega por propiedades
   useEffect(() => {
     if (profile) {
       setBusinessName(profile.businessName || "Mi Negocio");
@@ -96,7 +102,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       await db.saveProfile(userId, updatedProfile);
       showSuccessToast("Configuración de perfil guardada con éxito.");
     } catch (error) {
-      console.error("Error saving profile:", error);
+      console.error("Error al guardar el perfil:", error);
       showErrorToast("No se pudo guardar la configuración del perfil. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoadingProfile(false);
@@ -130,7 +136,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       setCost(0.6);
       showSuccessToast("Producto agregado al inventario.");
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error al agregar el producto:", error);
       showErrorToast("No se pudo agregar el producto. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoadingProduct(false);
@@ -158,7 +164,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       setSecurityPin("");
       showSuccessToast("PIN de seguridad guardado.");
     } catch (error) {
-      console.error("Error saving security PIN:", error);
+      console.error("Error al guardar el PIN de seguridad:", error);
       showErrorToast("No se pudo guardar el PIN. Verifica tu conexión e inténtalo de nuevo.");
     } finally {
       setLoadingSecurity(false);
@@ -202,7 +208,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       async () => {
         setLoadingDemo(true);
         try {
-          await loadDemoDataToFirestore(userId);
+          await cargarDatosDeDemostracion(userId);
           // Ya no se recarga la página: el guardado ya notifica a la app
           // para refrescar los datos automáticamente.
           showSuccessToast("¡Datos de demostración cargados exitosamente! Disfruta explorando la aplicación.");
@@ -224,7 +230,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
         try {
           await db.deleteProduct(userId, id);
         } catch (error) {
-          console.error("Error deleting product:", error);
+          console.error("Error al eliminar el producto:", error);
           showErrorToast("No se pudo eliminar el producto. Verifica tu conexión e inténtalo de nuevo.");
         }
       }

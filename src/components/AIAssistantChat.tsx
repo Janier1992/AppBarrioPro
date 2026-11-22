@@ -1,3 +1,10 @@
+// ======================================================
+// Archivo: src/components/AIAssistantChat.tsx
+// Responsabilidad: Chat flotante con el asistente de IA. Se abre con el evento "tiendly:open-assistant", envía la
+//   conversación y los datos del negocio a /api/chat (con la sesión como credencial) y muestra la
+//   respuesta.
+// ======================================================
+
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Sparkles, X, Send, Trash2, HelpCircle, Loader2 } from "lucide-react";
@@ -35,7 +42,7 @@ export default function AIAssistantChat({ products, sales, userId }: AIAssistant
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize with a welcome message on first open
+  // Al abrir el chat por primera vez se muestra el mensaje de bienvenida
   useEffect(() => {
     if (messages.length === 0) {
       setMessages([
@@ -49,7 +56,7 @@ export default function AIAssistantChat({ products, sales, userId }: AIAssistant
     }
   }, [messages.length]);
 
-  // Scroll to bottom on new messages
+  // Cada mensaje nuevo baja la vista hasta el final de la conversación
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => {
@@ -74,7 +81,7 @@ export default function AIAssistantChat({ products, sales, userId }: AIAssistant
     setError(null);
 
     try {
-      // Map current messages for the API endpoint
+      // Convierte los mensajes al formato que espera /api/chat
       const apiMessages = [...messages, userMsg].map(m => ({
         role: m.role,
         content: m.content
@@ -127,7 +134,7 @@ export default function AIAssistantChat({ products, sales, userId }: AIAssistant
 
       setMessages(prev => [...prev, assistantMsg]);
     } catch (err: any) {
-      console.error("Error in AI Chat:", err);
+      console.error("Error en el chat del asistente:", err);
       setError(err.message || "Ocurrió un error al conectar con el asistente. Intenta de nuevo.");
     } finally {
       setIsLoading(false);
@@ -154,7 +161,7 @@ export default function AIAssistantChat({ products, sales, userId }: AIAssistant
     { label: "📈 Ideas de mejora para mi tienda", q: "Dame recomendaciones generales e ingeniosas sobre cómo mejorar la administración, el orden y el rendimiento comercial de mi tienda de barrio." }
   ];
 
-  // Simple rich text formatting for bold (**text**) and bullet points (* point)
+  // Formato sencillo de la respuesta del asistente: **negrita** y viñetas (* punto). Se arma con elementos de React (nunca como HTML) para que ningún texto pueda ejecutar código.
   const renderMessageContent = (content: string) => {
     return content.split("\n").map((line, idx) => {
       let trimmed = line.trim();

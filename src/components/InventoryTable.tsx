@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/InventoryTable.tsx
+// Responsabilidad: Tabla de productos para escritorio: orden por columna, ajuste de stock con −/+, editar y
+//   eliminar.
+// ======================================================
+
 import { Package, ArrowUpDown, AlertCircle, MinusCircle, PlusCircle, Edit2, Trash2 } from "lucide-react";
 import { Product } from "../types";
 import { isCriticalStock, criticalStockThreshold } from "../lib/stock";

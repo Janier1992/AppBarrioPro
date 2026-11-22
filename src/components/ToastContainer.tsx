@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/ToastContainer.tsx
+// Responsabilidad: Muestra los avisos breves (éxito, error, información) emitidos desde lib/toast.ts.
+// ======================================================
+
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";

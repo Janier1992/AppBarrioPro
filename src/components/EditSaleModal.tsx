@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/EditSaleModal.tsx
+// Responsabilidad: Ventana para editar una venta ya registrada (cliente y forma de pago).
+// ======================================================
+
 import React from "react";
 import { Edit3, DollarSign, CreditCard, ClipboardList, RefreshCw } from "lucide-react";
 import { Sale } from "../types";

@@ -1,29 +1,23 @@
-/**
- * @file notifications.ts
- * @description Centralized manager for handling web push notification operations, tracking notified items in localStorage, 
- * and requesting permissions safely under sandboxed iframe environments.
- * @design Part of the Core Data and Utility layer. Prevents redundant notifications and provides safe fallbacks.
- */
+// ======================================================
+// Archivo: src/lib/notifications.ts
+// Responsabilidad: Notificaciones del navegador (stock bajo y tareas pendientes): preferencias del usuario,
+//   permiso del navegador y control para no repetir avisos. Todo se guarda en localStorage del dispositivo.
+// ======================================================
 
-/**
- * @interface NotificationPreference
- * @description Configuration for various types of local alerts.
- */
+import type { Product, Task } from "../types";
+
+/** Qué avisos quiere recibir el usuario. */
 export interface NotificationPreference {
   enableStockAlerts: boolean;
   enableChecklistAlerts: boolean;
 }
 
-// Keys used for local storage tracking to prevent spamming notifications
-const STORAGE_NOTIFIED_PRODUCTS = "barriopro_notified_products_v1";
-const STORAGE_LAST_CHECKLIST_ALERT = "barriopro_last_checklist_alert_v1";
+// Claves de localStorage. Llevan versión (_v1) por si cambia el formato guardado.
+const STORAGE_NOTIFIED_PRODUCTS = "barriopro_notified_products_v1"; // productos ya avisados (para no repetir)
+const STORAGE_LAST_CHECKLIST_ALERT = "barriopro_last_checklist_alert_v1"; // momento del último aviso de tareas
 const STORAGE_PREFS = "barriopro_notification_prefs_v1";
 
-/**
- * @function retrieveStoredPreferences
- * @description Retrieves user notification settings from LocalStorage or returns default configuration.
- * @returns {NotificationPreference} User notification preferences
- */
+/** Lee las preferencias guardadas; si no hay (o no se puede leer), activa ambos avisos. */
 export function retrieveStoredPreferences(): NotificationPreference {
   try {
     const data = localStorage.getItem(STORAGE_PREFS);
@@ -31,7 +25,7 @@ export function retrieveStoredPreferences(): NotificationPreference {
       return JSON.parse(data);
     }
   } catch (error) {
-    console.warn("Unable to access localStorage for notification preferences", error);
+    console.warn("No se pudieron leer las preferencias de notificaciones", error);
   }
   return {
     enableStockAlerts: true,
@@ -39,91 +33,60 @@ export function retrieveStoredPreferences(): NotificationPreference {
   };
 }
 
-/**
- * @function persistPreferences
- * @description Saves updated user notification settings to LocalStorage.
- * @param {NotificationPreference} prefs - Updated notification preferences
- */
+/** Guarda las preferencias de notificaciones en el dispositivo. */
 export function persistPreferences(prefs: NotificationPreference): void {
   try {
     localStorage.setItem(STORAGE_PREFS, JSON.stringify(prefs));
   } catch (error) {
-    console.warn("Unable to write notification preferences to localStorage", error);
+    console.warn("No se pudieron guardar las preferencias de notificaciones", error);
   }
 }
 
 /**
- * @function verifyNotificationSupport
- * @description Checks if the Notification API is supported by the current browser environment and context.
- * Step 1: Confirm 'Notification' exists on the window scope.
- * Step 2: Ensure we are not in a locked environment that throws errors on property access.
- * @returns {boolean} True if Web Notifications are supported.
+ * ¿Este navegador permite notificaciones? Se protege con try/catch porque en algunos entornos
+ * restringidos (por ejemplo, iframes con sandbox) solo consultar la propiedad lanza un error.
  */
 export function verifyNotificationSupport(): boolean {
   try {
     return "Notification" in window && typeof window.Notification !== "undefined";
-  } catch (error) {
+  } catch {
     return false;
   }
 }
 
-/**
- * @function requestNotificationPermission
- * @description Triggers browser permission dialog for system notifications.
- * Step 1: Assess support.
- * Step 2: Request permission and handle standard promise resolution.
- * @returns {Promise<NotificationPermission>} The permission state: "granted", "denied", or "default".
- */
+/** Pide permiso al navegador. Devuelve "granted", "denied" o "default" (sin decidir). */
 export async function requestNotificationPermission(): Promise<NotificationPermission> {
   if (!verifyNotificationSupport()) {
     return "denied";
   }
   try {
-    const permission = await window.Notification.requestPermission();
-    return permission;
+    return await window.Notification.requestPermission();
   } catch (error) {
-    console.error("Failed to request Web Notification permission", error);
+    console.error("No se pudo pedir el permiso de notificaciones", error);
     return "default";
   }
 }
 
-/**
- * @function triggerSystemNotification
- * @description Spawns a native OS notification if permissions are granted.
- * Step 1: Ensure permission is granted.
- * Step 2: Build parameters with title, body, and customizable branding logo.
- * Step 3: Instantiate native Notification with safety wrap.
- * @param {string} title - The notification title line.
- * @param {string} body - Detail line or text of the notification.
- */
+/** Muestra una notificación del sistema si el usuario ya dio permiso; si no, no hace nada. */
 export function triggerSystemNotification(title: string, body: string): void {
-  if (!verifyNotificationSupport()) return;
-  
+  if (!verifyNotificationSupport() || window.Notification.permission !== "granted") return;
+
   try {
-    if (window.Notification.permission === "granted") {
-      new window.Notification(title, {
-        body,
-        icon: "/assets/logo.png", // Fallback to root asset path
-        tag: "tiendly-alert",
-      });
-    } else {
-      console.log(`[Notification Fallback] Title: "${title}" - Body: "${body}"`);
-    }
+    new window.Notification(title, {
+      body,
+      icon: "/assets/logo.png",
+      tag: "tiendly-alert", // misma etiqueta: un aviso nuevo reemplaza al anterior en lugar de apilarse
+    });
   } catch (error) {
-    console.warn("Failed to trigger local system notification directly.", error);
+    console.warn("No se pudo mostrar la notificación del sistema", error);
   }
 }
 
 /**
- * @function auditAndAlertLowStock
- * @description Analyzes current product list to find items below minimum stock.
- * Step 1: Retrieve currently stored list of notified items.
- * Step 2: Filter products that are in critical low-stock condition.
- * Step 3: For each critical product, if it hasn't been alerted yet, emit a push alert.
- * Step 4: Sync the notified item registry to local persistence.
- * @param {any[]} products - Current array of products loaded from Firestore.
+ * Avisa de los productos que quedaron por debajo de su stock mínimo, una sola vez por producto.
+ * Cuando un producto se repone, sale de la lista de "ya avisados" para poder avisar de nuevo si vuelve a bajar.
  */
-export function auditAndAlertLowStock(products: any[]): void {
+export function auditAndAlertLowStock(products: Product[]): void {
   if (!verifyNotificationSupport() || window.Notification.permission !== "granted") return;
   
   const prefs = retrieveStoredPreferences();
@@ -150,7 +113,7 @@ export function auditAndAlertLowStock(products: any[]): void {
         updatedNotifiedIds.push(product.id);
         alertTriggered = true;
       } else if (!isLowStock && alreadyNotified) {
-        // Remove from notified list if stock has been replenished
+        // El stock se repuso: se quita de los "ya avisados" para poder avisar si vuelve a bajar.
         const index = updatedNotifiedIds.indexOf(product.id);
         if (index > -1) {
           updatedNotifiedIds.splice(index, 1);
@@ -163,21 +126,15 @@ export function auditAndAlertLowStock(products: any[]): void {
       localStorage.setItem(STORAGE_NOTIFIED_PRODUCTS, JSON.stringify(updatedNotifiedIds));
     }
   } catch (error) {
-    console.error("Error auditing low stock products", error);
+    console.error("Error al revisar el stock bajo", error);
   }
 }
 
 /**
- * @function auditAndAlertUnfinishedTasks
- * @description Scans checklist tasks and sends an alert if there are pending items.
- * Step 1: Determine if task alerts are enabled.
- * Step 2: Check if at least 1 hour has elapsed since the last checklist reminder.
- * Step 3: Count active, unfinished checklist items.
- * Step 4: Emit notification and update timestamp tracker.
- * @param {any[]} tasks - Array of checklist tasks.
- * @param {boolean} forceImmediate - If true, bypasses the 1-hour interval throttle.
+ * Recuerda las tareas pendientes. Para no molestar, avisa como máximo una vez por hora;
+ * con `forceImmediate` se salta esa espera (por ejemplo, al activar las notificaciones).
  */
-export function auditAndAlertUnfinishedTasks(tasks: any[], forceImmediate: boolean = false): void {
+export function auditAndAlertUnfinishedTasks(tasks: Task[], forceImmediate: boolean = false): void {
   if (!verifyNotificationSupport() || window.Notification.permission !== "granted") return;
 
   const prefs = retrieveStoredPreferences();
@@ -204,6 +161,6 @@ export function auditAndAlertUnfinishedTasks(tasks: any[], forceImmediate: boole
       localStorage.setItem(STORAGE_LAST_CHECKLIST_ALERT, now.toString());
     }
   } catch (error) {
-    console.error("Error auditing pending tasks", error);
+    console.error("Error al revisar las tareas pendientes", error);
   }
 }

@@ -1,3 +1,10 @@
+// ======================================================
+// Archivo: src/admin/AccountPanel.tsx
+// Responsabilidad: Panel lateral de una cuenta en el portal de soporte: registrar pagos,
+//   suspender/reactivar/cancelar, extender la prueba, restablecer el PIN, nota interna y resumen de
+//   su negocio.
+// ======================================================
+
 import React from "react";
 import { X } from "lucide-react";
 import { PLAN, paymentReference } from "../lib/pricing";

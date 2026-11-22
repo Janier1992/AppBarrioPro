@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/DashboardCharts.tsx
+// Responsabilidad: Gráficos y reporte de ventas de la pantalla "Hoy" (historial y más vendidos) y exportación del
+//   reporte del mes en PDF.
+// ======================================================
+
 import { TrendingUp, ShoppingBag, AlertCircle, CheckCircle2, Users } from "lucide-react";
 import { Sale, Product } from "../types";
 import {

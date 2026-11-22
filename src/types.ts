@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/types.ts
+// Responsabilidad: Modelos de datos del negocio (producto, venta, tarea, fiado y perfil) compartidos por toda la
+//   app.
+// ======================================================
+
 export interface Product {
   id?: string;
   name: string;

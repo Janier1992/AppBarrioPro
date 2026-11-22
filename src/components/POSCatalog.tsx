@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/POSCatalog.tsx
+// Responsabilidad: Catálogo del punto de venta: búsqueda, categorías y fichas de producto para agregar al carrito.
+// ======================================================
+
 import React from "react";
 import { Search } from "lucide-react";
 import { Product } from "../types";

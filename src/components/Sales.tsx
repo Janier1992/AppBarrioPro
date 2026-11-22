@@ -1,8 +1,7 @@
-/**
- * @file Sales.tsx
- * @description Simplified POS module for neighborhood businesses.
- * @design Centered around absolute simplicity and zero friction. Connects directly with Firestore.
- */
+// ======================================================
+// Archivo: src/components/Sales.tsx
+// Responsabilidad: Pantalla "Vender": catálogo y carrito del punto de venta para cobrar con pocos toques, más el historial de ventas.
+// ======================================================
 
 import React from "react";
 import { Product, Sale } from "../types";

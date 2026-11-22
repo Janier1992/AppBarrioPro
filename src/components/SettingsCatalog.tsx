@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/SettingsCatalog.tsx
+// Responsabilidad: Ajustes > Catálogo: exportar el inventario a CSV y administrar los productos.
+// ======================================================
+
 import React from "react";
 import { Download, Plus, RefreshCw, Layers, ShoppingBag, Trash2 } from "lucide-react";
 import { Product } from "../types";

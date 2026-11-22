@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/components/Inventory.tsx
+// Responsabilidad: Pantalla "Productos": filtros y búsqueda, lista (celular) o tabla (escritorio), alta de
+//   productos, carga masiva desde Excel/CSV y cifras del inventario.
+// ======================================================
+
 import { Product, BusinessProfile } from "../types";
 import { useInventory } from "../hooks/use-inventory";
 import { isCriticalStock } from "../lib/stock";

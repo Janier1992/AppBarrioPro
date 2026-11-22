@@ -175,7 +175,7 @@ export const auth = {
         await (insforge.auth as any).signInWithOAuth("google");
         return;
       } catch (e) {
-        console.error("signInWithGoogle via InsForge failed, falling back to local login", e);
+        console.error("Falló el inicio de sesión con Google en InsForge; se usa el acceso local", e);
       }
     }
     
@@ -296,7 +296,7 @@ export const auth = {
       try {
         await insforge.auth.signOut();
       } catch (e) {
-        console.warn("signOut via InsForge failed, clearing local session", e);
+        console.warn("Falló el cierre de sesión en InsForge; se limpia la sesión local", e);
       }
     }
     authListeners.forEach(cb => cb(null));
@@ -320,7 +320,7 @@ export function notifySubscribers() {
   subscribers.forEach(cb => cb());
 }
 
-// Helper to check if InsForge is configured
+// ¿InsForge está configurado? (sin URL o con la llave de ejemplo se trabaja en modo demostración)
 export function isInsForgeConfigured(): boolean {
   return !!insforge && 
          typeof INSFORGE_URL === "string" && INSFORGE_URL !== "" && 

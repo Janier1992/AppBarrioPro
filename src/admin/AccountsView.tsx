@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/admin/AccountsView.tsx
+// Responsabilidad: Lista de cuentas del portal de soporte: cifras del tablero, filtros por estado, búsqueda y
+//   acceso al panel de cada cuenta.
+// ======================================================
+
 import React from "react";
 import { Search } from "lucide-react";
 import { PLAN, paymentReference } from "../lib/pricing";

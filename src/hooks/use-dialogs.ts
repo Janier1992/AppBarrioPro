@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/hooks/use-dialogs.ts
+// Responsabilidad: Estado de los diálogos de confirmación y de aviso (reemplazo de window.confirm y alert).
+// ======================================================
+
 import { useState } from "react";
 
 export interface ConfirmDialogState {

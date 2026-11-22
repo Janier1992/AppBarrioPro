@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/lib/demoData.ts
+// Responsabilidad: Datos de ejemplo (productos, ventas, tareas y fiados) para explorar Tiendly sin cargar el
+//   inventario real.
+// ======================================================
+
 import { db } from "./insforge";
 import { Product, Sale, Task, BusinessProfile } from "../types";
 
@@ -157,15 +163,15 @@ const DEMO_PRODUCTS: Product[] = [
 const DEMO_SALES = (prodIds: string[]): Sale[] => {
   const now = new Date();
   
-  // Sales from today
+  // Ventas de hoy
   const today = now.toISOString();
-  // Sales from yesterday
+  // Ventas de ayer
   const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-  // Sales from 2 days ago
+  // Ventas de hace 2 días
   const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString();
-  // Sales from 3 days ago
+  // Ventas de hace 3 días
   const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString();
-  // Sales from 4 days ago
+  // Ventas de hace 4 días
   const fourDaysAgo = new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000).toISOString();
 
   return [
@@ -271,14 +277,13 @@ const DEFAULT_PROFILE: BusinessProfile = {
   updatedAt: new Date().toISOString()
 };
 
-export async function loadDemoDataToFirestore(userId: string) {
+export async function cargarDatosDeDemostracion(userId: string) {
   try {
     // 1. Save Profile
     await db.saveProfile(userId, DEFAULT_PROFILE);
 
-    // 2. Create Products one by one (via addProduct, which actually persists
-    // to InsForge) and track the real ids InsForge assigns, so the demo
-    // sales below can reference genuine product ids.
+    // 2. Se crean los productos uno por uno con addProduct (que sí guarda en InsForge) y se
+    // anotan los ids reales que asigna, para que las ventas de ejemplo de abajo apunten a productos que existen.
     // Antes esto usaba saveProductsList/saveSalesList/saveTasksList, que
     // SOLO escriben en localStorage — nunca llegaban a InsForge. Como
     // db.getProducts()/getSales()/etc. prefieren la respuesta de InsForge
@@ -302,6 +307,6 @@ export async function loadDemoDataToFirestore(userId: string) {
 
     console.log("Demo data loaded successfully to InsForge Database!");
   } catch (error) {
-    console.error("Error loading demo data:", error);
+    console.error("Error al cargar los datos de ejemplo:", error);
   }
 }

@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/admin/TicketsView.tsx
+// Responsabilidad: Solicitudes de soporte de los clientes dentro del portal: lista con filtro y contador,
+//   conversación, respuestas y cambio de estado. Se actualiza sola cada 20 segundos.
+// ======================================================
+
 import React from "react";
 import { ArrowLeft, Send } from "lucide-react";
 import { timeAgo } from "../lib/relativeTime";

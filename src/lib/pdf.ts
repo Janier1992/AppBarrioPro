@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/lib/pdf.ts
+// Responsabilidad: Generación de PDF en el navegador (jsPDF): recibo de venta, reporte de ventas del mes y reporte
+//   del tablero.
+// ======================================================
+
 import { jsPDF } from "jspdf";
 import { Sale, Product } from "../types";
 import { isCriticalStock } from "./stock";
@@ -291,7 +297,7 @@ export const exportSalesPDF = (
     drawFooter(pageCount);
     doc.save(`tiendly_ventas_${currentMonthName.toLowerCase()}_${currentYear}.pdf`);
   } catch (error) {
-    console.error("Error generating sales PDF report:", error);
+    console.error("Error al generar el reporte de ventas en PDF:", error);
     alert("Ocurrió un error inesperado al intentar generar el PDF. Por favor, intente de nuevo.");
   }
 };

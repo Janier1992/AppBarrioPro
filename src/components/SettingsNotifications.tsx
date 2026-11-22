@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/SettingsNotifications.tsx
+// Responsabilidad: Ajustes > Notificaciones: activar alertas de stock bajo y de tareas pendientes.
+// ======================================================
+
 import { Bell, AlertTriangle, CheckSquare } from "lucide-react";
 import { NotificationPreference } from "../lib/notifications";
 

@@ -1,3 +1,9 @@
+// ======================================================
+// Archivo: src/hooks/use-app.ts
+// Responsabilidad: Hook principal de la app: sesión, datos del negocio (productos, ventas, tareas, fiados, perfil),
+//   suscripción, bloqueo con PIN, tema y autenticación.
+// ======================================================
+
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { 
   auth, 
@@ -49,7 +55,7 @@ export function useApp() {
     };
   }, []);
 
-  // App States sourced from Firestore
+  // Datos del negocio (vienen de InsForge; sin conexión se usa la copia local)
   const [products, setProducts] = useState<Product[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -130,7 +136,7 @@ export function useApp() {
   }, [user, refreshSubscription]);
   const hasAccess = access?.hasAccess === true;
 
-  // Listen to updates when authenticated
+  // Con sesión iniciada y acceso vigente: carga los datos y se vuelve a cargar cuando algo cambia
   const loadDataInFlightRef = useRef(false);
   useEffect(() => {
     if (!user || !hasAccess) return;
@@ -187,7 +193,7 @@ export function useApp() {
         dbts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setDebts(dbts);
       } catch (err) {
-        console.error("Error loading data from InsForge:", err);
+        console.error("Error al cargar los datos desde InsForge:", err);
       } finally {
         loadDataInFlightRef.current = false;
       }
@@ -222,7 +228,7 @@ export function useApp() {
     };
   }, [user, products, tasks]);
 
-  // Reset inventory critical stock filter when navigating away
+  // Al salir de Productos se quita el filtro "Se acaban" para que la próxima vez se vea todo
   useEffect(() => {
     if (activeTab !== "inventory") {
       setInventoryFilterCritical(false);
@@ -255,7 +261,7 @@ export function useApp() {
     try {
       await auth.signInWithGoogle();
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Falló el inicio de sesión:", error);
     }
   };
 
@@ -276,7 +282,7 @@ export function useApp() {
     try {
       await auth.signOut();
     } catch (error) {
-      console.error("Signout failed:", error);
+      console.error("Falló el cierre de sesión:", error);
     }
   };
 
@@ -323,7 +329,7 @@ export function useApp() {
         setAuthPassword("");
       }
     } catch (err: any) {
-      console.error("Authentication error:", err);
+      console.error("Error de autenticación:", err);
       setAuthError(translateAuthError(err?.message));
       setNeedsVerification(isEmailNotConfirmed(err?.message));
     } finally {

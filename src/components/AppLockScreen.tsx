@@ -1,3 +1,8 @@
+// ======================================================
+// Archivo: src/components/AppLockScreen.tsx
+// Responsabilidad: Pantalla de bloqueo por PIN: tapa la app hasta que se ingresa el PIN de seguridad del negocio.
+// ======================================================
+
 import React from "react";
 import { motion } from "motion/react";
 import { Lock } from "lucide-react";
