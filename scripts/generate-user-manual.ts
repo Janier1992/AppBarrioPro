@@ -100,7 +100,7 @@ const sections: Section[] = [
       "Aquí administras tu catálogo: nombre, categoría, código, stock, costo y precio. Los productos que se acaban se marcan en naranja como “Quedan 3” para que los veas sin buscar.",
     steps: [
       "“Nuevo producto” abre un formulario para agregar un artículo.",
-      "“Importar Excel” permite subir muchos productos de una sola vez desde una plantilla — ideal para arrancar con tu inventario completo.",
+      "“Importar Excel” permite subir muchos productos de una sola vez desde un archivo .xlsx o .csv — ideal para arrancar con tu inventario completo. Descarga la plantilla de ejemplo (se abre directo en Excel) y llénala con tus productos. Si tienes un archivo .xls antiguo, guárdalo como .xlsx desde Excel antes de subirlo.",
       "La categoría se elige de las sugerencias de tu tipo de negocio o la escribes tú: puedes usar cualquiera (por ejemplo “Empanadas” o “Tornillería”). Al importar desde Excel se conserva la categoría que escribiste.",
       "El filtro “Se acaban” muestra solo los productos con 30 % o menos de su stock mínimo; “Todos” los muestra todos. También puedes filtrar por categoría o buscar por nombre.",
       "En el celular, cada fila tiene el botón “+ Reponer”, que abre la edición del producto para actualizar su stock. En el computador verás la tabla completa, con costo, precio y botones para ajustar el stock con −/+, editar o eliminar.",
@@ -122,7 +122,7 @@ const sections: Section[] = [
       "Toca “Cobrar”. El stock se descuenta automáticamente y puedes imprimir el recibo en PDF.",
       "“Ver ventas registradas” (al final) muestra las últimas ventas, para editarlas, eliminarlas o exportar las del mes.",
     ],
-    tip: "Usa las flechas ↑↓ y la tecla Enter en el buscador para agregar productos sin tocar la pantalla — muy útil si usas un lector de código de barras.",
+    tip: "Usa las flechas ↑↓ y la tecla Enter en el buscador para agregar productos sin tocar la pantalla — muy útil si usas un lector de código de barras. Si se va la señal, sigue vendiendo: las ventas quedan guardadas en tu dispositivo y se envían solas cuando vuelve la conexión.",
     image: "03-sales.png",
   },
   {
@@ -159,7 +159,7 @@ const sections: Section[] = [
       "Configura los datos de tu negocio, la seguridad de tu cuenta y tus avisos. Se abre desde “Más” (celular) o desde el menú de tu tienda (computador).",
     steps: [
       "“Perfil del Negocio”: tipo de negocio, nombre comercial, dirección, horario, logo y el umbral general de stock bajo.",
-      "“Gestión de Catálogo”: otra forma de administrar tus productos y exportar tu inventario a Excel.",
+      "“Gestión de Catálogo”: otra forma de administrar tus productos y exportar tu inventario en un archivo CSV que se abre en Excel.",
       "“Seguridad”: configura tu PIN de 4 dígitos para bloquear la app, o carga datos de demostración.",
       "“Notificaciones”: activa avisos del navegador cuando un producto esté por agotarse o tengas tareas pendientes.",
       "En el menú “Más” también cambias entre tema claro y oscuro (con un solo toque), bloqueas la app con tu PIN y cierras sesión.",
