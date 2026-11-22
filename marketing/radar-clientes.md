@@ -104,6 +104,6 @@ Reglas: cortos, por su nombre, una sola idea y **un solo enlace**. No promete na
 
 ## 6. Lo que todavía NO hace el sistema
 
-- **No cobra solo.** No hay pasarela de pagos: el cliente solicita por WhatsApp y tú cobras y activas.
-- **La prueba de 7 días no se controla sola.** Hoy cualquiera puede crear una cuenta y seguir usando Tiendly gratis para siempre: no hay fecha de vencimiento de la prueba ni bloqueo por falta de pago. Por ahora el seguimiento al día 7 es manual (puedes anotar la fecha de cada alta). Automatizarlo (vencimiento de la prueba, estado de suscripción por cuenta y pasarela de pagos) es el siguiente desarrollo.
+- **No cobra solo.** No hay pasarela de pagos: el cliente solicita por WhatsApp, tú cobras (Nequi, transferencia…) y registras el pago en `/admin`.
+- **El cobro es manual.** Cada cuenta tiene su prueba de 7 días y su fecha de vencimiento (se controlan solas: al terminar, el acceso se bloquea). Cuando un cliente paga, tú registras el pago en el portal de soporte (`/admin`) y su cuenta queda activa por el mes. Ver `docs/ADMIN-Y-SUSCRIPCIONES.md`.
 - **No mide visitas a `/planes`.** Solo ves las solicitudes que llegan por WhatsApp.

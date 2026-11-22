@@ -53,7 +53,8 @@ const newOpId = () => `op_${Date.now().toString(36)}_${(seq++).toString(36)}_${M
 /** Errores del servidor que no se arreglan reintentando (datos rechazados): se descartan para no bloquear la cola. */
 function isPermanent(error: unknown): boolean {
   const status = Number((error as any)?.status ?? (error as any)?.statusCode ?? 0);
-  return status >= 400 && status < 500 && status !== 408 && status !== 429;
+  // 401/403: sesión vencida o cuenta sin suscripción vigente. No se descartan: esperan a que se renueve el acceso.
+  return status >= 400 && status < 500 && status !== 408 && status !== 429 && status !== 401 && status !== 403;
 }
 
 /** ¿El error indica que la función adjust_stock aún no existe en el servidor? */

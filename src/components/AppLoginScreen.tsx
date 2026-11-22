@@ -230,6 +230,9 @@ export default function AppLoginScreen({
           </div>
         )}
       </motion.div>
+      <a href="/admin" className="fixed bottom-4 right-4 text-[11px] text-brand-muted hover:text-brand-text underline-offset-2 hover:underline" id="support-access-link">
+        Acceso de soporte
+      </a>
     </div>
   );
 }

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS profile (
     hours VARCHAR(100),
     "lowStockThreshold" INTEGER DEFAULT 5,
     "umbralStockCritico" INTEGER DEFAULT 5,
-    "securityPin" VARCHAR(10),
+    "securityPin" TEXT, -- hash bcrypt (60 caracteres)
     theme VARCHAR(20) DEFAULT 'light',
     "logoUrl" TEXT,
     "hasCompletedOnboarding" BOOLEAN DEFAULT FALSE,

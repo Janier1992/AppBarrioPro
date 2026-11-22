@@ -311,6 +311,7 @@ function buildHtml(): string {
           <li>Crea tu cuenta y usa Tiendly gratis durante ${PLAN.trialDays} días, sin compromiso.</li>
           <li>Si te gusta, escríbenos por ${contact} (ventas) y dinos el nombre de tu negocio.</li>
           <li>Te indicamos cómo realizar el pago del primer mes y dejamos tu cuenta activa.</li>
+          <li>Si pasan los ${PLAN.trialDays} días de prueba o se cumple tu mes sin renovar, Tiendly te pedirá activar la suscripción para seguir usándolo. <b>Tus datos no se borran</b>: vuelven apenas renuevas.</li>
         </ul>
         <div class="tip"><span class="tip-label">Consejo</span><p>Antes de suscribirte puedes explorar Tiendly con los datos de ejemplo (en Hoy: “Probar con datos de ejemplo”) para ver cómo funciona con un negocio ficticio.</p></div>
       </div>

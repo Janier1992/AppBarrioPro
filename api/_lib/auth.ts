@@ -16,6 +16,11 @@ const INSFORGE_ANON_KEY = process.env.VITE_INSFORGE_ANON_KEY || INSFORGE_DEFAULT
 export interface AuthenticatedRequester {
   userId: string;
   email?: string;
+  /**
+   * ¿Tiene la suscripción (o prueba de 7 días) vigente? true/false según la base de datos; null si no se pudo
+   * saber (falla de red o migración sin aplicar): en ese caso no se bloquea, para no dejar sin servicio a todos.
+   */
+  subscriptionActive: boolean | null;
 }
 
 function extractBearerToken(req: { headers: Record<string, string | string[] | undefined> }): string | null {
@@ -48,7 +53,15 @@ export async function authenticateRequest(req: {
     const { data, error } = await client.auth.getCurrentUser();
     if (error || !data?.user) return null;
 
-    return { userId: data.user.id, email: data.user.email };
+    let subscriptionActive: boolean | null = null;
+    try {
+      const { data: sub, error: subError } = await (client as any).database.rpc("my_subscription");
+      if (!subError && sub && typeof sub.hasAccess === "boolean") subscriptionActive = sub.hasAccess || sub.isAdmin === true;
+    } catch {
+      /* sin dato: no se bloquea */
+    }
+
+    return { userId: data.user.id, email: data.user.email, subscriptionActive };
   } catch {
     return null;
   }

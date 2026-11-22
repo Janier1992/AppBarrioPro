@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { 
   auth, 
   db, 
   subscribeToData,
+  isInsForgeConfigured,
   MockUser
 } from "../lib/insforge";
 import {
@@ -11,6 +12,7 @@ import {
 } from "../lib/notifications";
 import { verifyPin, isHashedPin, hashPin, markSessionUnlocked, clearSessionUnlocked, isSessionUnlocked } from "../lib/pin";
 import { translateAuthError } from "../lib/authErrors";
+import { decideAccess, fetchSubscription, loadCachedSubscription, saveCachedSubscription, type AccessDecision } from "../lib/subscription";
 import { isCriticalStock } from "../lib/stock";
 import { nextTheme, resolveTheme } from "../lib/theme";
 import { 
@@ -97,10 +99,39 @@ export function useApp() {
     return unsubscribe;
   }, []);
 
+  // ---- Suscripción (prueba de 7 días / pago mensual) ----
+  // El bloqueo real lo hace la base de datos; aquí se decide qué pantalla mostrar. En modo demostración
+  // (sin InsForge) no hay suscripciones: siempre hay acceso.
+  const [access, setAccess] = useState<AccessDecision | null>(() => (isInsForgeConfigured() ? null : { hasAccess: true, info: null, source: "unknown" }));
+  const refreshSubscription = useCallback(async () => {
+    if (!user || !isInsForgeConfigured()) return;
+    const fresh = await fetchSubscription();
+    if (fresh) saveCachedSubscription(user.uid, fresh);
+    setAccess(decideAccess(fresh, loadCachedSubscription(user.uid)));
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      if (isInsForgeConfigured()) setAccess(null);
+      return;
+    }
+    refreshSubscription();
+    // Se vuelve a consultar al regresar a la app y cada 10 minutos: si la prueba o el mes vencen con la
+    // app abierta, la pantalla de suscripción aparece sola.
+    const onFocus = () => refreshSubscription();
+    window.addEventListener("focus", onFocus);
+    const timer = window.setInterval(refreshSubscription, 10 * 60 * 1000);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      window.clearInterval(timer);
+    };
+  }, [user, refreshSubscription]);
+  const hasAccess = access?.hasAccess === true;
+
   // Listen to updates when authenticated
   const loadDataInFlightRef = useRef(false);
   useEffect(() => {
-    if (!user) return;
+    if (!user || !hasAccess) return;
 
     const loadData = async () => {
       // loadData() se dispara al montar Y en cada notifySubscribers() de
@@ -167,7 +198,7 @@ export function useApp() {
     });
 
     return unsubscribe;
-  }, [user]);
+  }, [user, hasAccess]);
 
   // Background monitoring
   useEffect(() => {
@@ -302,6 +333,8 @@ export function useApp() {
   return {
     user,
     authLoading,
+    access,
+    refreshSubscription,
     activeTab,
     setActiveTab,
     isMobileMoreOpen,
