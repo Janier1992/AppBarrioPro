@@ -286,7 +286,8 @@ export const auth = {
     if (error) throw error;
   },
 
-  signOut: async () => {
+  /** Cierra la sesión. Con `redirectTo` va a esa dirección en vez de recargar la página actual. */
+  signOut: async (redirectTo?: string) => {
     localStorage.setItem("barriopro_explicit_signout", "true");
     localStorage.removeItem("barriopro_user");
     auth.currentUser = null;
@@ -299,7 +300,8 @@ export const auth = {
       }
     }
     authListeners.forEach(cb => cb(null));
-    window.location.reload();
+    if (redirectTo) window.location.assign(redirectTo);
+    else window.location.reload();
   }
 };
 

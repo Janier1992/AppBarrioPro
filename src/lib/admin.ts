@@ -6,6 +6,7 @@
 // ======================================================
 import { insforge, isInsForgeConfigured } from "./insforge";
 import type { SubscriptionInfo, SubscriptionState } from "./subscription";
+import type { TicketCategory, TicketStatus, ThreadMessage } from "./support";
 
 export interface AdminAccount {
   userId: string;
@@ -54,6 +55,27 @@ export interface AuditEntry {
 
 export type StatusAction = "suspend" | "cancel" | "resume";
 
+export interface AdminTicket {
+  id: number;
+  userId: string;
+  subject: string;
+  category: TicketCategory;
+  status: TicketStatus;
+  adminUnread: boolean;
+  createdAt: string;
+  lastMessageAt: string;
+  businessName?: string | null;
+  email?: string | null;
+  subscriptionState: SubscriptionState;
+  lastMessage?: string | null;
+  messageCount: number;
+}
+
+export interface AdminTicketThread {
+  ticket: Omit<AdminTicket, "adminUnread" | "lastMessage" | "messageCount"> & { phone?: string | null };
+  messages: ThreadMessage[];
+}
+
 export interface AdminApi {
   isAdmin(): Promise<boolean>;
   listAccounts(): Promise<AdminAccount[]>;
@@ -64,6 +86,11 @@ export interface AdminApi {
   clearPin(userId: string): Promise<void>;
   summary(userId: string): Promise<AdminSummary>;
   auditLog(limit?: number): Promise<AuditEntry[]>;
+  supportList(status?: TicketStatus | null): Promise<AdminTicket[]>;
+  supportThread(ticketId: number): Promise<AdminTicketThread>;
+  supportReply(ticketId: number, body: string, status: "en_proceso" | "resuelto"): Promise<void>;
+  supportSetStatus(ticketId: number, status: TicketStatus): Promise<void>;
+  supportPendingCount(): Promise<number>;
 }
 
 /** Convierte el error de la base de datos en un mensaje comprensible para soporte. */
@@ -100,6 +127,15 @@ function rpcApi(): AdminApi {
     },
     summary: (userId) => call<AdminSummary>("admin_account_summary", { p_user: userId }),
     auditLog: (limit = 100) => call<AuditEntry[]>("admin_audit_log", { p_limit: limit }),
+    supportList: (status = null) => call<AdminTicket[]>("admin_support_list", { p_status: status }),
+    supportThread: (ticketId) => call<AdminTicketThread>("admin_support_thread", { p_ticket: ticketId }),
+    supportReply: async (ticketId, body, status) => {
+      await call("admin_support_reply", { p_ticket: ticketId, p_body: body.trim(), p_status: status });
+    },
+    supportSetStatus: async (ticketId, status) => {
+      await call("admin_support_set_status", { p_ticket: ticketId, p_status: status });
+    },
+    supportPendingCount: async () => Number(await call<number>("admin_support_pending_count")) || 0,
   };
 }
 
@@ -180,4 +216,6 @@ export const ACTION_LABEL: Record<string, string> = {
   extend_trial: "Extendió la prueba",
   set_note: "Editó la nota",
   clear_pin: "Restableció el PIN",
+  support_reply: "Respondió una solicitud de soporte",
+  support_status: "Cambió el estado de una solicitud",
 };

@@ -12,6 +12,7 @@ Guiones usados en la verificación final (`docs/INFORME-QA.md`). Prueban datos r
    - `node qa/e2e-admin.cjs <carpeta-con-axe-core>` — portal de soporte (`/admin`, 14 casos).
    - `node qa/e2e-suscripcion.cjs <carpeta-salida>` — pantalla de suscripción vencida y avisos (13 casos; requiere la app en el puerto 3181 contra un InsForge simulado, ver la cabecera del archivo).
    - `node qa/e2e-nequi.cjs <carpeta-con-axe-core>` — pago por Nequi (7 casos; ver la cabecera para levantar la app en el puerto 3182).
+   - `node qa/e2e-tickets.cjs <carpeta-con-axe-core>` — tickets de soporte de punta a punta (17 casos).
    - `node qa/accesibilidad-tema-oscuro.cjs <carpeta-con-axe-core>` — contraste en tema oscuro.
 3. Resultado esperado: todas las líneas `PASS` y "sin violaciones".
 

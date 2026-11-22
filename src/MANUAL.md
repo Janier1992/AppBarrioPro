@@ -69,6 +69,10 @@ El stock se descuenta automáticamente y puedes imprimir el recibo en PDF. Si se
 
 ---
 
-## 7. Asistente Tiendly AI
+## 7. Soporte
+
+¿Algo no funciona o tienes una duda? Entra a **Soporte** (menú lateral en el computador; **Más → Soporte** en el celular), toca **Nueva solicitud**, elige el tema, escribe el asunto y cuéntanos qué pasa. Nuestro equipo te responde en la misma pantalla y verás un punto de "respuesta nueva" en el menú. Puedes seguir la conversación y, si algo se repite, escribir de nuevo. Si es urgente, también puedes escribirnos por WhatsApp.
+
+## 8. Asistente Tiendly AI
 
 Ábrelo con **Pregúntale a Tiendly** (en Hoy) o desde **Más → Asistente IA**. Tiene acceso a tu inventario y ventas reales para recomendar qué reponer, promociones y mejoras. Requiere tener la sesión iniciada.

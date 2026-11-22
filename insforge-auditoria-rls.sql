@@ -7,10 +7,10 @@
 -- Complementa (no reemplaza) la prueba real con dos cuentas en la app.
 -- ======================================================
 WITH
-cuentas(t) AS (VALUES ('profile'), ('products'), ('sales'), ('tasks'), ('debts'), ('subscriptions'), ('payments'), ('admins'), ('admin_audit')),
+cuentas(t) AS (VALUES ('profile'), ('products'), ('sales'), ('tasks'), ('debts'), ('subscriptions'), ('payments'), ('admins'), ('admin_audit'), ('support_tickets'), ('support_messages')),
 negocio(t) AS (VALUES ('profile'), ('products'), ('sales'), ('tasks'), ('debts')),
 bloqueables(t) AS (VALUES ('products'), ('sales'), ('tasks'), ('debts')),
-solo_lectura(t) AS (VALUES ('subscriptions'), ('payments'), ('admins'), ('admin_audit')),
+solo_lectura(t) AS (VALUES ('subscriptions'), ('payments'), ('admins'), ('admin_audit'), ('support_tickets'), ('support_messages')),
 rlsinfo AS (
   SELECT c.relname AS t, c.relrowsecurity AS activo
   FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
@@ -21,12 +21,13 @@ fn AS (
   SELECT p.proname, p.prosecdef, p.proconfig
   FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
   WHERE n.nspname = 'public'
-    AND (p.proname LIKE 'admin\_%' OR p.proname IN ('ensure_subscription', 'my_subscription', 'current_has_access', 'is_admin', 'subscription_state'))
+    AND (p.proname LIKE 'admin\_%' OR p.proname LIKE 'support\_%' OR p.proname IN ('ensure_subscription', 'my_subscription', 'current_has_access', 'is_admin', 'subscription_state'))
 )
 SELECT 1 AS n, 'RLS activado en todas las tablas' AS verificacion,
        CASE WHEN count(*) = 0 THEN '✔' ELSE '✘' END AS estado,
        coalesce(string_agg(c.t, ', '), 'todas lo tienen') AS detalle
-FROM cuentas c LEFT JOIN rlsinfo r ON r.t = c.t WHERE r.activo IS NOT TRUE
+FROM cuentas c LEFT JOIN rlsinfo r ON r.t = c.t
+WHERE r.activo IS NOT TRUE AND (r.t IS NOT NULL OR c.t NOT LIKE 'support\_%')  -- las tablas de soporte solo se exigen si ya aplicaste esa migración
 UNION ALL
 SELECT 2, 'Ninguna política abierta a todos (USING true)',
        CASE WHEN count(*) = 0 THEN '✔' ELSE '✘' END,
@@ -53,7 +54,7 @@ SELECT 5, 'El bloqueo por suscripción vencida está activo en productos, ventas
 FROM bloqueables b
 WHERE NOT EXISTS (SELECT 1 FROM pol WHERE pol.tablename = b.t AND pol.permissive = 'RESTRICTIVE' AND pol.qual LIKE '%current_has_access%')
 UNION ALL
-SELECT 6, 'Los clientes NO pueden escribir suscripciones, pagos, administradores ni bitácora',
+SELECT 6, 'Los clientes NO pueden escribir suscripciones, pagos, administradores, bitácora ni tickets directamente',
        CASE WHEN count(*) = 0 THEN '✔' ELSE '✘' END,
        coalesce(string_agg(tablename || '.' || policyname || ' (' || cmd || ')', ', '), 'solo lectura')
 FROM pol WHERE tablename IN (SELECT t FROM solo_lectura) AND cmd IN ('INSERT', 'UPDATE', 'DELETE', 'ALL')

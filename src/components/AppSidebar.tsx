@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Boxes, Home, ListChecks, LogOut, Lock, Moon, PanelLeftClose, PanelLeftOpen,
+  Boxes, Home, LifeBuoy, ListChecks, LogOut, Lock, Moon, PanelLeftClose, PanelLeftOpen,
   Plus, SlidersHorizontal, Sparkles, Store, Sun, Wallet,
 } from "lucide-react";
 import { BusinessProfile } from "../types";
@@ -17,6 +17,8 @@ interface AppSidebarProps {
   setIsLocked: (val: boolean) => void;
   handleToggleTheme: () => void;
   handleCerrarSesionGoogle: () => void;
+  /** Respuestas de soporte sin leer. */
+  supportUnread?: number;
 }
 
 function initialsOf(name?: string): string {
@@ -36,6 +38,7 @@ export default function AppSidebar({
   setIsLocked,
   handleToggleTheme,
   handleCerrarSesionGoogle,
+  supportUnread = 0,
 }: AppSidebarProps) {
   const [collapsed, setCollapsed] = useState(loadSidebarCollapsed);
 
@@ -63,6 +66,7 @@ export default function AppSidebar({
   const moreItems = [
     { id: "checklist" as const, label: "Tareas", icon: ListChecks },
     { id: "settings" as const, label: "Ajustes", icon: SlidersHorizontal },
+    { id: "support" as const, label: "Soporte", icon: LifeBuoy },
   ];
 
   const tabClass = (isActive: boolean, accent?: boolean) => {
@@ -136,8 +140,14 @@ export default function AppSidebar({
               className={tabClass(activeTab === id)}
               id={`sidebar-${id}`}
             >
-              <Icon size={20} strokeWidth={1.8} className="shrink-0" />
+              <span className="relative shrink-0">
+                <Icon size={20} strokeWidth={1.8} />
+                {id === "support" && supportUnread > 0 && collapsed && <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-brand-primary" aria-hidden="true" />}
+              </span>
               {label(text)}
+              {id === "support" && supportUnread > 0 && !collapsed && (
+                <span className="ml-auto h-5 min-w-5 px-1.5 rounded-full bg-brand-primary text-white text-[11px] font-semibold flex items-center justify-center" aria-label={`${supportUnread} respuesta(s) nueva(s)`}>{supportUnread}</span>
+              )}
             </button>
           ))}
           <button
