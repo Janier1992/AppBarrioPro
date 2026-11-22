@@ -17,10 +17,9 @@ interface AIAssistantChatProps {
   products: Product[];
   sales: Sale[];
   userId?: string;
-  geminiApiKey?: string;
 }
 
-export default function AIAssistantChat({ products, sales, userId, geminiApiKey }: AIAssistantChatProps) {
+export default function AIAssistantChat({ products, sales, userId }: AIAssistantChatProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Se abre desde fuera (caja "Pregúntale a Tiendly" en Inicio, menú "Más").
@@ -97,7 +96,6 @@ export default function AIAssistantChat({ products, sales, userId, geminiApiKey 
           messages: apiMessages,
           products,
           sales,
-          geminiApiKey,
           businessType: userId ? loadBusinessType(userId)?.label : undefined
         })
       });

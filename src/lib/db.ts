@@ -21,8 +21,11 @@ export const db = {
   },
 
   saveProfile: async (userId: string, profile: BusinessProfile): Promise<void> => {
+    // geminiApiKey se elimina siempre: la clave ya no se guarda por tienda (solo en el servidor).
+    // Al guardar, también se borra el valor que haya quedado en perfiles anteriores.
+    const { geminiApiKey: _legacyKey, ...cleanProfile } = profile as BusinessProfile & { geminiApiKey?: unknown };
     const profileWithId = {
-      ...profile,
+      ...cleanProfile,
       id: profile.id || `prof_${userId}`,
       userId
     };
@@ -32,7 +35,7 @@ export const db = {
       try {
         const { error } = await insforge!.database
           .from("profile")
-          .upsert(profileWithId);
+          .upsert({ ...profileWithId, geminiApiKey: null });
         if (error) throw error;
       } catch (e) {
         console.error("Failed to save profile to InsForge:", e);

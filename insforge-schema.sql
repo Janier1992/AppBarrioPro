@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS profile (
     theme VARCHAR(20) DEFAULT 'light',
     "logoUrl" TEXT,
     "hasCompletedOnboarding" BOOLEAN DEFAULT FALSE,
-    "geminiApiKey" TEXT,
+    "geminiApiKey" TEXT, -- OBSOLETA: ya no se usa ni se guarda (ver insforge-migration-quitar-clave-gemini.sql)
     "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

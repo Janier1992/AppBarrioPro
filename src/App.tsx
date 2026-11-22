@@ -313,7 +313,7 @@ export default function App() {
       </nav>
 
       {/* Asistente IA: se abre desde "Pregúntale a Tiendly" (Inicio) o desde el menú "Más" */}
-      <AIAssistantChat products={products} sales={sales} userId={user.uid} geminiApiKey={profile?.geminiApiKey} />
+      <AIAssistantChat products={products} sales={sales} userId={user.uid} />
 
       <ToastContainer />
     </div>
