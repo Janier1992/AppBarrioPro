@@ -15,7 +15,9 @@ export type OutboxTable = "profile" | "products" | "sales" | "tasks" | "debts";
 export type OutboxOp =
   | { id: string; table: OutboxTable; kind: "upsert"; data: Record<string, unknown> }
   | { id: string; table: OutboxTable; kind: "update"; rowId: string; data: Record<string, unknown> }
-  | { id: string; table: OutboxTable; kind: "delete"; rowId: string };
+  | { id: string; table: OutboxTable; kind: "delete"; rowId: string }
+  /** Suma/resta de stock (delta). Se aplica en el servidor de forma atómica con la función adjust_stock. */
+  | { id: string; table: "products"; kind: "adjust"; rowId: string; delta: number };
 
 type NewOp = OutboxOp extends infer T ? (T extends OutboxOp ? Omit<T, "id"> : never) : never;
 
@@ -54,7 +56,35 @@ function isPermanent(error: unknown): boolean {
   return status >= 400 && status < 500 && status !== 408 && status !== 429;
 }
 
+/** ¿El error indica que la función adjust_stock aún no existe en el servidor? */
+function isMissingFunction(error: unknown): boolean {
+  const e = error as any;
+  const text = `${e?.message ?? ""} ${e?.code ?? ""} ${e?.details ?? ""}`.toLowerCase();
+  return Number(e?.status ?? e?.statusCode) === 404 || e?.code === "PGRST202" || /could not find the function|function .* does not exist/.test(text);
+}
+
+/** Respaldo mientras no se haya ejecutado la migración: leer y escribir (correcto, pero no atómico). */
+async function adjustStockFallback(userId: string, productId: string, delta: number): Promise<void> {
+  const read: any = await insforge!.database.from("products").select("stock").eq("id", productId).eq("userId", userId).single();
+  if (read?.error) throw read.error;
+  const next = Math.max(0, Number(read?.data?.stock ?? 0) + delta);
+  const write: any = await insforge!.database
+    .from("products")
+    .update({ stock: next, updatedAt: new Date().toISOString() })
+    .eq("id", productId)
+    .eq("userId", userId);
+  if (write?.error) throw write.error;
+}
+
 async function execute(userId: string, op: OutboxOp): Promise<void> {
+  if (op.kind === "adjust") {
+    const res: any = await insforge!.database.rpc("adjust_stock", { p_op_id: op.id, p_product_id: op.rowId, p_delta: op.delta });
+    if (res?.error) {
+      if (isMissingFunction(res.error)) return adjustStockFallback(userId, op.rowId, op.delta);
+      throw res.error;
+    }
+    return;
+  }
   const table = insforge!.database.from(op.table);
   let result: { error: unknown };
   if (op.kind === "upsert") {
@@ -73,11 +103,9 @@ const running = new Map<string, Promise<void>>();
 export async function flushOutbox(userId: string, options: { notify?: boolean } = {}): Promise<void> {
   const notify = options.notify ?? true;
   if (!isInsForgeConfigured()) return;
-  const active = running.get(userId);
-  if (active) {
-    await active;
-    if (loadOutbox(userId).length === 0) return;
-  }
+  // Una sola ejecución por usuario a la vez: dos envíos simultáneos repetirían la misma operación.
+  while (running.has(userId)) await running.get(userId);
+  if (loadOutbox(userId).length === 0) return;
   const run = (async () => {
     let sent = 0;
     for (;;) {

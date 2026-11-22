@@ -90,6 +90,23 @@ export const db = {
     notifySubscribers();
   },
 
+  /**
+   * Suma o resta stock (delta negativo = venta). A diferencia de updateProduct({ stock }), no envía
+   * un valor absoluto calculado con datos posiblemente viejos: el servidor aplica el cambio de forma
+   * atómica, así dos dispositivos vendiendo a la vez no se pisan.
+   */
+  adjustStock: async (userId: string, productId: string, delta: number): Promise<void> => {
+    const local = localStorage.getItem(`barriopro_products_${userId}`);
+    const list: Product[] = local ? JSON.parse(local) : [];
+    const updatedAt = new Date().toISOString();
+    localStorage.setItem(
+      `barriopro_products_${userId}`,
+      JSON.stringify(list.map(p => p.id === productId ? { ...p, stock: Math.max(0, p.stock + delta), updatedAt } : p))
+    );
+    await writeRemote(userId, { table: "products", kind: "adjust", rowId: productId, delta });
+    notifySubscribers();
+  },
+
   deleteProduct: async (userId: string, productId: string): Promise<void> => {
     const local = localStorage.getItem(`barriopro_products_${userId}`);
     let list: Product[] = local ? JSON.parse(local) : [];
