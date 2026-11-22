@@ -117,3 +117,18 @@ body {
 }
 
 
+
+/* Contraste en tema oscuro (WCAG AA): textos que en claro eran oscuros sobre fondo blanco. */
+.dark .text-rose-700,
+.dark .text-rose-600 {
+  color: #fb7185 !important;
+}
+
+.dark .text-\[\#A24A16\] {
+  color: #fb923c !important;
+}
+
+/* Fichas/botones activos: en oscuro el fondo "brand-text" es claro, el texto blanco no se leería. */
+.dark .bg-brand-text.text-white {
+  color: var(--color-brand-bg) !important;
+}
