@@ -65,7 +65,6 @@ export interface BusinessProfile {
   securityPin: string;
   theme?: "light" | "dark";
   hasCompletedOnboarding?: boolean;
-  geminiApiKey?: string;
   logoUrl?: string;
   updatedAt: string;
 }

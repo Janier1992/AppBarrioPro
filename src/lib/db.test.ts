@@ -62,4 +62,13 @@ describe("db: avisar a la app DESPUÉS de guardar en el servidor", () => {
     expect(JSON.parse(memory.get("barriopro_profile_u1")!).theme).toBe("dark");
     expect(events).toContain("notify");
   });
+
+  it("no guarda ninguna clave de Gemini en el perfil y borra la que hubiera en el servidor", async () => {
+    const { insforge } = await import("./insforge");
+    const upsert = (insforge as any).database.from().upsert;
+    upsert.mockClear();
+    await db.saveProfile("u1", { ...profile, geminiApiKey: "AIza-secreta" } as any);
+    expect(memory.get("barriopro_profile_u1")).not.toContain("AIza-secreta");
+    expect(upsert).toHaveBeenCalledWith(expect.objectContaining({ geminiApiKey: null }));
+  });
 });

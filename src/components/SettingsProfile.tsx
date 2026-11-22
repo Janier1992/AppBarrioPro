@@ -1,5 +1,5 @@
 import React from "react";
-import { Trash2, ShoppingBag, Plus, Sparkles, Sun, Moon, RefreshCw } from "lucide-react";
+import { Trash2, ShoppingBag, Plus, Sun, Moon, RefreshCw } from "lucide-react";
 import BusinessTypePicker from "./BusinessTypePicker";
 
 interface SettingsProfileProps {
@@ -18,8 +18,6 @@ interface SettingsProfileProps {
   theme: "light" | "dark";
   logoUrl: string;
   setLogoUrl: (val: string) => void;
-  geminiApiKey: string;
-  setGeminiApiKey: (val: string) => void;
   loadingProfile: boolean;
   handleToggleTheme: () => void;
   handleGuardarConfiguracionPerfil: (e: React.FormEvent) => void;
@@ -42,8 +40,6 @@ export default function SettingsProfile({
   theme,
   logoUrl,
   setLogoUrl,
-  geminiApiKey,
-  setGeminiApiKey,
   loadingProfile,
   handleToggleTheme,
   handleGuardarConfiguracionPerfil,
@@ -177,28 +173,6 @@ export default function SettingsProfile({
             className="w-full rounded-xl border border-brand-border px-3 py-2 text-sm focus:border-brand-primary focus:ring-1 focus:ring-brand-primary focus:outline-hidden bg-white text-brand-text"
             min="1"
           />
-        </div>
-
-        <div className="border-t border-brand-border pt-4 space-y-4">
-          <h4 className="text-xs font-bold text-brand-text flex items-center gap-1.5 uppercase tracking-wider">
-            <Sparkles className="text-brand-primary animate-pulse" size={14} />
-            Configuración de Inteligencia Artificial (Gemini)
-          </h4>
-          <div className="p-4 border border-brand-border rounded-xl bg-slate-50/50 space-y-3">
-            <div>
-              <label className="block text-xs font-semibold text-brand-text mb-1">Clave API de Gemini (API Key)</label>
-              <input
-                type="password"
-                placeholder="Ingresa tu clave de Google AI Studio (AI_KEY)"
-                value={geminiApiKey}
-                onChange={(e) => setGeminiApiKey(e.target.value)}
-                className="w-full rounded-xl border border-brand-border px-3 py-2 text-sm focus:border-brand-primary focus:ring-1 focus:ring-brand-primary focus:outline-hidden bg-white text-brand-text placeholder-brand-muted font-mono"
-              />
-            </div>
-            <p className="text-[10px] text-brand-muted leading-relaxed">
-              Tiendly utiliza la Inteligencia Artificial de Gemini en modalidad multitenant. Cada comerciante puede ingresar su propia clave API obtenida gratuitamente desde Google AI Studio para que el asesor reciba las sugerencias e interactúe con el inventario de su negocio en tiempo real.
-            </p>
-          </div>
         </div>
 
         <div className="border-t border-brand-border pt-4">

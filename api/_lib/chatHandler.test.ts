@@ -19,3 +19,21 @@ describe("processChatRequest", () => {
     expect(result.status).toBe(400);
   });
 });
+
+describe("clave de Gemini solo en el servidor", () => {
+  it("ignora una clave enviada por el navegador y usa solo GEMINI_API_KEY", async () => {
+    const prev = process.env.GEMINI_API_KEY;
+    delete process.env.GEMINI_API_KEY;
+    try {
+      const result = await processChatRequest("user-clave-cliente", {
+        messages: [{ role: "user", text: "hola" }],
+        geminiApiKey: "AIza-clave-del-cliente",
+      });
+      // Sin clave en el servidor no debe llamar a Gemini con la del cliente: error de configuración.
+      expect(result.status).toBe(400);
+      expect(String(result.body.error)).not.toContain("AIza");
+    } finally {
+      if (prev !== undefined) process.env.GEMINI_API_KEY = prev;
+    }
+  });
+});

@@ -34,14 +34,13 @@ export async function generateContentWithRetry(options: {
   model: string;
   contents: any;
   config?: any;
-  apiKey?: string;
 }): Promise<any> {
-  // Solo se usa una API key por request: la de la tienda si la mandó, si no la del servidor.
-  // No hay fallback cruzado entre ambas para evitar el abuso de cuota descrito arriba.
-  const key = options.apiKey || process.env.GEMINI_API_KEY;
+  // La clave vive SOLO en el servidor (GEMINI_API_KEY). Nunca se acepta ni se guarda una clave
+  // enviada por el navegador: así no queda en la base de datos ni viaja en las peticiones.
+  const key = process.env.GEMINI_API_KEY;
   if (!key) {
     throw new GeminiConfigError(
-      "El asistente de IA no está disponible: no hay una clave de Gemini configurada para esta tienda ni en el servidor."
+      "El asistente de IA no está disponible en este momento. Inténtalo más tarde."
     );
   }
 

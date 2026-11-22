@@ -52,8 +52,6 @@ export default function Settings({
     setLowStockThreshold,
     logoUrl,
     setLogoUrl,
-    geminiApiKey,
-    setGeminiApiKey,
     loadingProfile,
     prodName,
     setProdName,
@@ -163,8 +161,6 @@ export default function Settings({
               theme={profile?.theme || "light"}
               logoUrl={logoUrl}
               setLogoUrl={setLogoUrl}
-              geminiApiKey={geminiApiKey}
-              setGeminiApiKey={setGeminiApiKey}
               loadingProfile={loadingProfile}
               handleToggleTheme={handleToggleTheme}
               handleGuardarConfiguracionPerfil={handleGuardarConfiguracionPerfil}

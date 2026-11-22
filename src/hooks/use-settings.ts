@@ -40,7 +40,6 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
   const [hours, setHours] = useState(profile?.hours || "08:00 - 20:00");
   const [lowStockThreshold, setLowStockThreshold] = useState(profile?.lowStockThreshold || 5);
   const [logoUrl, setLogoUrl] = useState(profile?.logoUrl || "");
-  const [geminiApiKey, setGeminiApiKey] = useState(profile?.geminiApiKey || "");
   const [loadingProfile, setLoadingProfile] = useState(false);
 
   // New Product Form States
@@ -73,7 +72,6 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       setHours(profile.hours || "08:00 - 20:00");
       setLowStockThreshold(profile.lowStockThreshold || 5);
       setLogoUrl(profile.logoUrl || "");
-      setGeminiApiKey(profile.geminiApiKey || "");
     }
   }, [profile]);
 
@@ -93,7 +91,6 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
         securityPin: profile?.securityPin || "",
         theme: profile?.theme || "light",
         logoUrl,
-        geminiApiKey,
         updatedAt: new Date().toISOString()
       };
       await db.saveProfile(userId, updatedProfile);
@@ -290,8 +287,6 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
     setLowStockThreshold,
     logoUrl,
     setLogoUrl,
-    geminiApiKey,
-    setGeminiApiKey,
     loadingProfile,
     prodName,
     setProdName,
