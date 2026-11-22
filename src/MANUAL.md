@@ -76,3 +76,10 @@ El stock se descuenta automáticamente y puedes imprimir el recibo en PDF. Si se
 ## 8. Asistente Tiendly AI
 
 Ábrelo con **Pregúntale a Tiendly** (en Hoy) o desde **Más → Asistente IA**. Tiene acceso a tu inventario y ventas reales para recomendar qué reponer, promociones y mejoras. Requiere tener la sesión iniciada.
+
+## 9. Plan y suscripción
+
+Empiezas con una **prueba gratis de 7 días**. Después, Tiendly cuesta **$29.900 COP al mes**, mes a mes, con un solo plan (ventas, inventario, fiados, tareas y asistente de IA; no incluye facturación electrónica DIAN).
+
+*   **Cómo suscribirte**: escríbenos por WhatsApp (+57 304 476 9592) con el nombre de tu negocio; la app te muestra el número de Nequi y tu referencia de pago. Cuando pagues, envíanos el comprobante y dejamos tu cuenta activa.
+*   **Si vence la prueba o el mes**: Tiendly te pide activar la suscripción para seguir usándolo. **Tus datos no se borran**: vuelven apenas renuevas.
