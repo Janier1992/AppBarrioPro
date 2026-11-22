@@ -5,7 +5,7 @@
 //   ni los hooks; solo cambia cómo se presentan: Hoy, Vender, Productos, Fiados…
 // ======================================================
 
-export type AppTab = "dashboard" | "inventory" | "sales" | "checklist" | "debts" | "settings";
+export type AppTab = "dashboard" | "inventory" | "sales" | "checklist" | "debts" | "settings" | "support";
 
 /** Los cuatro destinos del uso diario (barra inferior en móvil, menú lateral en escritorio). */
 export const MAIN_TABS: ReadonlyArray<{ id: AppTab; label: string }> = [
@@ -16,4 +16,4 @@ export const MAIN_TABS: ReadonlyArray<{ id: AppTab; label: string }> = [
 ];
 
 /** Destinos que viven dentro del menú "Más". */
-export const MORE_TABS: ReadonlyArray<AppTab> = ["checklist", "settings"];
+export const MORE_TABS: ReadonlyArray<AppTab> = ["checklist", "settings", "support"];

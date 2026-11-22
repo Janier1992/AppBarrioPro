@@ -1,5 +1,5 @@
 import React from "react";
-import { LogOut, ScrollText, ShieldCheck, Store, Users } from "lucide-react";
+import { LifeBuoy, LogOut, ScrollText, ShieldCheck, Store, Users } from "lucide-react";
 import { APP_NAME } from "../lib/brand";
 import { auth, type MockUser } from "../lib/insforge";
 import { getAdminApi, isDemoAdmin, type AdminApi } from "../lib/admin";
@@ -7,6 +7,7 @@ import { translateAuthError, isEmailNotConfirmed } from "../lib/authErrors";
 import ForgotPasswordForm from "../components/ForgotPasswordForm";
 import AccountsView from "./AccountsView";
 import AuditView from "./AuditView";
+import TicketsView from "./TicketsView";
 
 type Gate = "loading" | "signedOut" | "denied" | "ok";
 
@@ -18,7 +19,23 @@ export default function AdminPortal() {
   const [user, setUser] = React.useState<MockUser | null>(null);
   const [gate, setGate] = React.useState<Gate>("loading");
   const [api, setApi] = React.useState<AdminApi | null>(null);
-  const [tab, setTab] = React.useState<"accounts" | "audit">("accounts");
+  const [tab, setTab] = React.useState<"accounts" | "tickets" | "audit">("accounts");
+  const [pending, setPending] = React.useState(0);
+
+  // Solicitudes de soporte sin atender: contador en la pestaña y en el título del navegador.
+  const refreshPending = React.useCallback(async () => {
+    if (!api) return;
+    try { setPending(await api.supportPendingCount()); } catch { /* sin soporte disponible */ }
+  }, [api]);
+  React.useEffect(() => {
+    if (gate !== "ok") return;
+    refreshPending();
+    const timer = window.setInterval(refreshPending, 20_000);
+    return () => window.clearInterval(timer);
+  }, [gate, refreshPending]);
+  React.useEffect(() => {
+    document.title = `${pending > 0 ? `(${pending}) ` : ""}Soporte · ${APP_NAME}`;
+  }, [pending]);
 
   React.useEffect(() => {
     document.title = `Soporte · ${APP_NAME}`;
@@ -71,7 +88,7 @@ export default function AdminPortal() {
           </p>
           <div className="flex gap-2 justify-center">
             <a href="/" className="h-10 px-4 rounded-xl border border-brand-border text-sm font-medium flex items-center hover:bg-brand-bg">Ir a la app</a>
-            <button onClick={() => auth.signOut()} className="h-10 px-4 rounded-xl bg-brand-text text-brand-bg text-sm font-medium cursor-pointer">Cerrar sesión</button>
+            <button onClick={() => auth.signOut("/")} className="h-10 px-4 rounded-xl bg-brand-text text-brand-bg text-sm font-medium cursor-pointer">Cerrar sesión</button>
           </div>
         </div>
       </Shell>
@@ -84,7 +101,7 @@ export default function AdminPortal() {
         <div className="flex items-center gap-3">
           <span className="hidden sm:block text-sm text-brand-muted truncate max-w-[220px]" id="admin-user">{user?.email}</span>
           <a href="/" className="text-sm font-medium text-brand-primary hover:underline">Ir a la app</a>
-          <button onClick={() => auth.signOut()} className="h-9 px-3 rounded-xl border border-brand-border text-sm flex items-center gap-1.5 hover:bg-brand-bg cursor-pointer" id="admin-signout">
+          <button onClick={() => auth.signOut("/")} className="h-9 px-3 rounded-xl border border-brand-border text-sm flex items-center gap-1.5 hover:bg-brand-bg cursor-pointer" id="admin-signout">
             <LogOut size={15} aria-hidden="true" /> Salir
           </button>
         </div>
@@ -96,7 +113,7 @@ export default function AdminPortal() {
         </p>
       )}
       <nav className="mb-6 flex gap-2" aria-label="Secciones del portal">
-        {([["accounts", "Cuentas", Users], ["audit", "Bitácora", ScrollText]] as const).map(([id, label, Icon]) => (
+        {([["accounts", "Cuentas", Users], ["tickets", "Tickets", LifeBuoy], ["audit", "Bitácora", ScrollText]] as const).map(([id, label, Icon]) => (
           <button
             key={id}
             onClick={() => setTab(id)}
@@ -105,10 +122,13 @@ export default function AdminPortal() {
             className={`h-10 px-4 rounded-full text-sm font-medium flex items-center gap-2 cursor-pointer ${tab === id ? "bg-brand-text text-brand-bg" : "border border-brand-border hover:bg-brand-bg"}`}
           >
             <Icon size={16} aria-hidden="true" /> {label}
+            {id === "tickets" && pending > 0 && (
+              <span className="h-5 min-w-5 px-1.5 rounded-full bg-brand-primary text-white text-[11px] font-semibold flex items-center justify-center" id="tickets-badge" aria-label={`${pending} solicitud(es) sin atender`}>{pending}</span>
+            )}
           </button>
         ))}
       </nav>
-      {api && (tab === "accounts" ? <AccountsView api={api} /> : <AuditView api={api} />)}
+      {api && (tab === "accounts" ? <AccountsView api={api} /> : tab === "tickets" ? <TicketsView api={api} onPendingChange={refreshPending} /> : <AuditView api={api} />)}
     </Shell>
   );
 }

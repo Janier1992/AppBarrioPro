@@ -2,6 +2,7 @@
 // del portal de soporte. No se incluye en el build de producción.
 import type { AdminAccount, AdminApi, AdminSummary, AuditEntry, StatusAction } from "./admin";
 import type { SubscriptionInfo, SubscriptionState } from "./subscription";
+import { createMockAdminSupport } from "./supportMock";
 
 const day = 86400000;
 const iso = (offsetDays: number) => new Date(Date.now() + offsetDays * day).toISOString();
@@ -44,6 +45,7 @@ export function createMockAdminApi(): AdminApi {
     return { userId: r.userId, state, status: r.status, trialEndsAt: r.trialEndsAt, currentPeriodEnd: r.currentPeriodEnd, lastPaymentAt: r.lastPaymentAt, hasAccess: state === "trial" || state === "active", daysLeft: end ? Math.max(0, Math.ceil((new Date(end).getTime() - Date.now()) / day)) : 0 };
   };
   const refresh = (r: Row) => void (r.state = stateOf(r));
+  const support = createMockAdminSupport();
 
   return {
     isAdmin: async () => true,
@@ -93,5 +95,10 @@ export function createMockAdminApi(): AdminApi {
       };
     },
     auditLog: async () => audit,
+    supportList: (status) => support.list(status),
+    supportThread: (id) => support.thread(id),
+    supportReply: (id, body, status) => support.reply(id, body, status),
+    supportSetStatus: (id, status) => support.setStatus(id, status),
+    supportPendingCount: () => support.pendingCount(),
   };
 }

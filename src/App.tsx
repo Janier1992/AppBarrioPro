@@ -21,6 +21,7 @@ const Settings = React.lazy(() => import("./components/Settings"));
 const Inventory = React.lazy(() => import("./components/Inventory"));
 const Sales = React.lazy(() => import("./components/Sales"));
 const Deudas = React.lazy(() => import("./components/Deudas"));
+const SupportView = React.lazy(() => import("./components/SupportView"));
 const Onboarding = React.lazy(() => import("./components/Onboarding"));
 
 import AIAssistantChat from "./components/AIAssistantChat";
@@ -30,6 +31,7 @@ import AppSidebar from "./components/AppSidebar";
 import PaywallScreen from "./components/PaywallScreen";
 import SubscriptionBanner from "./components/SubscriptionBanner";
 import MoreMenuList from "./components/MoreMenuList";
+import { useSupportUnread } from "./hooks/use-support-unread";
 import ToastContainer from "./components/ToastContainer";
 import NotificationPrompt from "./components/NotificationPrompt";
 import { APP_NAME } from "./lib/brand";
@@ -87,6 +89,8 @@ export default function App() {
     handleDesbloquearConPin,
     handleAuthSubmit
   } = useApp();
+  // Respuestas de soporte sin leer (punto en el menú). Debe ir antes de cualquier retorno anticipado.
+  const { count: supportUnread, refresh: refreshSupportUnread } = useSupportUnread(Boolean(user) && access?.hasAccess === true);
 
   if (authLoading) {
     return (
@@ -167,7 +171,7 @@ export default function App() {
 
   // En Vender y Cobrar no hay menú inferior: el tendero se concentra en terminar la venta.
   const hideMobileNav = activeTab === "sales";
-  const isMoreActive = isMobileMoreOpen || activeTab === "checklist" || activeTab === "settings";
+  const isMoreActive = isMobileMoreOpen || activeTab === "checklist" || activeTab === "settings" || activeTab === "support";
 
   const mobileTabClass = (isActive: boolean) =>
     `flex flex-col items-center justify-center gap-1 min-h-[56px] rounded-xl text-[11px] cursor-pointer transition-colors ${
@@ -207,6 +211,7 @@ export default function App() {
           setIsLocked={setIsLocked}
           handleToggleTheme={handleToggleTheme}
           handleCerrarSesionGoogle={handleCerrarSesionGoogle}
+          supportUnread={supportUnread}
         />
 
         <div className="flex-1 min-w-0 flex flex-col">
@@ -270,7 +275,8 @@ export default function App() {
                       onClearSearchParam={() => setGlobalSearchTerm("")}
                     />
                   )}
-                  {activeTab === "settings" && (
+                  {activeTab === "support" && <SupportView onUnreadChange={refreshSupportUnread} />}
+              {activeTab === "settings" && (
                     <Settings
                       products={products}
                       profile={profile}
@@ -314,7 +320,10 @@ export default function App() {
           <span>Fiados</span>
         </button>
         <button onClick={() => setIsMobileMoreOpen((prev) => !prev)} aria-expanded={isMobileMoreOpen} className={mobileTabClass(isMoreActive)} id="mobile-nav-more">
-          <Ellipsis size={24} strokeWidth={1.9} />
+          <span className="relative">
+            <Ellipsis size={24} strokeWidth={1.9} />
+            {supportUnread > 0 && <span className="absolute -top-0.5 -right-1 h-2.5 w-2.5 rounded-full bg-brand-primary" aria-label="Respuesta de soporte nueva" id="more-unread-dot" />}
+          </span>
           <span>Más</span>
         </button>
 
@@ -337,6 +346,7 @@ export default function App() {
                   setIsLocked={setIsLocked}
                   handleToggleTheme={handleToggleTheme}
                   handleCerrarSesionGoogle={handleCerrarSesionGoogle}
+                  supportUnread={supportUnread}
                   onClose={() => setIsMobileMoreOpen(false)}
                 />
               </motion.div>

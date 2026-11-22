@@ -313,6 +313,7 @@ function buildHtml(): string {
           <li>Pagas el primer mes por Nequi al número que verás en pantalla, con tu referencia en el mensaje del pago, y nos envías el comprobante. Dejamos tu cuenta activa.</li>
           <li>Si pasan los ${PLAN.trialDays} días de prueba o se cumple tu mes sin renovar, Tiendly te pedirá activar la suscripción para seguir usándolo. <b>Tus datos no se borran</b>: vuelven apenas renuevas.</li>
         </ul>
+        <div class="tip"><span class="tip-label">¿Necesitas ayuda?</span><p>Entra a <b>Soporte</b> (menú lateral en el computador; Más → Soporte en el celular), cuéntanos qué pasa y te respondemos en la misma pantalla.</p></div>
         <div class="tip"><span class="tip-label">Consejo</span><p>Antes de suscribirte puedes explorar Tiendly con los datos de ejemplo (en Hoy: “Probar con datos de ejemplo”) para ver cómo funciona con un negocio ficticio.</p></div>
       </div>
       <div class="footer">Tiendly — Manual de Usuario</div>

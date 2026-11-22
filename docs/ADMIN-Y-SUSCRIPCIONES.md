@@ -44,7 +44,24 @@ Soporte (cuentas en `admins`) nunca queda bloqueado.
    Para **agregar a otra persona de soporte**, repite los dos pasos con su correo. Para **quitar a alguien**: `DELETE FROM admins WHERE email = 'correo@x.com';`.
    **Si el correo de la cuenta de soporte aparece "sin verificar"** y no te deja entrar ("Debes confirmar tu correo electrónico"): en la pantalla de inicio de sesión de la app, tras ese mensaje, toca **Reenviar correo de confirmación** y abre el enlace del correo que llegue (revisa también el spam).
 3. **Entra al portal:** `https://TU-DOMINIO/admin` (también hay un enlace "Acceso de soporte" en la pantalla de inicio de sesión) con el correo y la contraseña de esa cuenta. Si entras con una cuenta que no está en `admins`, verás "Sin permisos de soporte".
-4. **Cuentas existentes:** al aplicar la migración, cada negocio que ya existía recibe una prueba de 7 días a partir de ese momento. Si algún cliente ya paga, ábrelo en el portal y registra su pago.
+4. **Cerrar sesión:** al salir del portal te lleva directo a la pantalla de inicio de sesión principal de la app. (El enlace "Volver a la app" del acceso de soporte se mantiene.)
+5. **Cuentas existentes:** al aplicar la migración, cada negocio que ya existía recibe una prueba de 7 días a partir de ese momento. Si algún cliente ya paga, ábrelo en el portal y registra su pago.
+
+## Tickets de soporte
+
+Los negocios tienen una sección **Soporte** (menú lateral en el computador; **Más → Soporte** en el celular) para reportar un problema, una duda sobre pagos o una sugerencia. Cada solicitud es una **conversación**: el cliente escribe, tú respondes desde el portal y el cliente ve la respuesta en la misma pantalla (con un punto de "respuesta nueva" en el menú).
+
+**Activarlo (una sola vez):** ejecuta `insforge-migration-soporte.sql` completo en el editor SQL de InsForge (requiere haber aplicado antes la migración de suscripciones; es seguro repetirlo). Mientras no lo hagas, la sección muestra un aviso para escribir por WhatsApp.
+
+**En el portal `/admin` → pestaña Tickets:**
+- El número rojo/verde de la pestaña (y el título del navegador, por ejemplo `(2) Soporte · Tiendly`) cuenta las solicitudes **sin atender**. La lista se actualiza sola cada 20 segundos; no hay notificaciones push ni por correo.
+- Cada solicitud muestra el negocio, el asunto, la categoría y el estado de su suscripción (útil para solicitudes de pago).
+- **Responder** deja la solicitud "En proceso"; **Responder y resolver** la cierra; **Marcar resuelta** / **Reabrir** cambian el estado sin mensaje. Si el cliente escribe de nuevo en una solicitud resuelta, se reabre sola.
+- Todo lo que respondes queda en la **Bitácora**.
+
+**Límites:** máximo 5 solicitudes abiertas y 10 mensajes por hora por cliente (evita el abuso); asunto hasta 120 y mensaje hasta 2000 caracteres. Un cliente con la prueba vencida o suspendido **sí puede** escribir a soporte desde su cuenta si logra entrar a la app; la pantalla de suscripción vencida mantiene el botón de WhatsApp.
+
+**Seguridad:** cada cliente solo ve sus solicitudes (RLS), no puede escribir las tablas directamente y las funciones de soporte verifican `is_admin()` en el servidor. La auditoría `insforge-auditoria-rls.sql` (versión actualizada) ya cubre estas tablas.
 
 ## Uso diario del portal
 
@@ -77,7 +94,7 @@ Lo que haces tú:
 - Cada función del portal verifica **en el servidor** que quien llama esté en `admins`; un cliente que intente llamarlas recibe "Acceso solo para soporte".
 - Los clientes **no pueden** modificar su propia suscripción, ni crearse una, ni hacerse administradores (las tablas solo se leen; se escriben únicamente con las funciones del portal).
 - Los clientes no pueden consultar el estado de otras cuentas.
-- Las pruebas contra un Postgres real (`db-tests/suscripciones.test.ts`, 23 casos) cubren estos puntos.
+- Las pruebas contra un Postgres real (`db-tests/suscripciones.test.ts` y `db-tests/soporte.test.ts`) cubren estos puntos.
 
 ## Límites conocidos
 

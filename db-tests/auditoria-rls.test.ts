@@ -16,6 +16,7 @@ beforeEach(async () => {
   await db.exec(read("insforge-rls-policies.sql"));
   await db.exec(read("insforge-migration-stock-atomico.sql"));
   await db.exec(read("insforge-migration-suscripciones.sql"));
+  await db.exec(read("insforge-migration-soporte.sql"));
 });
 
 const audit = async () => (await db.query(AUDIT)).rows as Array<{ n: number; verificacion: string; estado: string; detalle: string }>;
@@ -82,6 +83,19 @@ describe("auditoría RLS (solo lectura)", () => {
     expect((await failed()).map((r) => r.n)).toContain(8);
     await db.exec(`ALTER TABLE respaldo_profile ENABLE ROW LEVEL SECURITY`);
     expect((await failed()).map((r) => r.n)).not.toContain(8);
+  });
+
+  it("cubre las tablas de tickets: detecta RLS apagado y escritura directa de clientes", async () => {
+    await db.exec("ALTER TABLE support_tickets DISABLE ROW LEVEL SECURITY");
+    expect((await failed()).find((r) => r.n === 1)!.detalle).toContain("support_tickets");
+    await db.exec("ALTER TABLE support_tickets ENABLE ROW LEVEL SECURITY");
+    await db.exec(`CREATE POLICY hack ON support_messages FOR INSERT WITH CHECK (true)`);
+    expect((await failed()).find((r) => r.n === 6)!.detalle).toContain("support_messages.hack");
+  });
+
+  it("detecta una función de tickets insegura (sin SECURITY DEFINER)", async () => {
+    await db.exec(`ALTER FUNCTION admin_support_reply(BIGINT, TEXT, TEXT) SECURITY INVOKER`);
+    expect((await failed()).find((r) => r.n === 9)!.detalle).toContain("admin_support_reply");
   });
 
   it("detecta una función de soporte insegura (sin SECURITY DEFINER)", async () => {
