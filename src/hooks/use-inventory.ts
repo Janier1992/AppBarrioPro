@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import * as XLSX from "xlsx";
+import { readSpreadsheetRows, SpreadsheetFormatError } from "../lib/spreadsheet";
+import { toCsv } from "../lib/csv";
 import { Product, BusinessProfile } from "../types";
 import { db } from "../lib/insforge";
 import { isCriticalStock } from "../lib/stock";
@@ -174,17 +175,17 @@ export function useInventory({
   const MAX_BULK_ROWS = 5000;
 
   const processFile = async (file: File) => {
-    const isExcel = file.name.endsWith(".xlsx") || file.name.endsWith(".xls");
-    const isCsv = file.name.endsWith(".csv");
-    if (!isExcel && !isCsv) {
-      alert("Por favor selecciona un archivo de Excel (.xlsx, .xls) o un CSV (.csv).");
+    const lowerName = file.name.toLowerCase();
+    if (lowerName.endsWith(".xls")) {
+      alert("El formato .xls antiguo ya no se admite. En Excel usa Guardar como → .xlsx (o .csv) y vuelve a subirlo.");
+      return;
+    }
+    if (!lowerName.endsWith(".xlsx") && !lowerName.endsWith(".csv")) {
+      alert("Por favor selecciona un archivo de Excel (.xlsx) o un CSV (.csv).");
       return;
     }
 
-    // La librería xlsx tiene vulnerabilidades conocidas de ReDoS/prototype
-    // pollution sin parche disponible al analizar archivos maliciosos; se
-    // limita el tamaño y las filas procesadas como mitigación mientras no
-    // se reemplace por otra librería.
+    // Se limita el tamaño del archivo y el número de filas como protección frente a archivos maliciosos o enormes.
     if (file.size > MAX_BULK_FILE_SIZE_BYTES) {
       alert("El archivo supera el tamaño máximo permitido (5 MB). Divide tu inventario en archivos más pequeños.");
       return;
@@ -196,22 +197,9 @@ export function useInventory({
     setBulkSuccessCount(0);
     setBulkProgress(0);
 
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        const data = event.target?.result;
-        if (!data) return;
-
-        const workbook = XLSX.read(data, {
-          type: "array",
-          bookVBA: false,
-          cellFormula: false,
-          cellHTML: false,
-          sheetRows: MAX_BULK_ROWS + 1, // límite duro de filas leídas por la propia librería
-        });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        let rows = XLSX.utils.sheet_to_json<any>(sheet);
+    try {
+      {
+        let rows: any[] = await readSpreadsheetRows(file);
 
         if (rows.length === 0) {
           setBulkErrors(["El archivo está vacío o no contiene filas con datos."]);
@@ -277,13 +265,15 @@ export function useInventory({
 
         setBulkProducts(mappedRows);
         setBulkErrors(errors);
-      } catch (err) {
-        console.error("Error al leer archivo Excel: ", err);
-        setBulkErrors(["Error al interpretar el archivo. Asegúrate de que no esté protegido o corrupto."]);
       }
-    };
-
-    reader.readAsArrayBuffer(file);
+    } catch (err) {
+      console.error("Error al leer el archivo: ", err);
+      setBulkErrors([
+        err instanceof SpreadsheetFormatError
+          ? err.message
+          : "Error al interpretar el archivo. Asegúrate de que no esté protegido o corrupto.",
+      ]);
+    }
   };
 
   const handleDescargarPlantilla = async () => {
@@ -309,10 +299,17 @@ export function useInventory({
         }
       ];
 
-      const worksheet = XLSX.utils.json_to_sheet(templateData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Plantilla_Productos");
-      XLSX.writeFile(workbook, "Plantilla_Carga_Masiva_Tiendly.xlsx");
+      // Plantilla en CSV (se abre directo en Excel y evita depender de una librería para escribir .xlsx).
+      const headers = Object.keys(templateData[0]);
+      const csv = toCsv(headers, templateData.map((row) => headers.map((h) => (row as Record<string, unknown>)[h])));
+      const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Plantilla_Carga_Masiva_Tiendly.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (error) {
       showErrorToast("Error al descargar la plantilla.");
     }
