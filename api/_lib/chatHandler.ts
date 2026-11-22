@@ -23,6 +23,11 @@ export const UNAUTHENTICATED_RESPONSE = {
   body: { error: "Debes iniciar sesión para usar el asistente de IA." },
 } as const;
 
+export const SUBSCRIPTION_REQUIRED_RESPONSE = {
+  status: 402,
+  body: { error: "Tu suscripción no está activa. Actívala para usar el asistente de IA." },
+} as const;
+
 export interface ChatResult {
   status: number;
   body: { text?: string; error?: string };

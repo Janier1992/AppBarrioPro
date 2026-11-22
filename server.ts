@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import { authenticateRequest } from "./api/_lib/auth";
 import { buildCspDirectives } from "./api/_lib/csp";
 import { isIpRateLimited } from "./api/_lib/rateLimit";
-import { processChatRequest, UNAUTHENTICATED_RESPONSE } from "./api/_lib/chatHandler";
+import { processChatRequest, SUBSCRIPTION_REQUIRED_RESPONSE, UNAUTHENTICATED_RESPONSE } from "./api/_lib/chatHandler";
 
 dotenv.config();
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local"), override: true });
@@ -43,6 +43,9 @@ app.post("/api/chat", async (req, res) => {
   const requester = await authenticateRequest(req);
   if (!requester) {
     return res.status(UNAUTHENTICATED_RESPONSE.status).json(UNAUTHENTICATED_RESPONSE.body);
+  }
+  if (requester.subscriptionActive === false) {
+    return res.status(SUBSCRIPTION_REQUIRED_RESPONSE.status).json(SUBSCRIPTION_REQUIRED_RESPONSE.body);
   }
   const result = await processChatRequest(requester.userId, req.body);
   res.status(result.status).json(result.body);

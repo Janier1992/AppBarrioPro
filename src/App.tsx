@@ -27,6 +27,8 @@ import AIAssistantChat from "./components/AIAssistantChat";
 import AppLoginScreen from "./components/AppLoginScreen";
 import AppLockScreen from "./components/AppLockScreen";
 import AppSidebar from "./components/AppSidebar";
+import PaywallScreen from "./components/PaywallScreen";
+import SubscriptionBanner from "./components/SubscriptionBanner";
 import MoreMenuList from "./components/MoreMenuList";
 import ToastContainer from "./components/ToastContainer";
 import NotificationPrompt from "./components/NotificationPrompt";
@@ -36,6 +38,8 @@ export default function App() {
   const {
     user,
     authLoading,
+    access,
+    refreshSubscription,
     activeTab,
     setActiveTab,
     isMobileMoreOpen,
@@ -118,6 +122,27 @@ export default function App() {
     );
   }
 
+  // Suscripción: mientras se consulta, un instante de carga; si no hay acceso (prueba terminada, mes vencido,
+  // cuenta suspendida), la app se reemplaza por la pantalla de activar la suscripción.
+  if (access === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-brand-bg" id="subscription-checking">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-primary border-t-transparent" />
+      </div>
+    );
+  }
+  if (!access.hasAccess) {
+    return (
+      <PaywallScreen
+        info={access.info}
+        businessName={user.displayName || undefined}
+        email={user.email || undefined}
+        onRefresh={refreshSubscription}
+        onSignOut={handleCerrarSesionGoogle}
+      />
+    );
+  }
+
   // PIN App Lock screen
   if (isLocked && profile?.securityPin) {
     return (
@@ -179,6 +204,7 @@ export default function App() {
 
         <div className="flex-1 min-w-0 flex flex-col">
           <NotificationPrompt />
+          <SubscriptionBanner info={access.info} businessName={profile?.businessName} />
 
           {/* Contenido */}
           <main className="flex-1 w-full min-w-0 max-w-5xl mx-auto px-5 lg:px-10 pt-6 lg:pt-10 pb-28 lg:pb-14">

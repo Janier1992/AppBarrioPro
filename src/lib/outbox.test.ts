@@ -82,6 +82,13 @@ describe("outbox: no perder escrituras sin conexión", () => {
     expect(calls.filter((c) => c.startsWith("upsert"))).toHaveLength(2); // un intento por escritura, no por cada elemento de la cola
   });
 
+  it("no descarta 401/403 (cuenta sin suscripción): la escritura espera a que se renueve el acceso", async () => {
+    failing = true;
+    failStatus = 403;
+    await writeRemote("u1", { table: "sales", kind: "upsert", data: { id: "s1" } });
+    expect(pendingCount("u1")).toBe(1);
+  });
+
   it("descarta lo que el servidor rechaza definitivamente (4xx) para no bloquear la cola", async () => {
     failing = true;
     failStatus = 400;

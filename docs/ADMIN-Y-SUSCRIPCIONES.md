@@ -1,0 +1,74 @@
+# Portal de soporte y control de suscripciones
+
+Cada negocio tiene una **prueba gratis de 7 días**; después paga **mes a mes**. Si la prueba termina o el mes se cumple sin pago, **el acceso se bloquea solo**. Soporte administra las cuentas desde un portal propio.
+
+## Cómo funciona (arquitectura)
+
+```
+Cliente (app)  ──►  InsForge (Postgres + RLS)  ◄──  Portal de soporte (/admin)
+   │  pantalla de                │                         │ solo cuentas en la
+   │  "activa tu suscripción"    │  BLOQUEO REAL           │ tabla `admins`
+   └─ muestra el estado          │  (política RLS restrictiva)
+```
+
+- **El bloqueo está en la base de datos, no en la pantalla.** Si la cuenta no tiene acceso vigente, Postgres rechaza leer o escribir productos, ventas, tareas y fiados (también el stock atómico), aunque alguien manipule el navegador. La app solo muestra la pantalla adecuada.
+- **Es automático, sin tareas programadas.** El estado se calcula con las fechas cada vez que se consulta: no hay nada que "vencer" a mano.
+- **El asistente de IA también se bloquea** (`/api/chat` verifica la suscripción), para que una cuenta vencida no gaste tu cuota de Gemini.
+- **Los datos no se borran.** Al renovar, el cliente recupera todo.
+
+### Estados de una cuenta
+
+| Estado | Acceso | Cuándo ocurre |
+|---|---|---|
+| `trial` En prueba | ✅ | Primeros 7 días desde el primer ingreso |
+| `trial_expired` Prueba vencida | ❌ | Pasaron los 7 días sin suscribirse |
+| `active` Activa | ✅ | Tiene un pago vigente (hasta `currentPeriodEnd`) |
+| `past_due` Mes vencido | ❌ | Se cumplió el mes sin registrar un nuevo pago |
+| `suspended` Suspendida | ❌ | Soporte la suspendió (inmediato) |
+| `cancelled` Cancelada | ❌ | Soporte canceló la suscripción |
+
+Soporte (cuentas en `admins`) nunca queda bloqueado.
+
+## Puesta en marcha (una sola vez)
+
+1. **Aplica la migración.** En el editor SQL de InsForge ejecuta `insforge-migration-suscripciones.sql` completo (es seguro repetirlo). Además corrige una columna del esquema: el PIN se guarda como hash de 60 caracteres y la columna original era de 10, lo que impedía sincronizar el perfil de quien configuraba un PIN.
+2. **Crea tu administrador.** Busca tu id de usuario en InsForge (Authentication → Users) y ejecuta:
+   ```sql
+   INSERT INTO admins ("userId", email) VALUES ('ID-DE-TU-USUARIO', 'tu@correo.com');
+   ```
+   Usa una cuenta propia de soporte con una contraseña larga y única.
+3. **Entra al portal:** `https://TU-DOMINIO/admin` (también hay un enlace "Acceso de soporte" en la pantalla de inicio de sesión).
+4. **Cuentas existentes:** al aplicar la migración, cada negocio que ya existía recibe una prueba de 7 días a partir de ese momento. Si algún cliente ya paga, ábrelo en el portal y registra su pago.
+
+## Uso diario del portal
+
+- **Tablero:** cuentas, en prueba, activas, por vencer (≤5 días), bloqueadas e ingreso mensual (activas × precio). Tocar una cifra filtra la lista; también se busca por negocio, correo o teléfono.
+- **Registrar pago** (cuando el cliente te paga por Nequi, transferencia, efectivo…): elige meses y medio de pago, y la cuenta queda activa. Si aún le quedaba tiempo vigente, los meses se suman **al final**: no pierde nada. Pagar durante la prueba conserva los días de prueba que faltaban.
+- **Suspender / Reactivar / Cancelar:** la suspensión bloquea de inmediato. Reactivar solo funciona si queda un periodo vigente (si no, registra un pago o extiende la prueba).
+- **Extender prueba** (+3, +7, +14 días) para quien no alcanzó a probarla.
+- **Restablecer PIN** si el cliente olvidó su PIN de bloqueo.
+- **Resumen del negocio** (solo lectura): productos, ventas de 30 días, fiados abiertos, última venta, pagos. Sirve para diagnosticar fallas sin ver filas sueltas ni el PIN.
+- **Bitácora:** quién hizo qué y cuándo (pagos, suspensiones…). Solo se agrega, nunca se edita.
+
+### Flujo de cobro recomendado
+1. El cliente toca "Activar mi suscripción" y te escribe por WhatsApp (+57 304 476 9592).
+2. Le indicas cómo pagar $29.900 (Nequi, transferencia…).
+3. Recibes el pago → abres su cuenta en `/admin` → **Registrar pago y activar**.
+4. El cliente toca "Ya pagué, verificar" y entra. (Si no lo toca, entra solo al volver a la app.)
+
+## Seguridad
+
+- Cada función del portal verifica **en el servidor** que quien llama esté en `admins`; un cliente que intente llamarlas recibe "Acceso solo para soporte".
+- Los clientes **no pueden** modificar su propia suscripción, ni crearse una, ni hacerse administradores (las tablas solo se leen; se escriben únicamente con las funciones del portal).
+- Los clientes no pueden consultar el estado de otras cuentas.
+- Las pruebas contra un Postgres real (`db-tests/suscripciones.test.ts`, 23 casos) cubren estos puntos.
+
+## Límites conocidos
+
+- **Pago manual.** No hay pasarela (Wompi, ePayco…): tú cobras y registras. Integrarla sería el siguiente paso (la base ya guarda pagos y fechas).
+- **Sin doble factor** en el portal: usa contraseñas largas y únicas, y limita quién está en `admins`.
+- **Nueva prueba con otro correo:** quien borre su cuenta y se registre con otro correo obtiene otra prueba. Es un riesgo comercial aceptado en esta etapa.
+- **Sin conexión:** la app deja trabajar según la última fecha conocida; si esa fecha ya pasó, bloquea. El servidor igual rechaza los datos sin acceso.
+- **Gracia:** el bloqueo es al vencer (0 días de gracia). Se cambia en la función `subscription_grace_days()` de la migración.
+- **Edición de datos de clientes:** el portal es de solo lectura sobre el negocio (más el PIN); no edita productos ni ventas.
+- Los términos y condiciones deben actualizarse para una suscripción de pago (revisión legal).
