@@ -71,7 +71,7 @@ El proyecto está organizado de manera predecible, limpia y balanceada, evitando
 │   ├── /components                # Componentes interactivos modulares y reutilizables
 │   │   ├── Checklist.tsx          # Gestor de tareas, aperturas, cierres y rutinas
 │   │   ├── Dashboard.tsx          # Pantalla "Hoy": cifra del día, "Para hoy" y acción principal
-│   │   ├── AppTopNav.tsx          # Barra superior de escritorio (Hoy, Productos, Vender, Fiados)
+│   │   ├── AppSidebar.tsx         # Menú lateral plegable de escritorio (Hoy, Productos, Vender, Fiados, Más)
 │   │   ├── MoreMenuList.tsx       # Menú "Más": Tareas, Ajustes, Asistente IA, tema, cerrar sesión
 │   │   ├── DashboardCharts.tsx    # Gráficos Recharts e historial
 │   │   ├── Inventory.tsx          # Vista de inventario y alertas

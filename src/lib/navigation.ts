@@ -7,7 +7,7 @@
 
 export type AppTab = "dashboard" | "inventory" | "sales" | "checklist" | "debts" | "settings";
 
-/** Los cuatro destinos del uso diario (barra inferior en móvil, barra superior en escritorio). */
+/** Los cuatro destinos del uso diario (barra inferior en móvil, menú lateral en escritorio). */
 export const MAIN_TABS: ReadonlyArray<{ id: AppTab; label: string }> = [
   { id: "dashboard", label: "Hoy" },
   { id: "inventory", label: "Productos" },

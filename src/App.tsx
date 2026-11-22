@@ -26,7 +26,7 @@ const Onboarding = React.lazy(() => import("./components/Onboarding"));
 import AIAssistantChat from "./components/AIAssistantChat";
 import AppLoginScreen from "./components/AppLoginScreen";
 import AppLockScreen from "./components/AppLockScreen";
-import AppTopNav from "./components/AppTopNav";
+import AppSidebar from "./components/AppSidebar";
 import MoreMenuList from "./components/MoreMenuList";
 import ToastContainer from "./components/ToastContainer";
 import NotificationPrompt from "./components/NotificationPrompt";
@@ -40,8 +40,6 @@ export default function App() {
     setActiveTab,
     isMobileMoreOpen,
     setIsMobileMoreOpen,
-    isProfileDropdownOpen,
-    setIsProfileDropdownOpen,
     deferredInstallPrompt,
     setDeferredInstallPrompt,
     isPwaInstalled,
@@ -167,94 +165,96 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Barra superior (solo escritorio) */}
-      <AppTopNav
-        profile={profile}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        setInventoryFilterCritical={setInventoryFilterCritical}
-        isProfileDropdownOpen={isProfileDropdownOpen}
-        setIsProfileDropdownOpen={setIsProfileDropdownOpen}
-        setIsLocked={setIsLocked}
-        handleToggleTheme={handleToggleTheme}
-        handleCerrarSesionGoogle={handleCerrarSesionGoogle}
-      />
+      {/* Menú lateral (solo escritorio) + contenido */}
+      <div className="flex flex-1 w-full min-w-0 flex-col lg:flex-row">
+        <AppSidebar
+          profile={profile}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          setInventoryFilterCritical={setInventoryFilterCritical}
+          setIsLocked={setIsLocked}
+          handleToggleTheme={handleToggleTheme}
+          handleCerrarSesionGoogle={handleCerrarSesionGoogle}
+        />
 
-      <NotificationPrompt />
+        <div className="flex-1 min-w-0 flex flex-col">
+          <NotificationPrompt />
 
-      {/* Contenido */}
-      <main className="flex-1 w-full min-w-0 max-w-5xl mx-auto px-5 lg:px-10 pt-6 lg:pt-10 pb-28 lg:pb-14">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
-          >
-            <React.Suspense fallback={
-              <div className="flex h-64 items-center justify-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-primary border-t-transparent" />
-              </div>
-            }>
-              {activeTab === "dashboard" && (
-                <Dashboard
-                  products={products}
-                  sales={sales}
-                  debts={debts}
-                  tasks={tasks}
-                  userId={user.uid}
-                  onNavigate={(tab) => {
-                    setInventoryFilterCritical(tab === "inventory");
-                    setActiveTab(tab);
-                  }}
-                />
-              )}
-              {activeTab === "inventory" && (
-                <Inventory
-                  products={products}
-                  profile={profile}
-                  userId={user.uid}
-                  initialFilterCritical={inventoryFilterCritical}
-                  searchQueryParam={globalSearchTerm}
-                  onClearSearchParam={() => setGlobalSearchTerm("")}
-                />
-              )}
-              {activeTab === "sales" && (
-                <Sales products={products} sales={sales} userId={user.uid} onBack={() => setActiveTab("dashboard")} />
-              )}
-              {activeTab === "debts" && (
-                <Deudas
-                  debts={debts}
-                  userId={user.uid}
-                  searchQueryParam={globalSearchTerm}
-                  onClearSearchParam={() => setGlobalSearchTerm("")}
-                />
-              )}
-              {activeTab === "checklist" && (
-                <Checklist
-                  tasks={tasks}
-                  userId={user.uid}
-                  searchQueryParam={globalSearchTerm}
-                  onClearSearchParam={() => setGlobalSearchTerm("")}
-                />
-              )}
-              {activeTab === "settings" && (
-                <Settings
-                  products={products}
-                  profile={profile}
-                  userId={user.uid}
-                  handleToggleTheme={handleToggleTheme}
-                  isPwaInstalled={isPwaInstalled}
-                  deferredInstallPrompt={deferredInstallPrompt}
-                  setDeferredInstallPrompt={setDeferredInstallPrompt}
-                  setIsPwaInstalled={setIsPwaInstalled}
-                />
-              )}
-            </React.Suspense>
-          </motion.div>
-        </AnimatePresence>
-      </main>
+          {/* Contenido */}
+          <main className="flex-1 w-full min-w-0 max-w-5xl mx-auto px-5 lg:px-10 pt-6 lg:pt-10 pb-28 lg:pb-14">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15 }}
+              >
+                <React.Suspense fallback={
+                  <div className="flex h-64 items-center justify-center">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-primary border-t-transparent" />
+                  </div>
+                }>
+                  {activeTab === "dashboard" && (
+                    <Dashboard
+                      products={products}
+                      sales={sales}
+                      debts={debts}
+                      tasks={tasks}
+                      userId={user.uid}
+                      onNavigate={(tab) => {
+                        setInventoryFilterCritical(tab === "inventory");
+                        setActiveTab(tab);
+                      }}
+                    />
+                  )}
+                  {activeTab === "inventory" && (
+                    <Inventory
+                      products={products}
+                      profile={profile}
+                      userId={user.uid}
+                      initialFilterCritical={inventoryFilterCritical}
+                      searchQueryParam={globalSearchTerm}
+                      onClearSearchParam={() => setGlobalSearchTerm("")}
+                    />
+                  )}
+                  {activeTab === "sales" && (
+                    <Sales products={products} sales={sales} userId={user.uid} onBack={() => setActiveTab("dashboard")} />
+                  )}
+                  {activeTab === "debts" && (
+                    <Deudas
+                      debts={debts}
+                      userId={user.uid}
+                      searchQueryParam={globalSearchTerm}
+                      onClearSearchParam={() => setGlobalSearchTerm("")}
+                    />
+                  )}
+                  {activeTab === "checklist" && (
+                    <Checklist
+                      tasks={tasks}
+                      userId={user.uid}
+                      searchQueryParam={globalSearchTerm}
+                      onClearSearchParam={() => setGlobalSearchTerm("")}
+                    />
+                  )}
+                  {activeTab === "settings" && (
+                    <Settings
+                      products={products}
+                      profile={profile}
+                      userId={user.uid}
+                      handleToggleTheme={handleToggleTheme}
+                      isPwaInstalled={isPwaInstalled}
+                      deferredInstallPrompt={deferredInstallPrompt}
+                      setDeferredInstallPrompt={setDeferredInstallPrompt}
+                      setIsPwaInstalled={setIsPwaInstalled}
+                    />
+                  )}
+                </React.Suspense>
+              </motion.div>
+            </AnimatePresence>
+          </main>
+        </div>
+      </div>
 
       {/* Barra inferior móvil: 4 destinos + "Vender" grande al centro + "Más" */}
       <nav
