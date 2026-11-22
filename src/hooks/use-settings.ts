@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toCsv } from "../lib/csv";
 import { Product, BusinessProfile } from "../types";
 import { db } from "../lib/insforge";
 import { loadDemoDataToFirestore } from "../lib/demoData";
@@ -185,16 +186,7 @@ export function useSettings({ products, profile, userId }: UseSettingsProps) {
       p.updatedAt ? new Date(p.updatedAt).toLocaleDateString("es-CO") : ""
     ]);
 
-    const csvContent = "\uFEFF" + [
-      headers.join(","),
-      ...rows.map(row => row.map(val => {
-        const text = String(val === undefined || val === null ? "" : val);
-        if (text.includes(",") || text.includes('"') || text.includes("\n") || text.includes("\r")) {
-          return `"${text.replace(/"/g, '""')}"`;
-        }
-        return text;
-      }).join(","))
-    ].join("\n");
+    const csvContent = toCsv(headers, rows);
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
