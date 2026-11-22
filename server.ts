@@ -5,6 +5,7 @@ import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 import { authenticateRequest } from "./api/_lib/auth";
 import { buildCspDirectives } from "./api/_lib/csp";
+import { isIpRateLimited } from "./api/_lib/rateLimit";
 import { processChatRequest, UNAUTHENTICATED_RESPONSE } from "./api/_lib/chatHandler";
 
 dotenv.config();
@@ -36,6 +37,9 @@ app.get("/healthz", (_req, res) => {
 // Sin esto, el proxy de Gemini queda abierto a cualquier visitante de la URL pública.
 // La lógica del chat se comparte con api/chat.ts (Vercel) vía api/_lib/chatHandler.ts.
 app.post("/api/chat", async (req, res) => {
+  if (await isIpRateLimited(req)) {
+    return res.status(429).json({ error: "Demasiadas solicitudes. Espera un momento." });
+  }
   const requester = await authenticateRequest(req);
   if (!requester) {
     return res.status(UNAUTHENTICATED_RESPONSE.status).json(UNAUTHENTICATED_RESPONSE.body);
