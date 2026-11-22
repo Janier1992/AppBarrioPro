@@ -21,6 +21,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import puppeteer from "puppeteer-core";
+import { PLAN, priceLabel, trialLabel, whatsappDisplay } from "../src/lib/pricing";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ASSETS_DIR = path.resolve(__dirname, "../docs/manual-assets");
@@ -284,9 +285,37 @@ function buildHtml(): string {
     )
     .join("\n");
 
-  const tocHtml = sections
-    .map((s, idx) => `<li><span class="toc-num">${idx + 1}.</span> ${s.title}</li>`)
+  const tocHtml = [...sections.map((s) => s.title), "Plan y suscripción"]
+    .map((title, idx) => `<li><span class="toc-num">${idx + 1}.</span> ${title}</li>`)
     .join("\n");
+
+  const contact = `WhatsApp ${whatsappDisplay()}`;
+  const plansHtml = `
+    <section class="module-page">
+      <div class="module-header">
+        <span class="badge">SUSCRIPCIÓN</span>
+        <h1>${sections.length + 1}. Plan y suscripción</h1>
+      </div>
+      <div class="module-body">
+        <p class="intro">Empiezas con una <b>prueba gratis de ${PLAN.trialDays} días</b>. Después, Tiendly se paga mes a mes, con un solo plan pensado para tiendas y negocios de barrio.</p>
+        <div class="plan-card">
+          <div class="plan-trial">Prueba ${trialLabel()}</div>
+          <div class="plan-name">${PLAN.name}</div>
+          <div class="plan-price">${priceLabel().replace(" ", "")}<span class="plan-per">al ${PLAN.period}</span></div>
+          <p class="plan-tag">${PLAN.tagline}</p>
+          <ul class="plan-list">${PLAN.includes.map((i) => `<li>${i}</li>`).join("")}</ul>
+          <p class="plan-note">Precio en pesos colombianos. No incluye: ${PLAN.notIncluded.join(", ")}.</p>
+        </div>
+        <h3>¿Cómo suscribirte?</h3>
+        <ul class="steps">
+          <li>Crea tu cuenta y usa Tiendly gratis durante ${PLAN.trialDays} días, sin compromiso.</li>
+          <li>Si te gusta, escríbenos por ${contact} (ventas) y dinos el nombre de tu negocio.</li>
+          <li>Te indicamos cómo realizar el pago del primer mes y dejamos tu cuenta activa.</li>
+        </ul>
+        <div class="tip"><span class="tip-label">Consejo</span><p>Antes de suscribirte puedes explorar Tiendly con los datos de ejemplo (en Hoy: “Probar con datos de ejemplo”) para ver cómo funciona con un negocio ficticio.</p></div>
+      </div>
+      <div class="footer">Tiendly — Manual de Usuario</div>
+    </section>`;
 
   return `<!doctype html>
 <html lang="es">
@@ -341,6 +370,16 @@ function buildHtml(): string {
   .phone img { display: block; border: 1.5px solid #333; border-radius: 9px; }
   .phones-1 .phone img { width: 58mm; }
   .phones-2 .phone img { width: 41mm; }
+  .plan-card { border: 2px solid #2F6B4F; border-radius: 10px; padding: 14px 18px; margin: 10px 0 8px; background: #FAFAF8; }
+  .plan-trial { display: inline-block; background: #EAF2ED; color: #2F6B4F; font-size: 10px; font-weight: 800; border-radius: 99px; padding: 3px 10px; margin-bottom: 4px; }
+  .plan-name { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; color: #2F6B4F; text-transform: uppercase; }
+  .plan-price { font-size: 40px; font-weight: 800; letter-spacing: -1px; margin: 2px 0; }
+  .plan-per { font-size: 14px; font-weight: 500; color: #6b7280; margin-left: 5px; letter-spacing: 0; }
+  .plan-tag { font-size: 10.5px; color: #4b5563; margin: 0 0 8px; }
+  .plan-list { margin: 0 0 8px; padding-left: 5mm; }
+  .plan-list li { font-size: 11px; line-height: 1.5; margin-bottom: 3px; }
+  .plan-list li::marker { color: #2F6B4F; }
+  .plan-note { font-size: 9.5px; color: #6b7280; margin: 0; }
   .footer { position: absolute; bottom: 8mm; left: 15mm; right: 15mm; font-size: 8px; color: #6b7280; display: flex; justify-content: space-between; }
 </style>
 </head>
@@ -361,6 +400,7 @@ function buildHtml(): string {
   </div>
 
   ${sectionHtml}
+  ${plansHtml}
 </body>
 </html>`;
 }

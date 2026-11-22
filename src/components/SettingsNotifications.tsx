@@ -68,6 +68,9 @@ export default function SettingsNotifications({
           </div>
           <button
             type="button"
+            role="switch"
+            aria-checked={notifPrefs.enableStockAlerts}
+            aria-label="Alertas de stock bajo"
             onClick={() => handleAlternarPreferenciaNotificaciones("enableStockAlerts")}
             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${notifPrefs.enableStockAlerts ? "bg-brand-primary" : "bg-gray-200"}`}
           >
@@ -90,6 +93,9 @@ export default function SettingsNotifications({
           </div>
           <button
             type="button"
+            role="switch"
+            aria-checked={notifPrefs.enableChecklistAlerts}
+            aria-label="Alertas de tareas pendientes"
             onClick={() => handleAlternarPreferenciaNotificaciones("enableChecklistAlerts")}
             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${notifPrefs.enableChecklistAlerts ? "bg-brand-primary" : "bg-gray-200"}`}
           >

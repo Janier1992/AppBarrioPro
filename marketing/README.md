@@ -1,6 +1,8 @@
 # Marketing de Tiendly
 
 - `paquete-redes.md`: ganchos, textos por red, calendario y captación de contactos.
+- `radar-clientes.md`: enlace personalizado `/planes`, **precio propuesto ($29.900/mes)**, mensajes por nicho para Radar Clientes y lista de puesta en marcha.
+- `escena-precio.ts`: genera la escena final del video con el plan y el precio (sale de `src/lib/pricing.ts`).
 - `narracion.json`: el texto que se narra y se subtitula (una línea por escena).
 - `guion-voz.md`: el mismo texto en formato para **grabar tu propia voz** con el celular.
 - `grabar-escenas.cjs`: graba la app real en alta resolución (1080×1920, 9:16), una escena por línea.
@@ -13,8 +15,11 @@
 # 1) App en modo demostración (sin InsForge). Los datos de la tienda son ficticios y los siembra el script.
 VITE_INSFORGE_ANON_KEY="your-anon-key" PORT=3180 npm run dev
 
-# 2) Grabar las 14 escenas (≈ 10 min). Resultado: marketing/escenas/*.mp4 + escenas.json
+# 2) Grabar las 14 escenas (la 15, de precio, se genera aparte) (≈ 10 min). Resultado: marketing/escenas/*.mp4 + escenas.json
 node marketing/grabar-escenas.cjs http://localhost:3180 marketing/escenas
+
+# 2b) Escena final con el precio (usa el mismo precio de la app y del manual)
+NODE_PATH=$(npm root -g) npx tsx marketing/escena-precio.ts marketing/escenas 7
 
 # 3) Componer el video final (segundos). Sin voz: solo subtítulos.
 node marketing/componer-video.cjs --escenas marketing/escenas --salida marketing/out

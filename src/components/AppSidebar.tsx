@@ -134,7 +134,7 @@ export default function AppSidebar({
               aria-current={activeTab === id ? "page" : undefined}
               title={collapsed ? text : undefined}
               className={tabClass(activeTab === id)}
-              id={`more-menu-${id}`}
+              id={`sidebar-${id}`}
             >
               <Icon size={20} strokeWidth={1.8} className="shrink-0" />
               {label(text)}
@@ -144,7 +144,7 @@ export default function AppSidebar({
             onClick={() => openAssistant()}
             title={collapsed ? "Asistente IA" : undefined}
             className={plainClass}
-            id="more-menu-assistant"
+            id="sidebar-assistant"
           >
             <Sparkles size={20} strokeWidth={1.8} className="shrink-0" />
             {label("Asistente IA")}
