@@ -65,6 +65,8 @@ interface Section {
   /** Segunda captura de computador opcional (p. ej. menú contraído). */
   image2?: string;
   image2Caption?: string;
+  /** Pie de la primera captura de computador cuando hay dos (por defecto, el del menú lateral). */
+  image1Caption?: string;
   /** Qué cambia entre una pantalla y otra (texto corto bajo la captura de computador). */
   viewNote: string;
 }
@@ -217,6 +219,28 @@ const sections: Section[] = [
       "En el computador, las secciones de Ajustes están en un submenú junto al formulario. En el celular son pestañas en la parte superior que puedes deslizar hacia los lados (Perfil, Catálogo, Seguridad, Notificaciones).",
   },
   {
+    badge: "SOPORTE",
+    title: "Soporte: pide ayuda desde la app",
+    intro:
+      "Si algo no funciona o tienes una duda, no tienes que salir de Tiendly: escribe a soporte desde la sección Soporte y la respuesta te llega a la misma pantalla. Todas tus solicitudes quedan guardadas con su conversación.",
+    steps: [
+      "Entra a Soporte: en el computador está en el menú lateral; en el celular, en Más → Soporte.",
+      "Toca “Nueva solicitud”, elige el tema (algo no funciona, un pago, una duda o una sugerencia), escribe un asunto corto y cuéntanos qué pasa.",
+      "Toca “Enviar”. Tu solicitud queda “Recibida” y soporte la ve de inmediato en su panel.",
+      "Cuando soporte responda, verás un número junto a “Soporte” en el menú y el estado cambia a “En proceso” o “Resuelta”. Abre la solicitud para leer la respuesta.",
+      "Puedes seguir escribiendo en la misma conversación. Si escribes en una solicitud ya resuelta, se vuelve a abrir.",
+      "Para cuidar el servicio hay límites: hasta 5 solicitudes abiertas a la vez y 10 mensajes por hora. Si es urgente, escríbenos también por WhatsApp.",
+    ],
+    tip: "Cuéntanos qué estabas haciendo cuando pasó el problema (por ejemplo, “al tocar Cobrar en una venta a fiado”): así lo resolvemos más rápido. Aunque tu prueba gratis o tu mes hayan vencido, siempre puedes escribir a soporte.",
+    image: "soporte-nueva.png",
+    mobile: ["m-soporte-lista.png", "m-soporte-nueva.png"],
+    viewNote:
+      "En el computador la solicitud se escribe en el centro de la pantalla y el menú lateral muestra cuántas respuestas nuevas tienes. En el celular se abre desde Más → Soporte y ocupa todo el ancho.",
+    image1Caption: "Nueva solicitud (computador)",
+    image2: "soporte-conversacion.png",
+    image2Caption: "Conversación con la respuesta de soporte",
+  },
+  {
     badge: "ASISTENTE",
     title: "Tiendly AI",
     intro:
@@ -250,7 +274,7 @@ function renderViews(s: Section): string {
     .join("");
   return `<div class="views">
     <div class="col-desktop">
-      <div class="${s.image2 ? "desk-pair" : ""}"><figure class="desktop"><img src="${imageDataUrl(s.image)}" alt="${s.title} en computador" /><figcaption>${s.image2 ? "Menú lateral expandido (computador)" : "Vista en computador"}</figcaption></figure>${
+      <div class="${s.image2 ? "desk-pair" : ""}"><figure class="desktop"><img src="${imageDataUrl(s.image)}" alt="${s.title} en computador" /><figcaption>${s.image2 ? (s.image1Caption ?? "Menú lateral expandido (computador)") : "Vista en computador"}</figcaption></figure>${
         s.image2 ? `<figure class="desktop"><img src="${imageDataUrl(s.image2)}" alt="${s.image2Caption ?? ""}" /><figcaption>${s.image2Caption ?? ""}</figcaption></figure>` : ""
       }</div>
       <div class="view-note"><span class="tip-label">Qué cambia según tu pantalla</span><p>${s.viewNote}</p></div>

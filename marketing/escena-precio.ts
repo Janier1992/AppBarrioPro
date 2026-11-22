@@ -3,7 +3,7 @@
 // Responsabilidad: Generar la escena final del video con el plan y el precio (tomados de src/lib/pricing.ts,
 //   la misma fuente que usan /planes y el manual) y añadirla a las escenas grabadas.
 // Uso: NODE_PATH=$(npm root -g) npx tsx marketing/escena-precio.ts marketing/escenas [duracion_s]
-// Resultado: <escenas>/15-planes.mp4 (1080x1920, 30 fps) y su entrada en escenas.json.
+// Resultado: <escenas>/16-planes.mp4 (1080x1920, 30 fps) y su entrada en escenas.json.
 // La franja superior (104 px CSS) queda libre: el compositor dibuja ahí los subtítulos.
 // ======================================================
 import fs from "node:fs";
@@ -43,7 +43,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
     <div class="trial">Prueba ${trialLabel()}</div>
     <div class="name">${PLAN.name}</div>
     <div class="price">${priceLabel().replace(" ", "")}<span class="per">al ${PLAN.period}</span></div>
-    <p class="tag">Después de la prueba, pagas mes a mes. Sin cuaderno y sin complicarte.</p>
+    <p class="tag">Después de la prueba, pagas mes a mes por Nequi. Sin cuaderno y sin complicarte.</p>
     <ul>${highlights.map((h) => `<li>${h}</li>`).join("")}</ul>
   </div>
   <div class="cta">${cta}</div>
@@ -55,19 +55,19 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
   const page = await (await browser.newContext({ viewport: { width: 360, height: 640 }, deviceScaleFactor: 3 })).newPage();
   await page.setContent(html);
   await page.waitForTimeout(500);
-  const png = path.join(escenasDir, "15-planes.png");
+  const png = path.join(escenasDir, "16-planes.png");
   await page.screenshot({ path: png });
   await browser.close();
 
-  const out = path.join(escenasDir, "15-planes.mp4");
+  const out = path.join(escenasDir, "16-planes.mp4");
   execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-loop", "1", "-framerate", "30", "-i", png, "-t", String(duration),
     "-vf", "scale=1080:1920,format=yuv420p", "-c:v", "libx264", "-preset", "fast", "-crf", "14", "-an", out]);
   fs.rmSync(png);
 
   const jsonPath = path.join(escenasDir, "escenas.json");
   const info = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-  info.escenas = info.escenas.filter((e: { id: string }) => e.id !== "15-planes");
-  info.escenas.push({ id: "15-planes", duracion: duration, fotogramas: Math.round(duration * 30) });
+  info.escenas = info.escenas.filter((e: { id: string }) => e.id !== "16-planes");
+  info.escenas.push({ id: "16-planes", duracion: duration, fotogramas: Math.round(duration * 30) });
   fs.writeFileSync(jsonPath, JSON.stringify(info, null, 2));
   console.log(`Escena de precio: ${out} (${priceLabel()}/${PLAN.period})`);
 })();

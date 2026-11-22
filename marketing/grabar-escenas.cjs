@@ -323,7 +323,20 @@ const OVERLAY_JS = (bandPx) => {
     await wait(6200);
   });
 
-  await scene("14-cierre", async () => {
+  await scene("14-soporte", async () => {
+    await tap('button[title="Cerrar chat"]', { before: 300 }); // la ventana del asistente (escena 13) taparía el menú
+    await tap("#mobile-nav-more");
+    await tap("#more-menu-support", { before: 350 });
+    await wait(900);
+    await tap("#support-new", { before: 300 });
+    await tap(page.getByRole("button", { name: "Algo no funciona" }), { before: 300 });
+    await typeSlow(page.locator("#support-subject"), "No me deja cobrar una venta", 70);
+    await typeSlow(page.locator("#support-message"), "Al tocar Cobrar la pantalla se queda cargando.", 55);
+    await wait(500);
+    await tap("#support-submit", { before: 400, after: 2200 });
+  });
+
+  await scene("15-cierre", async () => {
     await card(`${LOGO}<h1>Tiendly</h1><p>Vende, repón y cobra sin complicarte</p><p style="font-size:18px;opacity:.85">Funciona en tu celular o computador</p>`, 3200);
   });
 

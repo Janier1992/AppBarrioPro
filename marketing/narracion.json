@@ -52,11 +52,15 @@
     "texto": "Por ejemplo, pregúntale qué productos debes reponer. Te responde con los datos de tu negocio y te propone qué pedir."
   },
   {
-    "id": "14-cierre",
+    "id": "14-soporte",
+    "texto": "¿Algo no funciona? En Soporte, dentro del menú Más, escribes tu solicitud y la respuesta del equipo te llega a la misma pantalla."
+  },
+  {
+    "id": "15-cierre",
     "texto": "Tiendly funciona para tiendas, panaderías, ferreterías, papelerías, droguerías y más. Vende, repón y cobra sin complicarte."
   },
   {
-    "id": "15-planes",
-    "texto": "Pruébalo gratis durante una semana. Después cuesta veintinueve mil novecientos pesos al mes, y lo pagas mes a mes. Escríbenos por WhatsApp y empieza hoy."
+    "id": "16-planes",
+    "texto": "Pruébalo gratis durante una semana. Después cuesta veintinueve mil novecientos pesos al mes, y lo pagas mes a mes por Nequi. Escríbenos por WhatsApp y empieza hoy."
   }
 ]

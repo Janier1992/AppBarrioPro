@@ -15,7 +15,7 @@
 # 1) App en modo demostración (sin InsForge). Los datos de la tienda son ficticios y los siembra el script.
 VITE_INSFORGE_ANON_KEY="your-anon-key" PORT=3180 npm run dev
 
-# 2) Grabar las 14 escenas (la 15, de precio, se genera aparte) (≈ 10 min). Resultado: marketing/escenas/*.mp4 + escenas.json
+# 2) Grabar las 15 escenas (la 16, de precio, se genera aparte) (≈ 10 min). Resultado: marketing/escenas/*.mp4 + escenas.json
 node marketing/grabar-escenas.cjs http://localhost:3180 marketing/escenas
 
 # 2b) Escena final con el precio (usa el mismo precio de la app y del manual)
